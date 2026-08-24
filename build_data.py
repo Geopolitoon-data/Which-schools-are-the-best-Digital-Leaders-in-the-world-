@@ -188,10 +188,11 @@ def build(df, hub_coordinates=None):
             'latitude': as_number(row.get('Latitude')),
             'longitude': as_number(row.get('Longitude')),
             'ranks': ranks,
-            'dlPoints': {
-                edition: {module: points_for(ranks[edition][module]) for module in MODULES}
-                for edition in EDITIONS
-            },
+            # Per-institution points are deliberately NOT published. They are
+            # `151 - rank` and the front end computes them on the fly, so
+            # shipping them would only hand out the module-by-module breakdown
+            # that the interface is careful not to expose. The ranks are public
+            # by design; the arithmetic on top of them is Emerging's to sell.
             # 'top150' or 'next50' per module, so the front end never has to
             # rediscover the threshold for itself.
             'tier': {
