@@ -1,0 +1,1960 @@
+{
+ "Aalto University": {
+  "lat": 60.1860789,
+  "lon": 24.8281018,
+  "display_name": "Aalto-yliopisto, Tekniikantie, Maari, Otaniemi, Suur-Tapiola, Espoo, Helsingin seutukunta, Uusimaa, Manner-Suomi, 02110, Suomi / Finland",
+  "osm_type": "college",
+  "query": "Aalto University, Finland"
+ },
+ "American University of Beirut": {
+  "lat": 33.9000264,
+  "lon": 35.4823838,
+  "display_name": "الجامعة الأمريكية في بيروت, Rue Ibrahim Abed El Aal, الحمرا, الحمراء, رأس بيروت, بيروت, محافظة بيروت, 1103, لبنان",
+  "osm_type": "university",
+  "query": "American University of Beirut, Lebanon"
+ },
+ "Arizona State University": {
+  "lat": 33.4213174,
+  "lon": -111.9331631,
+  "display_name": "Arizona State University, 1151, South Forest Avenue, Tempe, Maricopa County, Arizona, 85281, United States",
+  "osm_type": "university",
+  "query": "Arizona State University, United States"
+ },
+ "Australian National University": {
+  "lat": -35.2812742,
+  "lon": 149.1172023,
+  "display_name": "Australian National University, Parkes Way, Yukeembruk Village, Acton, Canberra, District of Canberra Central, Australian Capital Territory, 2601, Australia",
+  "osm_type": "university",
+  "query": "Australian National University, Australia"
+ },
+ "BI Norwegian Business School": {
+  "lat": 59.948338,
+  "lon": 10.7685915,
+  "display_name": "Handelshøyskolen BI, Sandakerveien, Gullhaug, Nydalen, Nordre Aker, Oslo, 0484, Norge",
+  "osm_type": "college",
+  "query": "Handelshøyskolen BI, Oslo",
+  "via_alias": true
+ },
+ "Babson College": {
+  "lat": 42.2949497,
+  "lon": -71.2649041,
+  "display_name": "Babson College, Wellesley Avenue, Wellesley Hills, Wellesley, Norfolk County, Massachusetts, 02457, United States",
+  "osm_type": "college",
+  "query": "Babson College, United States"
+ },
+ "Bangalore University": {
+  "lat": 12.9439343,
+  "lon": 77.5091842,
+  "display_name": "Bangalore University, 16th Cross Road, Ideal Homes Layout, Rajarajeshwari Nagar, Rajarajeshwari Nagara, Bengaluru West City Corporation, Bengaluru, Bangalore South, Bengaluru Urban, Karnataka, 560098, India",
+  "osm_type": "university",
+  "query": "Bangalore University, India"
+ },
+ "Bar-Ilan University": {
+  "lat": 32.0693292,
+  "lon": 34.8433434,
+  "display_name": "אוניברסיטת בר אילן, רחבת קרן היסוד, רמת אילן, גבעת שמואל, נפת פתח תקווה, מחוז המרכז, 5530002, ישראל",
+  "osm_type": "university",
+  "query": "Bar-Ilan University, Israel"
+ },
+ "Beihang University": {
+  "lat": 39.9809427,
+  "lon": 116.3409787,
+  "display_name": "北京航空航天大学(学院路校区), 37, 学院路, 花园路街道, 海淀区, 北京市, 100083, 中国",
+  "osm_type": "university",
+  "query": "Beihang University, China"
+ },
+ "Ben-Gurion University of the Negev": {
+  "lat": 31.2631254,
+  "lon": 34.8022385,
+  "display_name": "אוניברסיטת בן גוריון בנגב, פרופסור חיים חנני, רובע החדשנות באר שבע, שכונה ד, באר שבע, נפת באר שבע, מחוז הדרום, 8452566, ישראל",
+  "osm_type": "university",
+  "query": "Ben-Gurion University of the Negev, Israel"
+ },
+ "Birla Institute of Technology and Science, Pilani": {
+  "lat": 28.359091,
+  "lon": 75.5887628,
+  "display_name": "NSS BITS Pilani, Krishna Marg, Pilani, Surajgarh Tehsil, Jhunjhunu, Rajasthan, 333031, India",
+  "osm_type": "yes",
+  "query": "BITS Pilani, Rajasthan",
+  "via_alias": true
+ },
+ "Bocconi University (incl. SDA Bocconi Milano)": {
+  "lat": 45.4499044,
+  "lon": 9.1892641,
+  "display_name": "Università Bocconi, Piazza Angelo Sraffa, Vigentina, Municipio 5, Milano, Rodano, Milano, Lombardia, 20136, Italia",
+  "osm_type": "university",
+  "query": "Bocconi University, Italy"
+ },
+ "Bogaziçi University": {
+  "lat": 41.0832734,
+  "lon": 29.0505009,
+  "display_name": "Boğaziçi Üniversitesi Güney Yerleşkesi, Arifipaşa Sokağı, Aşiyan, Bebek Mahallesi, Beşiktaş, İstanbul, Marmara Bölgesi, 34342, Türkiye",
+  "osm_type": "university",
+  "query": "Bogaziçi University, Turkey"
+ },
+ "Boston College": {
+  "lat": 42.3354481,
+  "lon": -71.1682665,
+  "display_name": "Boston College, Dunster Road, Chestnut Hill, Brookline, Norfolk County, Massachusetts, 02467, United States",
+  "osm_type": "university",
+  "query": "Boston College, United States"
+ },
+ "Boston University": {
+  "lat": 42.3504215,
+  "lon": -71.1032247,
+  "display_name": "Boston University, Storrow Drive, Fenway-Kenmore, Boston, Suffolk County, Massachusetts, 02215, United States",
+  "osm_type": "university",
+  "query": "Boston University, United States"
+ },
+ "Brandeis University": {
+  "lat": 42.3665095,
+  "lon": -71.2580196,
+  "display_name": "Brandeis University, 415, South Street, Waltham, Middlesex County, Massachusetts, 02453, United States",
+  "osm_type": "university",
+  "query": "Brandeis University, United States"
+ },
+ "Brigham Young University": {
+  "lat": 40.2498073,
+  "lon": -111.6499458,
+  "display_name": "Brigham Young University, Field House Drive, BYU, Provo, Utah County, Utah, 84602, United States",
+  "osm_type": "university",
+  "query": "Brigham Young University, United States"
+ },
+ "Brown University": {
+  "lat": 41.8186395,
+  "lon": -71.4088009,
+  "display_name": "Brown University, Benefit Street, College Hill, Providence, Providence County, Rhode Island, 02912, United States",
+  "osm_type": "university",
+  "query": "Brown University, United States"
+ },
+ "California Polytechnic State University": {
+  "lat": 35.3074623,
+  "lon": -120.6646483,
+  "display_name": "California Polytechnic State University, 1, Grand Avenue, San Luis Obispo County, California, 93407, United States",
+  "osm_type": "university",
+  "query": "California Polytechnic State University, United States"
+ },
+ "California State University - East Bay": {
+  "lat": 37.6555236,
+  "lon": -122.0558772,
+  "display_name": "California State University - East Bay, 25800, Carlos Bee Boulevard, Hayward, Alameda County, California, 94542, United States",
+  "osm_type": "university",
+  "query": "California State University - East Bay, United States"
+ },
+ "Caltech": {
+  "lat": 34.1370138,
+  "lon": -118.1252883,
+  "display_name": "California Institute of Technology, Moore Walk, Pasadena Council District 7, Pasadena, Los Angeles County, California, 91125, United States",
+  "osm_type": "university",
+  "query": "Caltech, United States"
+ },
+ "Cardiff University": {
+  "lat": 51.5067253,
+  "lon": -3.1894874,
+  "display_name": "Cardiff University, Lon-y-Groes, Birchgrove, Heath, Cardiff, Cymru / Wales, CF14 4AB, United Kingdom",
+  "osm_type": "university",
+  "query": "Cardiff University, United Kingdom"
+ },
+ "Carnegie Mellon University": {
+  "lat": 40.4439193,
+  "lon": -79.9428267,
+  "display_name": "Carnegie Mellon University, Varsity Walk, North Oakland, Pittsburgh, Allegheny County, Pennsylvania, 15213, United States",
+  "osm_type": "university",
+  "query": "Carnegie Mellon University, United States"
+ },
+ "Case Western Reserve University": {
+  "lat": 41.5013869,
+  "lon": -81.6007022,
+  "display_name": "Case Western Reserve University, 10900, Euclid Avenue, Uptown, University Circle, Cleveland, Cuyahoga County, Ohio, 44106, United States",
+  "osm_type": "university",
+  "query": "Case Western Reserve University, United States"
+ },
+ "CentraleSupélec - Paris Saclay University": {
+  "lat": 48.7103442,
+  "lon": 2.1676474,
+  "display_name": "CentraleSupélec - Bâtiment Gustave Eiffel, 8;10, Rue Joliot-Curie, Campus Urbain de Paris-Saclay, Gif-sur-Yvette, Palaiseau, Essonne, Île-de-France, France métropolitaine, 91192, France",
+  "osm_type": "university",
+  "query": "CentraleSupélec, Gif-sur-Yvette",
+  "via_alias": true
+ },
+ "Chaitanya Bharathi Institute Of Technology": {
+  "lat": 17.3921,
+  "lon": 78.3169,
+  "display_name": "(set manually — main campus)",
+  "osm_type": "manual",
+  "manual": true
+ },
+ "China Europe International Business School (CEIBS)": {
+  "lat": 31.2405583,
+  "lon": 121.5935285,
+  "display_name": "中欧国际工商学院, 红枫路, 金桥镇, 浦东新区, 上海市, 201206, 中国",
+  "osm_type": "school",
+  "query": "中欧国际工商学院, Shanghai",
+  "via_alias": true
+ },
+ "City University London": {
+  "lat": 51.5271353,
+  "lon": -0.1070754,
+  "display_name": "City University, London, Myddelton Street, Clerkenwell Green, Angel, Clerkenwell, London Borough of Islington, Greater London, England, EC1R 1UB, United Kingdom",
+  "osm_type": "yes",
+  "query": "City University London, United Kingdom"
+ },
+ "Columbia University (incl. Business School)": {
+  "lat": 40.8077507,
+  "lon": -73.9624901,
+  "display_name": "Columbia University, Morningside Avenue, Morningside Heights, Manhattan Community Board 9, Manhattan, New York County, New York, 10027, United States",
+  "osm_type": "university",
+  "query": "Columbia University, United States"
+ },
+ "Concordia University": {
+  "lat": 45.4582595,
+  "lon": -73.6393547,
+  "display_name": "Université Concordia, 7141, Rue Sherbrooke Ouest, Côte-des-Neiges–Notre-Dame-de-Grâce, Montréal, Agglomération de Montréal, Montréal (région administrative), Québec, H4B 1R6, Canada",
+  "osm_type": "university",
+  "query": "Concordia University, Canada"
+ },
+ "Conservatoire National des Arts et Métiers": {
+  "lat": 48.866783,
+  "lon": 2.3554167,
+  "display_name": "Conservatoire National des Arts et Métiers, 292, Rue Saint-Martin, Quartier des Arts-et-Métiers, Paris 3e Arrondissement, Paris, Île-de-France, France métropolitaine, 75003, France",
+  "osm_type": "university",
+  "query": "Conservatoire National des Arts et Métiers, France"
+ },
+ "Copenhagen Business School": {
+  "lat": 55.677873,
+  "lon": 12.5216136,
+  "display_name": "Copenhagen Business School (CBS), Porcelænshaven, Frederiksberg, Frederiksberg Kommune, Region Hovedstaden, 2000, Danmark",
+  "osm_type": "university",
+  "query": "Copenhagen Business School, Denmark"
+ },
+ "Cornell University": {
+  "lat": 42.452916,
+  "lon": -76.4800635,
+  "display_name": "Cornell University, City of Ithaca, Town of Dryden, Tompkins County, New York, 14850, United States",
+  "osm_type": "university",
+  "query": "Cornell University, United States"
+ },
+ "Dartmouth College": {
+  "lat": 43.7046757,
+  "lon": -72.2942089,
+  "display_name": "Dartmouth College, Willey Hill Road, Norwich, Windsor County, Vermont, 05055, United States",
+  "osm_type": "university",
+  "query": "Dartmouth College, United States"
+ },
+ "DePaul University": {
+  "lat": 41.9245803,
+  "lon": -87.6507223,
+  "display_name": "DePaul University, 2400, North Sheffield Avenue, Wrightwood Neighbors, Lincoln Park, Chicago, North Chicago Township, Cook County, Illinois, 60614, United States",
+  "osm_type": "university",
+  "query": "DePaul University, United States"
+ },
+ "Delft University of Technology": {
+  "lat": 51.9988274,
+  "lon": 4.3739604,
+  "display_name": "Technische Universiteit Delft, Kruithuisweg, Ruiven, Delft, Zuid-Holland, Nederland, 2629 HL, Nederland",
+  "osm_type": "university",
+  "query": "Delft University of Technology, Netherlands"
+ },
+ "Delhi University": {
+  "lat": 28.5449971,
+  "lon": 77.1891506,
+  "display_name": "Indian Institute of Technology Delhi, Gamal Abdel Nasser Marg, Kalu Sarai, Hauz Khas, South, Delhi, South Delhi, Delhi, 110016, India",
+  "osm_type": "university",
+  "query": "Delhi University, India"
+ },
+ "Drexel University": {
+  "lat": 39.9545335,
+  "lon": -75.1865653,
+  "display_name": "Drexel University, 3141, Chestnut Street, University City, West Philadelphia, Philadelphia, Philadelphia County, Pennsylvania, 19104, United States",
+  "osm_type": "university",
+  "query": "Drexel University, United States"
+ },
+ "Duke University": {
+  "lat": 36.0001557,
+  "lon": -78.9442297,
+  "display_name": "Duke University, Durham Freeway, Burch Avenue, Durham, Durham County, North Carolina, 27708, United States",
+  "osm_type": "university",
+  "query": "Duke University, United States"
+ },
+ "EDHEC Business School": {
+  "lat": 50.6729687,
+  "lon": 3.1660828,
+  "display_name": "EDHEC Business School, Allée de la Pommeraie, Croix, Lille, Nord, Hauts-de-France, France métropolitaine, 59170, France",
+  "osm_type": "college",
+  "query": "EDHEC Business School, France"
+ },
+ "ESAN Graduate School Of Business (ESAN University)": {
+  "lat": -12.105663,
+  "lon": -76.9606508,
+  "display_name": "Universidad ESAN, 1625, Los Literatos, Residencial Los Álamos de Monterrico, Monterrico, Santiago de Surco, Lima, Lima Metropolitana, Lima, 15024, Perú",
+  "osm_type": "university",
+  "query": "Universidad ESAN, Lima",
+  "via_alias": true
+ },
+ "ESCP Business School": {
+  "lat": 48.8646999,
+  "lon": 2.3808164,
+  "display_name": "ESCP Business School, 79, Avenue de la République, Quartier Saint-Ambroise, Paris 11e Arrondissement, Paris, Île-de-France, France métropolitaine, 75011, France",
+  "osm_type": "college",
+  "query": "ESCP Business School, France"
+ },
+ "ESPM Escola Superior de Propaganda e Marketing": {
+  "lat": -23.5869426,
+  "lon": -46.6444882,
+  "display_name": "Escola Superior de Propaganda e Marketing, Rua Joaquim Távora, Vila Mariana, São Paulo, Região Sudeste, 04018-000, Brasil",
+  "osm_type": "college",
+  "query": "ESPM, São Paulo",
+  "via_alias": true
+ },
+ "ESSEC Business School": {
+  "lat": 49.0334826,
+  "lon": 2.0770491,
+  "display_name": "ESSEC Business School - Campus de Cergy-Pontoise, 3, Avenue Bernard Hirsch, Les Bourgognes, Cergy Préfecture, Grand Centre, Cergy, Pontoise, Val-d'Oise, Île-de-France, France métropolitaine, 95000, France",
+  "osm_type": "college",
+  "query": "ESSEC Business School, France"
+ },
+ "ETH Zurich": {
+  "lat": 47.413218,
+  "lon": 8.5374914,
+  "display_name": "ETH Zürich, 130, Binzmühlestrasse, Oerlikon, Kreis 11, Zürich, Bezirk Zürich, Zürich, 8050, Schweiz/Suisse/Svizzera/Svizra",
+  "osm_type": "company",
+  "query": "ETH Zurich, Switzerland"
+ },
+ "Ecole Centrale Lyon - Lyon University": {
+  "lat": 45.7833631,
+  "lon": 4.76877,
+  "display_name": "Centrale Lyon, Chemin de Charrière Blanche, Écully, Lyon, Métropole de Lyon, Rhône, Auvergne-Rhône-Alpes, France métropolitaine, 69130, France",
+  "osm_type": "university",
+  "query": "École Centrale de Lyon, Écully",
+  "via_alias": true
+ },
+ "Ecole Nationale des Ponts et Chaussées - Institut Polytechnique de Paris": {
+  "lat": 48.8410864,
+  "lon": 2.5882717,
+  "display_name": "École des Ponts ParisTech, Avenue Blaise Pascal, Cité Descartes, Champs-sur-Marne, Torcy, Seine-et-Marne, Île-de-France, France métropolitaine, 77420, France",
+  "osm_type": "college",
+  "query": "École des Ponts ParisTech, Champs-sur-Marne",
+  "via_alias": true
+ },
+ "Ecole Polytechnique - Institut Polytechique de Paris": {
+  "lat": 48.7127874,
+  "lon": 2.2107453,
+  "display_name": "École Polytechnique, Route de Saclay, La Vauve - École Polytechnique, Plateau, Palaiseau, Essonne, Île-de-France, France métropolitaine, 91120, France",
+  "osm_type": "college",
+  "query": "École Polytechnique, Palaiseau",
+  "via_alias": true
+ },
+ "Ecole normale supérieure Paris-Saclay - University Paris-Saclay": {
+  "lat": 48.7128733,
+  "lon": 2.1648118,
+  "display_name": "École normale supérieure Paris-Saclay, Avenue des Sciences, Campus Urbain de Paris-Saclay, Gif-sur-Yvette, Palaiseau, Essonne, Île-de-France, France métropolitaine, 91190, France",
+  "osm_type": "university",
+  "query": "Ecole normale supérieure Paris-Saclay - University Paris-Saclay, France"
+ },
+ "Eindhoven University of Technology": {
+  "lat": 51.4486602,
+  "lon": 5.4903996,
+  "display_name": "Technische Universiteit Eindhoven, 3, Groene Loper, Centrum, Eindhoven, Noord-Brabant, Nederland, 5612 AE, Nederland",
+  "osm_type": "university",
+  "query": "Eindhoven University of Technology, Netherlands"
+ },
+ "Emory University": {
+  "lat": 33.8004547,
+  "lon": -84.3172378,
+  "display_name": "Emory University, 201, Clairmont Run, Emory Garden Condominiums, North Decatur, DeKalb County, Georgia, 30322, United States",
+  "osm_type": "university",
+  "query": "Emory University, United States"
+ },
+ "Erasmus University Rotterdam (incl. School of Mgt.)": {
+  "lat": 51.9176312,
+  "lon": 4.5259623,
+  "display_name": "Erasmus Universiteit Rotterdam, 50, Burgemeester Oudlaan, Kralingen-Oost, Crooswijk, Kralingen-Crooswijk, Rotterdam, Zuid-Holland, Nederland, 3062 PA, Nederland",
+  "osm_type": "university",
+  "query": "Erasmus University Rotterdam, Netherlands"
+ },
+ "FIA Business School": {
+  "lat": -23.571,
+  "lon": -46.718,
+  "display_name": "(set manually — main campus)",
+  "osm_type": "manual",
+  "manual": true
+ },
+ "FIAP": {
+  "lat": -23.5743927,
+  "lon": -46.6235475,
+  "display_name": "FIAP, 1264, Avenida Lins de Vasconcelos, Cambuci, São Paulo, Região Sudeste, 01543-010, Brasil",
+  "osm_type": "university",
+  "query": "FIAP, Brazil"
+ },
+ "Frankfurt School of Finance & Management": {
+  "lat": 50.1326646,
+  "lon": 8.6802221,
+  "display_name": "Frankfurt School of Finance & Management, 32-34, Adickesallee, Nordend West, Innenstadt 3, Frankfurt am Main, Hessen, 60322, Deutschland",
+  "osm_type": "university",
+  "query": "Frankfurt School of Finance & Management, Germany"
+ },
+ "Free University of Berlin": {
+  "lat": 52.4528565,
+  "lon": 13.2907249,
+  "display_name": "Freie Universität Berlin, Habelschwerdter Allee, Dahlem, Steglitz-Zehlendorf, Berlin, 14195, Deutschland",
+  "osm_type": "university",
+  "query": "Freie Universität Berlin",
+  "via_alias": true
+ },
+ "Fudan University": {
+  "lat": 31.3011748,
+  "lon": 121.4974703,
+  "display_name": "复旦大学, 220, 邯郸路, 五角场, 五角场街道, 杨浦区, 上海市, 200433, 中国",
+  "osm_type": "university",
+  "query": "Fudan University, China"
+ },
+ "Fundação Getulio Vargas": {
+  "lat": -23.5599049,
+  "lon": -46.6534588,
+  "display_name": "Fundação Getulio Vargas, 474, Rua Itapeva, Bixiga, Bela Vista, São Paulo, Região Sudeste, 01332-000, Brasil",
+  "osm_type": "university",
+  "query": "Fundação Getulio Vargas, Brazil"
+ },
+ "George Mason University": {
+  "lat": 38.8313333,
+  "lon": -77.3079884,
+  "display_name": "George Mason University, 4400, University Drive, George Mason, Fairfax County, Virginia, 22030, United States",
+  "osm_type": "university",
+  "query": "George Mason University, United States"
+ },
+ "Georgetown University": {
+  "lat": 38.9089393,
+  "lon": -77.0745796,
+  "display_name": "Georgetown University, 3700, O Street Northwest, Georgetown, Ward 2, Washington, District of Columbia, 20057, United States",
+  "osm_type": "university",
+  "query": "Georgetown University, United States"
+ },
+ "Georgia Institute of Technology": {
+  "lat": 33.7760948,
+  "lon": -84.3988077,
+  "display_name": "Georgia Tech, 10th Street Northeast, Midtown, Old Fourth Ward, Atlanta, Fulton County, Georgia, 30332, United States",
+  "osm_type": "university",
+  "query": "Georgia Institute of Technology, United States"
+ },
+ "Great Lakes Institute of Management": {
+  "lat": 12.5709365,
+  "lon": 80.1394538,
+  "display_name": "Great Lakes Institute Of Management, Manamai - Kunnathur Road, Anupuram Township, Kunnattūr, Tirukalukundram, Chengalpattu, Tamil Nadu, 603102, India",
+  "osm_type": "college",
+  "query": "Great Lakes Institute of Management, India"
+ },
+ "HEC Montréal": {
+  "lat": 45.5027767,
+  "lon": -73.5645965,
+  "display_name": "École des Hautes études commerciales, 501, Rue de La Gauchetière Ouest, Vieux-Montréal, Ville-Marie, Montréal, Agglomération de Montréal, Montréal (région administrative), Québec, H2Z 1Z5, Canada",
+  "osm_type": "university",
+  "query": "HEC Montréal, Canada"
+ },
+ "HEC Paris": {
+  "lat": 48.7584681,
+  "lon": 2.166346,
+  "display_name": "HEC Paris, Allée du Vilvert, Résidence Pétineau, Les Metz, Jouy-en-Josas, Versailles, Yvelines, Île-de-France, France métropolitaine, 78350, France",
+  "osm_type": "college",
+  "query": "HEC Paris, France"
+ },
+ "Harbin Institute of Technology": {
+  "lat": 45.741589,
+  "lon": 126.6255626,
+  "display_name": "哈尔滨工业大学, 92, 西大直街, 曲线街道, 南岗区, 哈尔滨市, 香坊区, 黑龙江省, 150000, 中国",
+  "osm_type": "university",
+  "query": "Harbin Institute of Technology, China"
+ },
+ "Harvard University (incl. Business School)": {
+  "lat": 42.3657432,
+  "lon": -71.1222139,
+  "display_name": "Harvard University, Miller Street, Spring Hill Historic District, Ball Square, Somerville, Middlesex County, Massachusetts, 02318, United States",
+  "osm_type": "university",
+  "query": "Harvard University, United States"
+ },
+ "Hebrew University of Jerusalem": {
+  "lat": 31.7918555,
+  "lon": 35.244723,
+  "display_name": "האוניברסיטה העברית בירושלים, ננסי רייגן פלאזה, הר הצופים, ירושלים | القدس, נפת ירושלים, מחוז ירושלים, 9711769, ישראל",
+  "osm_type": "university",
+  "query": "Hebrew University of Jerusalem, Israel"
+ },
+ "Heidelberg University": {
+  "lat": 49.4186003,
+  "lon": 8.6692402,
+  "display_name": "Universität Heidelberg, Fischergasse, Altstadt, Heidelberg, Baden-Württemberg, 69117, Deutschland",
+  "osm_type": "university",
+  "query": "Heidelberg University, Germany"
+ },
+ "Huazhong University of Science and Technology": {
+  "lat": 30.5202172,
+  "lon": 114.4118463,
+  "display_name": "华中科技大学, 1037号, 珞喻路, 光谷社区, 关东街道, 东湖新技术开发区, 洪山区, 武汉市, 湖北省, 430074, 中国",
+  "osm_type": "university",
+  "query": "Huazhong University of Science and Technology, China"
+ },
+ "Humboldt University of Berlin": {
+  "lat": 52.5183402,
+  "lon": 13.3929202,
+  "display_name": "Humboldt-Universität zu Berlin, 6, Unter den Linden, Friedrichswerder, Dorotheenstadt, Mitte, Berlin, 10117, Deutschland",
+  "osm_type": "university",
+  "query": "Humboldt University of Berlin, Germany"
+ },
+ "IDC Herzliya": {
+  "lat": 32.1762529,
+  "lon": 34.8370911,
+  "display_name": "אוניברסיטת רייכמן, שדרות מנחם בגין, נחלת עדה, הרצליה, נפת תל אביב, מחוז תל אביב, 4648567, ישראל",
+  "osm_type": "university",
+  "query": "IDC Herzliya, Israel"
+ },
+ "IE University (incl. IE Business School)": {
+  "lat": 40.9529322,
+  "lon": -4.1186861,
+  "display_name": "IE Universidad, Calle Cardenal Zúñiga, Sexmo de Segovia, San Lorenzo, Comunidad de Ciudad y Tierra de Segovia, Segovia, Castilla y León, 40003, España",
+  "osm_type": "university",
+  "query": "IE University, Spain"
+ },
+ "IMD Business School": {
+  "lat": 46.5099312,
+  "lon": 6.6214752,
+  "display_name": "IMD, 23, Chemin de Bellerive, Lausanne, District de Lausanne, Vaud, 1007, Schweiz/Suisse/Svizzera/Svizra",
+  "osm_type": "school",
+  "query": "IMD, Lausanne",
+  "via_alias": true
+ },
+ "INSEAD": {
+  "lat": 48.4055967,
+  "lon": 2.6846928,
+  "display_name": "Institut Européen d'Administration des Affaires, Rue Duplessis Mornay, Lilas-Saint-Honoré, Fontainebleau, Seine-et-Marne, Île-de-France, France métropolitaine, 77300, France",
+  "osm_type": "university",
+  "query": "INSEAD, France"
+ },
+ "IPADE Business School (Universidad Panamericana)": {
+  "lat": 19.478,
+  "lon": -99.183,
+  "display_name": "(set manually — main campus)",
+  "osm_type": "manual",
+  "manual": true
+ },
+ "Illinois Institute of Technology": {
+  "lat": 41.8361641,
+  "lon": -87.6264721,
+  "display_name": "Illinois Institute of Technology, 10, West 35th Street, Bronzeville, Douglas, Chicago, South Chicago Township, Cook County, Illinois, 60616, United States",
+  "osm_type": "university",
+  "query": "Illinois Institute of Technology, United States"
+ },
+ "Imperial College London": {
+  "lat": 51.4989595,
+  "lon": -0.1756407,
+  "display_name": "Imperial College London, Exhibition Road, Knightsbridge, City of Westminster, Greater London, England, SW7 2AZ, United Kingdom",
+  "osm_type": "university",
+  "query": "Imperial College London, United Kingdom"
+ },
+ "Indian Institute of Technology Bombay (ITT)": {
+  "lat": 19.1326186,
+  "lon": 72.9149702,
+  "display_name": "Indian Institute of Technology Bombay, Powai, S Ward, Mumbai Zone 6, Mumbai, Mumbai Suburban District, Maharashtra, 400076, India",
+  "osm_type": "university",
+  "query": "Indian Institute of Technology Bombay, India"
+ },
+ "Indian Institute of Technology Delhi": {
+  "lat": 28.5449971,
+  "lon": 77.1891506,
+  "display_name": "Indian Institute of Technology Delhi, Gamal Abdel Nasser Marg, Kalu Sarai, Hauz Khas, South, Delhi, South Delhi, Delhi, 110016, India",
+  "osm_type": "university",
+  "query": "Indian Institute of Technology Delhi, India"
+ },
+ "Indian Institute of Technology Guwahati": {
+  "lat": 26.1924788,
+  "lon": 91.6946357,
+  "display_name": "Indian Institute of Technology Guwahati, Footpath surrounding sports area, North Guwahati, North Guwahati (Pt), Kamrup Metropolitan, Assam, 781031, India",
+  "osm_type": "university",
+  "query": "Indian Institute of Technology Guwahati, India"
+ },
+ "Indian Institute of Technology Kanpur": {
+  "lat": 26.513188,
+  "lon": 80.2364843,
+  "display_name": "Indian Institute of Technology Kanpur, Hall 5 Back Connector Road, Kanpur, Kanpur Nagar, Uttar Pradesh, 208016, India",
+  "osm_type": "university",
+  "query": "Indian Institute of Technology Kanpur, India"
+ },
+ "Indian Institute of Technology Kharagpur": {
+  "lat": 22.3146519,
+  "lon": 87.3099912,
+  "display_name": "Indian Institute of Technology Kharagpur, IIT Main Road, Kharagpur, Kharagpur-I, Paschim Medinipur, West Bengal, 721302, India",
+  "osm_type": "university",
+  "query": "Indian Institute of Technology Kharagpur, India"
+ },
+ "Indian Institute of Technology Madras": {
+  "lat": 12.9941561,
+  "lon": 80.2366826,
+  "display_name": "Indian Institute of Technology - Madras, Adayar, CMWSSB Division 174, Ward 174, Zone 13 Adyar, Chennai Corporation, Chennai, Tamil Nadu, 600036, India",
+  "osm_type": "university",
+  "query": "Indian Institute of Technology Madras, India"
+ },
+ "Indian Institute of Technology Roorkee": {
+  "lat": 29.8661656,
+  "lon": 77.8957348,
+  "display_name": "Indian Institute of Technology Roorkee, LBS Jogging Track, Roorkee, Haridwar, Uttarakhand, 247667, India",
+  "osm_type": "university",
+  "query": "Indian Institute of Technology Roorkee, India"
+ },
+ "Instituto Superior Técnico": {
+  "lat": 38.7367455,
+  "lon": -9.1383914,
+  "display_name": "Instituto Superior Técnico, 1, Avenida Rovisco Pais, Arroios, Lisboa, 1049-001, Portugal",
+  "osm_type": "university",
+  "query": "Instituto Superior Técnico, Portugal"
+ },
+ "Instituto Tecnológico Autonómo de México": {
+  "lat": 19.345143,
+  "lon": -99.1998346,
+  "display_name": "Instituto Tecnológico Autónomo de México, 1, Calle Río Hondo, San Ángel, Ciudad de México, Álvaro Obregón, Ciudad de México, 01080, México",
+  "osm_type": "university",
+  "query": "Instituto Tecnológico Autonómo de México, Mexico"
+ },
+ "International Institute of Information Technology Bangalore": {
+  "lat": 12.8447999,
+  "lon": 77.663239,
+  "display_name": "International Institute of Information Technology Bangalore, Infosys Avenue, Electronics City Phase 1, Electronic City, Bangalore South, Bengaluru Urban, Karnataka, 560100, India",
+  "osm_type": "university",
+  "query": "International Institute of Information Technology Bangalore, India"
+ },
+ "International Institute of Information Technology Hyderabad (IIITH)": {
+  "lat": 17.4454026,
+  "lon": 78.3484834,
+  "display_name": "International Institute of Information Technology, Hyderabad, Old Bombay Road, Masjid Banda, Ward 106 Serilingampally, Greater Hyderabad Municipal Corporation West Zone, Hyderabad, Serilingampalle mandal, Ranga Reddy, Telangana, 500032, India",
+  "osm_type": "university",
+  "query": "International Institute of Information Technology Hyderabad, India"
+ },
+ "Iowa State University": {
+  "lat": 42.0279608,
+  "lon": -93.6447375,
+  "display_name": "Iowa State University, Pammel Drive, Ames, Story County, Iowa, 50011, United States",
+  "osm_type": "university",
+  "query": "Iowa State University, United States"
+ },
+ "Johns Hopkins University": {
+  "lat": 39.3302023,
+  "lon": -76.6218536,
+  "display_name": "Johns Hopkins University, 3400, North Charles Street, Charles Village, Northwood, Baltimore, Maryland, 21218, United States",
+  "osm_type": "university",
+  "query": "Johns Hopkins University, United States"
+ },
+ "KTH Royal Institute of Technology": {
+  "lat": 59.2016758,
+  "lon": 17.6203201,
+  "display_name": "KTH - Royal Institute of Technology (Södertälje), 12, Kvarnbergagatan, Tälje, Södertälje, Södertälje kommun, Stockholms län, 151 36, Sverige",
+  "osm_type": "university",
+  "query": "KTH Royal Institute of Technology, Sweden"
+ },
+ "KU Leuven": {
+  "lat": 50.8057129,
+  "lon": 3.2915374,
+  "display_name": "KU Leuven Kulak, Etienne Sabbelaan, Hoog Kortrijk, Kortrijk, West-Vlaanderen, Vlaanderen, 8500, België / Belgique / Belgien",
+  "osm_type": "university",
+  "query": "KU Leuven, Belgium"
+ },
+ "Karlsruhe Institute of Technology KIT": {
+  "lat": 49.1018534,
+  "lon": 8.4331202,
+  "display_name": "Karlsruher Institut für Technologie, Ehingen (Donau), VVG der Stadt Ehingen (Donau), Alb-Donau-Kreis, Baden-Württemberg, 89584, Deutschland",
+  "osm_type": "university",
+  "query": "Karlsruher Institut für Technologie",
+  "via_alias": true
+ },
+ "King's College London": {
+  "lat": 51.5030855,
+  "lon": -0.0900021,
+  "display_name": "Hodgkin Building, Newcomen Street, Borough Market, Bermondsey Village, The Borough, London Borough of Southwark, Greater London, England, SE1 1YX, United Kingdom",
+  "osm_type": "university",
+  "query": "King's College London, United Kingdom"
+ },
+ "Korea Advanced Institute of Science and Technology (KAIST)": {
+  "lat": 36.3703054,
+  "lon": 127.3620118,
+  "display_name": "한국과학기술원, 291, 대학로, 구성동, 온천2동, 유성구, 대전광역시, 34141, 대한민국",
+  "osm_type": "university",
+  "query": "Korea Advanced Institute of Science and Technology, South Korea"
+ },
+ "Korea University": {
+  "lat": 36.6108894,
+  "lon": 127.2934174,
+  "display_name": "고려대학교, 세종로, 조치원읍, 세종특별자치시, 30017, 대한민국",
+  "osm_type": "bus_stop",
+  "query": "Korea University, South Korea"
+ },
+ "Koç University": {
+  "lat": 41.2060623,
+  "lon": 29.0738014,
+  "display_name": "Koç Üniversitesi, Koç Meydanı, Rumelifeneri Mahallesi, Sarıyer, İstanbul, Marmara Bölgesi, 34450, Türkiye",
+  "osm_type": "university",
+  "query": "Koç University, Turkey"
+ },
+ "Kyoto University": {
+  "lat": 35.0270467,
+  "lon": 135.7814382,
+  "display_name": "京都大学, 志賀越道, 北白川西町, 吉田上大路町, 左京区, 京都市, 京都府, 606-8501, 日本",
+  "osm_type": "university",
+  "query": "Kyoto University, Japan"
+ },
+ "LMU Munich": {
+  "lat": 48.1521649,
+  "lon": 11.581535,
+  "display_name": "Institut für Statistik der LMU, 33, Ludwigstraße, Schönfeldvorstadt, Maxvorstadt, München, Bayern, 80539, Deutschland",
+  "osm_type": "university",
+  "query": "LMU Munich, Germany"
+ },
+ "London Business School": {
+  "lat": 51.5263869,
+  "lon": -0.1611522,
+  "display_name": "London Business School, Park Road, Marylebone, City of Westminster, Greater London, England, NW1 6BH, United Kingdom",
+  "osm_type": "university",
+  "query": "London Business School, United Kingdom"
+ },
+ "London School of Economics and Political Science (LSE)": {
+  "lat": 51.5146063,
+  "lon": -0.1164509,
+  "display_name": "London School of Economics and Political Science, Houghton Street, St Clement Danes, Covent Garden, City of Westminster, Greater London, England, WC2A 2AE, United Kingdom",
+  "osm_type": "university",
+  "query": "London School of Economics and Political Science, United Kingdom"
+ },
+ "Lund University": {
+  "lat": 55.7126504,
+  "lon": 13.2107587,
+  "display_name": "Lunds Tekniska Högskola, Box 118, Tycho Brahes väg, Norra universitetsområdet, Norr, Lund, Lunds kommun, Skåne län, 221 00, Sverige",
+  "osm_type": "university",
+  "query": "Lund University, Sweden"
+ },
+ "Macquarie University": {
+  "lat": -33.774197,
+  "lon": 151.1127138,
+  "display_name": "Macquarie University, Christie Road, Macquarie Park, Sydney, New South Wales, 2113, Australia",
+  "osm_type": "university",
+  "query": "Macquarie University, Australia"
+ },
+ "Massachusetts Institute of Technology (incl. MIT Sloan School of Mgt.)": {
+  "lat": 42.3582529,
+  "lon": -71.0966272,
+  "display_name": "Massachusetts Institute of Technology, Ed Walsh's Way, East Cambridge, Cambridge, Middlesex County, Massachusetts, 02142, United States",
+  "osm_type": "university",
+  "query": "Massachusetts Institute of Technology, United States"
+ },
+ "Massey University": {
+  "lat": -36.7327011,
+  "lon": 174.7026709,
+  "display_name": "Massey University, Albany Expressway, Albany, Upper Harbour, Auckland, 0632, New Zealand / Aotearoa",
+  "osm_type": "university",
+  "query": "Massey University, New Zealand"
+ },
+ "McGill University": {
+  "lat": 45.4318428,
+  "lon": -73.9452864,
+  "display_name": "Université McGill, 21111, Chemin Lakeshore, Sainte-Anne-de-Bellevue, Agglomération de Montréal, Montréal (région administrative), Québec, H9X 3V9, Canada",
+  "osm_type": "university",
+  "query": "McGill University, Canada"
+ },
+ "McMaster University": {
+  "lat": 43.2639397,
+  "lon": -79.9178252,
+  "display_name": "McMaster University, 1280, Main Street West, Cootes Paradise, Hamilton, Golden Horseshoe, Ontario, L8S 3L8, Canada",
+  "osm_type": "university",
+  "query": "McMaster University, Canada"
+ },
+ "Miami University": {
+  "lat": 39.5094198,
+  "lon": -84.7311546,
+  "display_name": "Miami University, McGuffey Drive, Oxford, Oxford Township, Butler County, Ohio, 45056, United States",
+  "osm_type": "university",
+  "query": "Miami University, United States"
+ },
+ "Mines Paris - PSL University": {
+  "lat": 48.8453543,
+  "lon": 2.3390458,
+  "display_name": "Mines Paris - Université PSL, Boulevard Saint-Michel, Quartier du Val-de-Grâce, Paris 5e Arrondissement, Paris, Île-de-France, France métropolitaine, 75005, France",
+  "osm_type": "university",
+  "query": "Mines Paris - PSL University, France"
+ },
+ "Monash University": {
+  "lat": -37.7839745,
+  "lon": 144.9586743,
+  "display_name": "Monash University, Mile Lane, Parkville, Melbourne, Victoria, 3052, Australia",
+  "osm_type": "university",
+  "query": "Monash University, Australia"
+ },
+ "Mumbai University": {
+  "lat": 16.9956538,
+  "lon": 73.3301397,
+  "display_name": "Mumbai University, Hathkambe Ratnagiri Road; Mumbai Ratnagiri Highway, Nachane, Ratnagiri Taluka, Ratnagiri, Maharashtra, 415639, India",
+  "osm_type": "university",
+  "query": "Mumbai University, India"
+ },
+ "Nanyang Technological University": {
+  "lat": 1.3484104,
+  "lon": 103.6829332,
+  "display_name": "Nanyang Technological University, 50, Nanyang Avenue, Murai, Western Water Catchment, West Region, Singapore, 639798, Singapore",
+  "osm_type": "university",
+  "query": "Nanyang Technological University, Singapore"
+ },
+ "National Taiwan University": {
+  "lat": 25.0168175,
+  "lon": 121.5384571,
+  "display_name": "國立臺灣大學, 1, 羅斯福路四段, 學府里, 大安區, 公館, 臺北市, 106319, 臺灣",
+  "osm_type": "university",
+  "query": "National Taiwan University, Taiwan"
+ },
+ "National Technical University of Ukraine 'Kyiv Polytechnic Institute'": {
+  "lat": 50.4492713,
+  "lon": 30.4577489,
+  "display_name": "Національний технічний університет України «Київський політехнічний інститут імені Ігоря Сікорського», Паркова алея, Шулявка, Солом’янський район, Київ, 03056, Україна",
+  "osm_type": "university",
+  "query": "Київський політехнічний інститут, Kyiv",
+  "via_alias": true
+ },
+ "National University of Singapore": {
+  "lat": 1.2959845,
+  "lon": 103.7766186,
+  "display_name": "National University of Singapore, one-north, Queenstown, Central Region, Singapore",
+  "osm_type": "administrative",
+  "query": "National University of Singapore, Singapore"
+ },
+ "New Jersey Institute of Technology": {
+  "lat": 40.7421254,
+  "lon": -74.1790316,
+  "display_name": "New Jersey Institute of Technology, Dr. Martin Luther King Jr. Boulevard, The Ironbound, Newark, Essex County, New Jersey, 07102, United States",
+  "osm_type": "university",
+  "query": "New Jersey Institute of Technology, United States"
+ },
+ "New York University": {
+  "lat": 40.7292053,
+  "lon": -73.9950148,
+  "display_name": "New York University, Washington Place, Greenwich Village, Manhattan, New York County, New York, 10012, United States",
+  "osm_type": "university",
+  "query": "New York University, United States"
+ },
+ "North Carolina State University": {
+  "lat": 35.7718497,
+  "lon": -78.674087,
+  "display_name": "North Carolina State University, Gorman Street, Raleigh, Wake County, North Carolina, 27695, United States",
+  "osm_type": "university",
+  "query": "North Carolina State University, United States"
+ },
+ "Northeastern University": {
+  "lat": 42.3351065,
+  "lon": -71.0892575,
+  "display_name": "Northeastern University, 360, Huntington Avenue, Fenway-Kenmore, Boston, Suffolk County, Massachusetts, 02115, United States",
+  "osm_type": "university",
+  "query": "Northeastern University, United States"
+ },
+ "Northwestern University (incl. Kellogg School of Mgt.)": {
+  "lat": 42.0557157,
+  "lon": -87.6752945,
+  "display_name": "Northwestern University, 633, Clark Street, Downtown, Evanston, Evanston Township, Cook County, Illinois, 60208, United States",
+  "osm_type": "university",
+  "query": "Northwestern University, United States"
+ },
+ "Oregon State University": {
+  "lat": 44.563056,
+  "lon": -123.2839234,
+  "display_name": "Oregon State University, 1500, Southwest Jefferson Way, Corvallis, Benton County, Oregon, 97331, United States",
+  "osm_type": "university",
+  "query": "Oregon State University, United States"
+ },
+ "PSG College of Technology": {
+  "lat": 11.0246833,
+  "lon": 77.0028425,
+  "display_name": "PSG College of Technology, Avinashi Road, Peelamedu, Ward 38, North Zone, Coimbatore South, Coimbatore, Tamil Nadu, 641004, India",
+  "osm_type": "college",
+  "query": "PSG College of Technology, India"
+ },
+ "Peking University": {
+  "lat": 40.1750746,
+  "lon": 116.1593872,
+  "display_name": "北京大学（新燕园校区）, 西进大道, 马池口镇, 昌平区, 北京市, 102205, 中国",
+  "osm_type": "university",
+  "query": "Peking University, China"
+ },
+ "Penn State University": {
+  "lat": 40.8128971,
+  "lon": -77.8710571,
+  "display_name": "Penn State University, 201, Martin Street, Ferguson Township, Centre County, Pennsylvania, 16802, United States",
+  "osm_type": "university",
+  "query": "Penn State University, United States"
+ },
+ "Politehnica University of Bucharest": {
+  "lat": 44.4393317,
+  "lon": 26.0505729,
+  "display_name": "Universitatea Politehnica din București, 313, Splaiul Independenței, Grozăveşti, Sector 6, București, 060042, România",
+  "osm_type": "university",
+  "query": "Politehnica University of Bucharest, Romania"
+ },
+ "Polytechnic University of Catalonia": {
+  "lat": 41.2214475,
+  "lon": 1.7301449,
+  "display_name": "Escola Politècnica Superior d''Enginyeria de Vilanova i la Geltrú (EPSEVG), 1, Avinguda de Víctor Balaguer, Barri de Mar, Vilanova i la Geltrú, Garraf, Barcelona, Catalunya, 08800, España",
+  "osm_type": "university",
+  "query": "Universitat Politècnica de Catalunya, Barcelona",
+  "via_alias": true
+ },
+ "Polytechnic University of Milan": {
+  "lat": 45.0468832,
+  "lon": 9.7030881,
+  "display_name": "Politecnico Di Milano, Stradone Farnese, Baia del Re, Piacenza, Emilia-Romagna, 29122, Italia",
+  "osm_type": "university",
+  "query": "Politecnico di Milano",
+  "via_alias": true
+ },
+ "Pontificia Universidad Católica de Chile": {
+  "lat": -33.4417748,
+  "lon": -70.6403258,
+  "display_name": "Pontificia Universidad Católica de Chile, 360, Avenida Libertador Bernardo O'Higgins, Santiago, Provincia de Santiago, Región Metropolitana de Santiago, 8320000, Chile",
+  "osm_type": "university",
+  "query": "Pontificia Universidad Católica de Chile, Chile"
+ },
+ "Pontificia Universidad Católica del Perú (incl. CENTRUM)": {
+  "lat": -12.0691658,
+  "lon": -77.0799348,
+  "display_name": "Pontificia Universidad Católica del Perú, 1801, Avenida Universitaria, Pando Etapa 3, Lima, Lima Metropolitana, Lima, 15088, Perú",
+  "osm_type": "university",
+  "query": "Pontificia Universidad Católica del Perú, Peru"
+ },
+ "Princeton University": {
+  "lat": 40.3386752,
+  "lon": -74.6583655,
+  "display_name": "Princeton University, Alexander Street, Princeton, Mercer County, New Jersey, 08540, United States",
+  "osm_type": "university",
+  "query": "Princeton University, United States"
+ },
+ "Pune University": {
+  "lat": 18.5415896,
+  "lon": 73.8299276,
+  "display_name": "Pune University, Ganeshkhind Road, Model Colony, Pune, Pune City Subdistrict, Pune, Maharashtra, 411001, India",
+  "osm_type": "bus_stop",
+  "query": "Pune University, India"
+ },
+ "Purdue University": {
+  "lat": 40.430028,
+  "lon": -86.9264211,
+  "display_name": "Purdue University, 610, West Lafayette, Tippecanoe County, Indiana, 47907, United States",
+  "osm_type": "university",
+  "query": "Purdue University, United States"
+ },
+ "Queensland University of Technology": {
+  "lat": -27.542195,
+  "lon": 153.0649526,
+  "display_name": "Griffith University Mount Gravatt Campus (Queensland Institute of Business and Technology), Messines Ridge Road, Mount Gravatt, Brisbane, Queensland, 4122, Australia",
+  "osm_type": "university",
+  "query": "Queensland University of Technology"
+ },
+ "RMIT University": {
+  "lat": -37.8057346,
+  "lon": 144.9653216,
+  "display_name": "RMIT University, O'Grady Place, Carlton, Melbourne, Victoria, 3053, Australia",
+  "osm_type": "university",
+  "query": "RMIT University, Australia"
+ },
+ "RWTH Aachen University": {
+  "lat": 50.7791732,
+  "lon": 6.0689207,
+  "display_name": "RWTH Aachen, Matthiashofstraße, Burtscheid, Aachen-Mitte, Aachen, Städteregion Aachen, Nordrhein-Westfalen, 52064, Deutschland",
+  "osm_type": "university",
+  "query": "RWTH Aachen University, Germany"
+ },
+ "Ramon Llul University (incl. ESADE)": {
+  "lat": 41.3939817,
+  "lon": 2.1147859,
+  "display_name": "ESADE Edifici 1 Campus Barcelona Pedralbes, Carrer del Marquès de Mulhacén, Pedralbes, les Corts, Barcelona, Barcelonès, Barcelona, Catalunya, 08034, España",
+  "osm_type": "university",
+  "query": "ESADE Barcelona",
+  "via_alias": true
+ },
+ "Rensselaer Polytechnic Institute": {
+  "lat": 42.7298969,
+  "lon": -73.6796678,
+  "display_name": "Rensselaer Polytechnic Institute, 110, 8th Street, The Hill, City of Troy, Rensselaer County, New York, 12180, United States",
+  "osm_type": "university",
+  "query": "Rensselaer Polytechnic Institute, United States"
+ },
+ "Rochester Institute of Technology": {
+  "lat": 43.0826701,
+  "lon": -77.6729322,
+  "display_name": "Rochester Institute of Technology, 1, Lomb Memorial Drive, City of Rochester, Monroe County, New York, 14623, United States",
+  "osm_type": "university",
+  "query": "Rochester Institute of Technology, United States"
+ },
+ "San Diego State University": {
+  "lat": 32.7761529,
+  "lon": -117.0733037,
+  "display_name": "San Diego State University, 1, Campanile Mall, Montezuma Mesa, Mid-City, Del Cerro, San Diego, San Diego County, California, 92182, United States",
+  "osm_type": "university",
+  "query": "San Diego State University, United States"
+ },
+ "San Francisco State University": {
+  "lat": 37.7245167,
+  "lon": -122.4799957,
+  "display_name": "San Francisco State University, 1600, Holloway Avenue, San Francisco, California, 94132, United States",
+  "osm_type": "university",
+  "query": "San Francisco State University, United States"
+ },
+ "Santa Clara University": {
+  "lat": 37.3486243,
+  "lon": -121.936544,
+  "display_name": "Santa Clara University, 500, El Camino Real, Santa Clara, Santa Clara County, California, 95053, United States",
+  "osm_type": "university",
+  "query": "Santa Clara University, United States"
+ },
+ "Seoul National University": {
+  "lat": 37.4667627,
+  "lon": 126.947822,
+  "display_name": "서울대학교, 신림로, 대학동, 관악구, 서울특별시, 08825, 대한민국",
+  "osm_type": "bus_stop",
+  "query": "Seoul National University, South Korea"
+ },
+ "Shanghai Jiao Tong University": {
+  "lat": 31.2008911,
+  "lon": 121.4283949,
+  "display_name": "上海交通大学（徐汇校区）, 1954, 华山路, 天平路街道, 徐汇区, 上海市, 200030, 中国",
+  "osm_type": "university",
+  "query": "Shanghai Jiao Tong University, China"
+ },
+ "Simon Fraser University": {
+  "lat": 49.2767096,
+  "lon": -122.917803,
+  "display_name": "Simon Fraser University, 8888, Tower Road, UniverCity, Burnaby, Metro Vancouver Regional District, British Columbia, V5A 1S6, Canada",
+  "osm_type": "university",
+  "query": "Simon Fraser University, Canada"
+ },
+ "Sorbonne University": {
+  "lat": 48.8468997,
+  "lon": 2.3574487,
+  "display_name": "Sorbonne Université - Faculté des Sciences et Ingénierie, Rue des Chantiers, Quartier Saint-Victor, Paris 5e Arrondissement, Paris, Île-de-France, France métropolitaine, 75005, France",
+  "osm_type": "university",
+  "query": "Sorbonne University, France"
+ },
+ "Stanford University (incl. Graduate School of Business)": {
+  "lat": 37.4313138,
+  "lon": -122.1693654,
+  "display_name": "Stanford University, 450, Jane Stanford Way, Stanford, Santa Clara County, California, 94305, United States",
+  "osm_type": "university",
+  "query": "Stanford University, United States"
+ },
+ "Stevens Institute of Technology": {
+  "lat": 40.7448096,
+  "lon": -74.0252392,
+  "display_name": "Stevens Institute of Technology, 1, 9th Street, Uptown, Hoboken, Hudson County, New Jersey, 07030, United States",
+  "osm_type": "university",
+  "query": "Stevens Institute of Technology, United States"
+ },
+ "Swinburne University of Technology": {
+  "lat": -37.8214954,
+  "lon": 145.0387532,
+  "display_name": "Swinburne University of Technology (Hawthorn Campus), Kent Street, Glenferrie, Hawthorn, Melbourne, Victoria, 3122, Australia",
+  "osm_type": "university",
+  "query": "Swinburne University of Technology, Australia"
+ },
+ "TalTech – Tallinn University of Technology": {
+  "lat": 59.3949741,
+  "lon": 24.6676189,
+  "display_name": "Tallinna Tehnikaülikool, 5, Ehitajate tee, Mustamäe, Mustamäe linnaosa, Tallinn, Harju maakond, 19086, Eesti",
+  "osm_type": "university",
+  "query": "Tallinna Tehnikaülikool",
+  "via_alias": true
+ },
+ "Technical University Darmstadt": {
+  "lat": 49.8611518,
+  "lon": 8.681944,
+  "display_name": "Technische Universität Darmstadt, Mornewegstraße, Mornewegviertel, Darmstadt-Nord, Darmstadt, Hessen, 64293, Deutschland",
+  "osm_type": "university",
+  "query": "Technische Universität Darmstadt",
+  "via_alias": true
+ },
+ "Technical University of Berlin": {
+  "lat": 52.5110159,
+  "lon": 13.3269541,
+  "display_name": "Technische Universität Berlin, Hohenzollerndamm, Jesselkiez, Fasanenkiez, Wilmersdorf, Charlottenburg-Wilmersdorf, Berlin, 10713, Deutschland",
+  "osm_type": "university",
+  "query": "Technische Universität Berlin",
+  "via_alias": true
+ },
+ "Technical University of Munich": {
+  "lat": 48.2654976,
+  "lon": 11.6692249,
+  "display_name": "Technische Universität München, Wiesenstraße, Hochschul- und Forschungszentrum, Garching bei München, Landkreis München, Bayern, 85748, Deutschland",
+  "osm_type": "university",
+  "query": "Technical University of Munich, Germany"
+ },
+ "Technion - Israel Institute of Technology": {
+  "lat": 32.7768128,
+  "lon": 35.0225446,
+  "display_name": "הטכניון - מכון טכנולוגי לישראל, דוד רוז, קרית הטכניון, רובע רמות נווה שאנן, חיפה, נפת חיפה, מחוז חיפה, 3200003, ישראל",
+  "osm_type": "university",
+  "query": "Technion - Israel Institute of Technology, Israel"
+ },
+ "Tecnológico de Monterrey (incl. EGADE Business School)": {
+  "lat": 20.6770044,
+  "lon": -105.2204317,
+  "display_name": "Tecnologico de Monterrey, Puerto Vallarta, Región Costa Norte, Jalisco, 48300, México",
+  "osm_type": "residential",
+  "query": "Tecnológico de Monterrey, Mexico"
+ },
+ "Tel Aviv University": {
+  "lat": 32.1123577,
+  "lon": 34.8050129,
+  "display_name": "אוניברסיטת תל אביב, גייגר, תל־אביב–יפו, נוה אביבים וסביבתה, תל־אביב–יפו, נפת תל אביב, מחוז תל אביב, 6949405, ישראל",
+  "osm_type": "university",
+  "query": "Tel Aviv University, Israel"
+ },
+ "Telecom Paris - Institut Polytechnique de Paris": {
+  "lat": 48.7128391,
+  "lon": 2.2002377,
+  "display_name": "Institut Mines Télécom - Institut Polytechnique de Paris, 19, Place Marguerite Perey, La Vauve - École Polytechnique, Campus Urbain de Paris-Saclay, Palaiseau, Essonne, Île-de-France, France métropolitaine, 91120, France",
+  "osm_type": "university",
+  "query": "Telecom Paris - Institut Polytechnique de Paris"
+ },
+ "Texas A&M University": {
+  "lat": 30.6108618,
+  "lon": -96.3520606,
+  "display_name": "Texas A&M University, 400, Bizzell Street, College Station, Brazos County, Texas, 77843, United States",
+  "osm_type": "university",
+  "query": "Texas A&M University, United States"
+ },
+ "The George Washington University": {
+  "lat": 38.8994972,
+  "lon": -77.0482005,
+  "display_name": "The George Washington University, 1918, F Street Northwest, The West End, Ward 2, Washington, District of Columbia, 20052, United States",
+  "osm_type": "university",
+  "query": "The George Washington University, United States"
+ },
+ "The Hong Kong University of Science and Technology": {
+  "lat": 22.3358031,
+  "lon": 114.2659088,
+  "display_name": "香港科技大學 The Hong Kong University of Science and Technology, 大學道 University Road, 碧水新村 Pik Shui Sun Tsuen, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国",
+  "osm_type": "university",
+  "query": "The Hong Kong University of Science and Technology, Hong Kong"
+ },
+ "The Open University": {
+  "lat": 52.0245378,
+  "lon": -0.7092748,
+  "display_name": "The Open University, Howard Drive, Kents Hill, Kents Hill, Monkston and Brinklow, Monkston, Milton Keynes, City of Milton Keynes, England, MK7 6FB, United Kingdom",
+  "osm_type": "university",
+  "query": "The Open University, United Kingdom"
+ },
+ "The Open University of Israel": {
+  "lat": 32.1348476,
+  "lon": 34.8313372,
+  "display_name": "האוניברסיטה הפתוחה, 5, הכפר הירוק, רמת השרון, נפת תל אביב, מחוז תל אביב, 6962342, ישראל",
+  "osm_type": "yes",
+  "query": "The Open University of Israel, Israel"
+ },
+ "The University of Adelaide": {
+  "lat": -34.9189226,
+  "lon": 138.6042367,
+  "display_name": "University of Adelaide, North Terrace, Adelaide, South Australia, 5000, Australia",
+  "osm_type": "university",
+  "query": "University of Adelaide, South Australia",
+  "via_alias": true
+ },
+ "The University of Hong Kong": {
+  "lat": 22.2828768,
+  "lon": 114.1378586,
+  "display_name": "香港大學 The University of Hong Kong, 列堤頓道 Lyttelton Road, 西營盤 Sai Ying Pun, 中西區 Central and Western District, 香港島 Hong Kong Island, 香港 Hong Kong, 中国",
+  "osm_type": "university",
+  "query": "The University of Hong Kong, Hong Kong"
+ },
+ "The University of Queensland": {
+  "lat": -27.497418,
+  "lon": 153.0131666,
+  "display_name": "The University of Queensland, Coldridge Street, St Lucia, Brisbane, Queensland, 4067, Australia",
+  "osm_type": "university",
+  "query": "The University of Queensland, Australia"
+ },
+ "The University of Texas at Austin (incl. McCombs School of Business)": {
+  "lat": 30.2851494,
+  "lon": -97.7339352,
+  "display_name": "University of Texas at Austin, 1, Allandale, Austin, Travis County, Texas, 78712, United States",
+  "osm_type": "university",
+  "query": "University of Texas at Austin",
+  "via_alias": true
+ },
+ "The University of Tokyo": {
+  "lat": 35.9019845,
+  "lon": 139.9362283,
+  "display_name": "東京大学 柏キャンパス, 東大東裏通り, 中十余二, 柏市, 千葉県, 277-8583, 日本",
+  "osm_type": "university",
+  "query": "The University of Tokyo, Japan"
+ },
+ "The University of Western Australia": {
+  "lat": -35.0274825,
+  "lon": 117.8871021,
+  "display_name": "The University of Western Australia, 35, Stirling Terrace, Albany, Western Australia, 6330, Australia",
+  "osm_type": "university",
+  "query": "The University of Western Australia, Australia"
+ },
+ "The University of Western Ontario": {
+  "lat": 43.0054234,
+  "lon": -81.274801,
+  "display_name": "Western University, Wharncliffe Road North, London, Southwestern Ontario, Ontario, N6G 1E2, Canada",
+  "osm_type": "university",
+  "query": "Western University, London, Ontario",
+  "via_alias": true
+ },
+ "The Wharton School": {
+  "lat": 36.1735448,
+  "lon": -86.8086268,
+  "display_name": "Site of First Wharton School (1905-1959), Underwood Street, Nashville, Davidson County, Middle Tennessee, Tennessee, 37208, United States",
+  "osm_type": "school",
+  "query": "The Wharton School"
+ },
+ "Tokyo Institute of Technology": {
+  "lat": 35.6045553,
+  "lon": 139.6827849,
+  "display_name": "東京科学大学 大岡山キャンパス, 轟橋, 大岡山二丁目, 大岡山, 目黒区, 東京都, 152-0034, 日本",
+  "osm_type": "university",
+  "query": "Tokyo Institute of Technology, Japan"
+ },
+ "Tokyo University Science": {
+  "lat": 35.7015151,
+  "lon": 139.7642375,
+  "display_name": "東京科学大学 湯島キャンパス, 外堀通り, 湯島一丁目, 湯島, 文京区, 東京都, 113-0034, 日本",
+  "osm_type": "university",
+  "query": "Tokyo University Science, Japan"
+ },
+ "Tongji University": {
+  "lat": 31.2847393,
+  "lon": 121.4969491,
+  "display_name": "同济大学, 1239, 四平路, 鞍山, 四平路街道, 杨浦区, 上海市, 200092, 中国",
+  "osm_type": "university",
+  "query": "Tongji University, China"
+ },
+ "Trinity College Dublin": {
+  "lat": 53.3437061,
+  "lon": -6.2544278,
+  "display_name": "Trinity College Dublin, College Green, Mansion House A ED, Dublin, County Dublin, Leinster, D02 VR66, Éire / Ireland",
+  "osm_type": "university",
+  "query": "Trinity College Dublin, Ireland"
+ },
+ "Tsinghua University": {
+  "lat": 40.0022905,
+  "lon": 116.320963,
+  "display_name": "清华大学, 30, 双清路, 东升镇, 海淀区, 北京市, 100084, 中国",
+  "osm_type": "university",
+  "query": "Tsinghua University, China"
+ },
+ "Universidad Adolfo Ibáñez": {
+  "lat": -33.4214361,
+  "lon": -70.5916782,
+  "display_name": "Universidad Adolfo Ibáñez, 3485, Avenida Presidente Errázuriz, Barrio San Pascual, Las Condes, Santiago, Provincia de Santiago, Región Metropolitana de Santiago, 8320000, Chile",
+  "osm_type": "university",
+  "query": "Universidad Adolfo Ibáñez, Chile"
+ },
+ "Universidad Anáhuac": {
+  "lat": 19.2770424,
+  "lon": -99.5718585,
+  "display_name": "Universidad Anáhuac, Avenida Solidaridad Las Torres, San Salvador Tizatlalli, Metepec, Estado de México, 52172, México",
+  "osm_type": "university",
+  "query": "Universidad Anáhuac, Mexico"
+ },
+ "Universidad Carlos III de Madrid": {
+  "lat": 40.3150937,
+  "lon": -3.7248801,
+  "display_name": "Universidad Carlos III de Madrid, Calle del Doctor Sánchez Morate, Las Margaritas, Getafe, Comunidad de Madrid, 28903, España",
+  "osm_type": "university",
+  "query": "Universidad Carlos III de Madrid, Spain"
+ },
+ "Universidad Complutense de Madrid": {
+  "lat": 40.4314742,
+  "lon": -3.7900439,
+  "display_name": "Universidad Complutense de Madrid (Campus de Somosaguas), Avenida de Húmera, Húmera, Pozuelo de Alarcón, Comunidad de Madrid, 28023, España",
+  "osm_type": "university",
+  "query": "Universidad Complutense de Madrid, Spain"
+ },
+ "Universidad Iberoamericana, Ciudad de México": {
+  "lat": 19.3697398,
+  "lon": -99.2637907,
+  "display_name": "Universidad Iberoamericana, Prolongación Vasco de Quiroga, Santa Fe Cuajimalpa, Memetla, Ciudad de México, Cuajimalpa de Morelos, Ciudad de México, 01210, México",
+  "osm_type": "university",
+  "query": "Universidad Iberoamericana, Ciudad de México, Mexico"
+ },
+ "Universidad Nacional Autónoma de México": {
+  "lat": 19.321597,
+  "lon": -99.1849259,
+  "display_name": "Universidad Nacional Autónoma de México, Avenida Pedro Henríquez Ureña, Fraccionamiento Copilco Universidad, Copilco, Ciudad de México, Coyoacán, Ciudad Universitaria, Ciudad de México, 04360, México",
+  "osm_type": "university",
+  "query": "Universidad Nacional Autónoma de México, Mexico"
+ },
+ "Universidad Peruana de Ciencias Aplicadas": {
+  "lat": -12.1040315,
+  "lon": -76.9629746,
+  "display_name": "Universidad Peruana de Ciencias Aplicadas, Avenida Primavera, Parque Primavera, Monterrico, Santiago de Surco, Lima, Lima Metropolitana, Lima, 15023, Perú",
+  "osm_type": "university",
+  "query": "Universidad Peruana de Ciencias Aplicadas, Peru"
+ },
+ "Universidad Politécnica de Madrid (incl. Escuela de Organización Industrial)": {
+  "lat": 40.5473558,
+  "lon": -3.6918341,
+  "display_name": "Escuela Politécnica Superior, Calle Faraday, El Goloso, Fuencarral-El Pardo, Madrid, Comunidad de Madrid, 28049, España",
+  "osm_type": "university",
+  "query": "Universidad Politécnica de Madrid, Spain"
+ },
+ "Universidad Tecnológica Nacional": {
+  "lat": -53.7863814,
+  "lon": -67.7257848,
+  "display_name": "Universidad Tecnologica Nacional, Amadeo Sabattini, Los Álamos, Municipio de Río Grande, Departamento Río Grande, Tierra del Fuego, V9420, Argentina",
+  "osm_type": "college",
+  "query": "Universidad Tecnológica Nacional, Argentina"
+ },
+ "Universidad de Chile": {
+  "lat": -33.443867,
+  "lon": -70.6506654,
+  "display_name": "Universidad de Chile, Ciclovía Alameda, Santiago, Provincia de Santiago, Región Metropolitana de Santiago, 8320000, Chile",
+  "osm_type": "station",
+  "query": "Universidad de Chile, Chile"
+ },
+ "Universidad de Los Andes": {
+  "lat": 4.6014026,
+  "lon": -74.064905,
+  "display_name": "Universidad de los Andes, Calle 18A, Las Aguas, UPZs de Bogotá, UPZ La Candelaria, Bogotá, Bogotá, Distrito Capital, RAP (Especial) Central, 111711, Colombia",
+  "osm_type": "university",
+  "query": "Universidad de Los Andes, Colombia"
+ },
+ "Universidad del Pacifico": {
+  "lat": -12.0838826,
+  "lon": -77.0483187,
+  "display_name": "Universidad del Pacífico, 2020, Avenida General Salaverry, Risso, Lince, Jesús María, Lima, Lima Metropolitana, Lima, 15072, Perú",
+  "osm_type": "university",
+  "query": "Universidad del Pacifico, Peru"
+ },
+ "Universidad del Pacífico (incl. Business School)": {
+  "lat": -12.0838826,
+  "lon": -77.0483187,
+  "display_name": "Universidad del Pacífico, 2020, Avenida General Salaverry, Jesús María, Lima, Lima Metropolitana, Lima, 15072, Perú",
+  "osm_type": "university",
+  "query": "Universidad del Pacífico, Peru"
+ },
+ "Universidade de São Paulo (incl. MBA USP/Esalq)": {
+  "lat": -23.5652201,
+  "lon": -46.712583,
+  "display_name": "Universidade de São Paulo (Portaria 1), Avenida Afrânio Peixoto, Caxingui, Butantã, São Paulo, Região Sudeste, 05507-000, Brasil",
+  "osm_type": "guardhouse",
+  "query": "Universidade de São Paulo, Brazil"
+ },
+ "Universitat Autònoma de Barcelona": {
+  "lat": 41.5015527,
+  "lon": 2.1062607,
+  "display_name": "Universitat Autònoma de Barcelona, Plaça Civica, Bellaterra, Cerdanyola del Vallès, Vallès Occidental, Barcelona, Catalunya, 08193, España",
+  "osm_type": "university",
+  "query": "Universitat Autònoma de Barcelona, Spain"
+ },
+ "University College Dublin": {
+  "lat": 53.3068499,
+  "lon": -6.2246268,
+  "display_name": "University College Dublin (Belfield Campus), Louvain, Roebuck, Ardilea, Clonskeagh-Roebuck DED 1986, Goatstown, Dún Laoghaire-Rathdown, County Dublin, Leinster, Éire / Ireland",
+  "osm_type": "university",
+  "query": "University College Dublin, Ireland"
+ },
+ "University College London (UCL)": {
+  "lat": 51.524203,
+  "lon": -0.1330007,
+  "display_name": "University College London, Hallam Street, East Marylebone, Marylebone, City of Westminster, Greater London, England, W1W 6JJ, United Kingdom",
+  "osm_type": "university",
+  "query": "University College London, United Kingdom"
+ },
+ "University of Alberta": {
+  "lat": 53.52682,
+  "lon": -113.5244937,
+  "display_name": "University of Alberta, 115 Street NW, University of Alberta, Greater Strathcona, Edmonton, Alberta, T6G 2X3, Canada",
+  "osm_type": "university",
+  "query": "University of Alberta, Canada"
+ },
+ "University of Amsterdam": {
+  "lat": 52.3681334,
+  "lon": 4.8898042,
+  "display_name": "Universiteit van Amsterdam, Spui, Centrum, Amsterdam, Noord-Holland, Nederland, 1012 XA, Nederland",
+  "osm_type": "university",
+  "query": "University of Amsterdam, Netherlands"
+ },
+ "University of Arizona": {
+  "lat": 32.2356985,
+  "lon": -110.951744,
+  "display_name": "University of Arizona, West Calle Carlos Arruza, Tucson, Pima County, Arizona, 85721, United States",
+  "osm_type": "university",
+  "query": "University of Arizona, United States"
+ },
+ "University of Auckland": {
+  "lat": -36.8660955,
+  "lon": 174.7737331,
+  "display_name": "Waipapa Taumata Rau / University of Auckland, Federal Street, Viaduct Harbour, Wynyard Quarter, City Centre, Auckland, Waitematā, Auckland, 1010, New Zealand / Aotearoa",
+  "osm_type": "university",
+  "query": "University of Auckland, New Zealand"
+ },
+ "University of Barcelona": {
+  "lat": 41.3868595,
+  "lon": 2.1634784,
+  "display_name": "Universitat de Barcelona, Carrer de Balmes, l'Antiga Esquerra de l'Eixample, l'Eixample, Barcelona, Barcelonès, Barcelona, Catalunya, 08007, España",
+  "osm_type": "university",
+  "query": "University of Barcelona, Spain"
+ },
+ "University of Bath": {
+  "lat": 51.3766938,
+  "lon": -2.3234206,
+  "display_name": "University of Bath, Claverton Down Road, Claverton Down, Bath, Bath and North East Somerset, West of England, England, BA2 7AR, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Bath, United Kingdom"
+ },
+ "University of Birmingham": {
+  "lat": 52.4504333,
+  "lon": -1.9320033,
+  "display_name": "University of Birmingham Edgbaston Campus, West Gate, Bournbrook, Metchley, Birmingham, West Midlands, England, B15 2AG, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Birmingham, United Kingdom"
+ },
+ "University of Bristol": {
+  "lat": 51.4905582,
+  "lon": -2.6304825,
+  "display_name": "University of Bristol, Barrow Gurney, North Somerset, England, BS9 3RZ, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Bristol, United Kingdom"
+ },
+ "University of British Columbia": {
+  "lat": 49.2578915,
+  "lon": -123.2429755,
+  "display_name": "University of British Columbia, Electoral Area A, Metro Vancouver Regional District, British Columbia, Canada",
+  "osm_type": "administrative",
+  "query": "University of British Columbia, Canada"
+ },
+ "University of Buenos Aires": {
+  "lat": -37.3285798,
+  "lon": -59.1385728,
+  "display_name": "Unicen, 399, General Pinto, Centro, Cuatro Avenidas, Tandil, Partido de Tandil, Buenos Aires, 7000, Argentina",
+  "osm_type": "university",
+  "query": "University of Buenos Aires, Argentina"
+ },
+ "University of Calgary": {
+  "lat": 51.075054,
+  "lon": -114.138805,
+  "display_name": "University of Calgary, 2500, University Drive NW, University of Calgary, Calgary, Alberta, T2N 1N4, Canada",
+  "osm_type": "university",
+  "query": "University of Calgary, Canada"
+ },
+ "University of California, Berkeley (incl. Haas School of Business)": {
+  "lat": 37.8754996,
+  "lon": -122.2390685,
+  "display_name": "University of California, Berkeley, Addison Street, Downtown Berkeley, Berkeley, Alameda County, California, 94704, United States",
+  "osm_type": "university",
+  "query": "University of California, Berkeley, United States"
+ },
+ "University of California, Davis": {
+  "lat": 38.5337904,
+  "lon": -121.7907544,
+  "display_name": "University of California, Davis, 1, Levee Road, Davis, Yolo County, California, 95616, United States",
+  "osm_type": "university",
+  "query": "University of California, Davis, United States"
+ },
+ "University of California, Irvine": {
+  "lat": 33.6491782,
+  "lon": -117.8391158,
+  "display_name": "United States Post Office, 4255, Campus Drive, University Town Center, Irvine, Orange County, California, 92612, United States",
+  "osm_type": "post_office",
+  "query": "University of California, Irvine, United States"
+ },
+ "University of California, Los Angeles (incl. Anderson School of Mgt.)": {
+  "lat": 34.0708777,
+  "lon": -118.4468503,
+  "display_name": "University of California, Los Angeles, Bellagio Way, Bel Air, Westwood, Los Angeles, Los Angeles County, California, 90095, United States",
+  "osm_type": "university",
+  "query": "University of California, Los Angeles, United States"
+ },
+ "University of California, San Diego": {
+  "lat": 32.8792438,
+  "lon": -117.2311247,
+  "display_name": "University of California, San Diego, 9500, Gilman Drive, University City, San Diego, San Diego County, California, 92093, United States",
+  "osm_type": "university",
+  "query": "University of California, San Diego, United States"
+ },
+ "University of California, Santa Barbara": {
+  "lat": 34.4146025,
+  "lon": -119.84581,
+  "display_name": "University of California, Santa Barbara, 552, Estero Road, 67 Block, Isla Vista, Santa Barbara County, California, 93106, United States",
+  "osm_type": "university",
+  "query": "University of California, Santa Barbara, United States"
+ },
+ "University of Cambridge (incl. Judge Business School)": {
+  "lat": 52.1955028,
+  "lon": 0.1302392,
+  "display_name": "University of Cambridge, 82-88, Hills Road, Petersfield, Cambridge, Cambridgeshire, Cambridgeshire and Peterborough, England, CB2 1NF, United Kingdom",
+  "osm_type": "company",
+  "query": "University of Cambridge, United Kingdom"
+ },
+ "University of Canterbury": {
+  "lat": -43.5232778,
+  "lon": 172.5823435,
+  "display_name": "University of Canterbury, Science Road, Riccarton West, Ilam, Christchurch, Christchurch City, Canterbury, 8041, New Zealand / Aotearoa",
+  "osm_type": "phone",
+  "query": "University of Canterbury, New Zealand"
+ },
+ "University of Cape Town": {
+  "lat": -33.9567558,
+  "lon": 18.4675777,
+  "display_name": "University of Cape Town, Belmont Road, Cape Town Ward 59, Cape Town, City of Cape Town, Western Cape, 7700, South Africa",
+  "osm_type": "university",
+  "query": "University of Cape Town, South Africa"
+ },
+ "University of Chicago (incl. Chicago Booth School of Business)": {
+  "lat": 41.7881243,
+  "lon": -87.6047744,
+  "display_name": "University of Chicago, 5841, South Maryland Avenue, Hyde Park, Chicago, Hyde Park Township, Cook County, Illinois, 60637, United States",
+  "osm_type": "hospital",
+  "query": "University of Chicago, United States"
+ },
+ "University of Chile": {
+  "lat": -34.1356353,
+  "lon": -70.7399853,
+  "display_name": "INACAP, 2519, Nelson Pereira, Villa Nelson Pereira, Rancagua, Provincia de Cachapoal, Región del Libertador General Bernardo O'Higgins, 2850546, Chile",
+  "osm_type": "university",
+  "query": "University of Chile, Chile"
+ },
+ "University of Colorado": {
+  "lat": 40.0075984,
+  "lon": -105.2691008,
+  "display_name": "University of Colorado, 1100, Boulder, Boulder County, Colorado, United States",
+  "osm_type": "industrial",
+  "query": "University of Colorado, United States"
+ },
+ "University of Copenhagen": {
+  "lat": 55.6801502,
+  "lon": 12.572327,
+  "display_name": "Københavns Universitet, Nørregade, Nørrevold, Indre By, København, Københavns Kommune, Region Hovedstaden, 1167, Danmark",
+  "osm_type": "university",
+  "query": "University of Copenhagen, Denmark"
+ },
+ "University of Durham": {
+  "lat": 54.7887211,
+  "lon": -1.5931807,
+  "display_name": "University Hospital of North Durham, North Road, Western Hill, Aykley Heads, City of Durham, Durham, County Durham, North East, England, DH1 5TW, United Kingdom",
+  "osm_type": "hospital",
+  "query": "University of Durham, United Kingdom"
+ },
+ "University of Edinburgh": {
+  "lat": 55.9440765,
+  "lon": -3.1883736,
+  "display_name": "University of Edinburgh, Marshall Street, Pleasance, Southside, City of Edinburgh, Alba / Scotland, EH8 9BJ, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Edinburgh, United Kingdom"
+ },
+ "University of Florida": {
+  "lat": 29.6411884,
+  "lon": -82.3562296,
+  "display_name": "University of Florida, Old Archer Road Trail, Gainesville, Alachua County, Florida, 32611, United States",
+  "osm_type": "university",
+  "query": "University of Florida, United States"
+ },
+ "University of Granada": {
+  "lat": 37.1827211,
+  "lon": -3.6056278,
+  "display_name": "Tienda Universidad de Granada, Calle Doctor Severo Ochoa, Pajaritos, Centro - Sagrario, Beiro, Granada, Comarca de la Vega de Granada, Granada, Andalucía, 18071, España",
+  "osm_type": "general",
+  "query": "University of Granada, Spain"
+ },
+ "University of Houston": {
+  "lat": 29.7207902,
+  "lon": -95.3440627,
+  "display_name": "University of Houston, 4800, Calhoun Road, University Oaks, MacGregor, Houston, Harris County, Texas, 77004, United States",
+  "osm_type": "university",
+  "query": "University of Houston, United States"
+ },
+ "University of Illinois at Urbana-Champaign": {
+  "lat": 40.0761545,
+  "lon": -88.2233134,
+  "display_name": "University of Illinois Urbana-Champaign, Champaign County, Illinois, 61801, United States",
+  "osm_type": "university",
+  "query": "University of Illinois Urbana-Champaign",
+  "via_alias": true
+ },
+ "University of Indonesia": {
+  "lat": -6.3603157,
+  "lon": 106.8271856,
+  "display_name": "Universitas Indonesia, Jalan Prof. Dr. Sudjono D. Pusponegoro, Pondok Cina, Beji, Depok, Jawa Barat, 16424, Indonesia",
+  "osm_type": "university",
+  "query": "University of Indonesia, Indonesia"
+ },
+ "University of Leeds": {
+  "lat": 53.8065718,
+  "lon": -1.5557853,
+  "display_name": "University of Leeds, Lyddon Terrace, Little Woodhouse, Hyde Park, Leeds, West Yorkshire, England, LS2 9LB, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Leeds, United Kingdom"
+ },
+ "University of Madras": {
+  "lat": 13.0660075,
+  "lon": 80.2828423,
+  "display_name": "University of Madras (Chepauk), Kamarajar Salai, CMWSSB Division 114, Ward 114, Zone 9 Teynampet, Chennai Corporation, Chennai, Tamil Nadu, 600005, India",
+  "osm_type": "university",
+  "query": "University of Madras, India"
+ },
+ "University of Manchester": {
+  "lat": 53.4660226,
+  "lon": -2.2330858,
+  "display_name": "University of Manchester, Oxford Road, Brunswick, Chorlton-on-Medlock, Manchester, Greater Manchester, England, M13 9PL, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Manchester, United Kingdom"
+ },
+ "University of Maryland": {
+  "lat": 38.9904124,
+  "lon": -76.9438586,
+  "display_name": "University of Maryland, College Park, Regents Drive, Lakeland, College Park, Prince George's County, Maryland, 20742, United States",
+  "osm_type": "university",
+  "query": "University of Maryland, United States"
+ },
+ "University of Massachusetts Amherst": {
+  "lat": 42.3893259,
+  "lon": -72.5283614,
+  "display_name": "University of Massachusetts Amherst, Maplewood Drive, East Amherst, Amherst, Hampshire County, Massachusetts, 01002, United States",
+  "osm_type": "university",
+  "query": "University of Massachusetts Amherst, United States"
+ },
+ "University of Melbourne": {
+  "lat": -37.8241371,
+  "lon": 144.9170886,
+  "display_name": "University of Melbourne (Future Fishermans Bend Campus), Port Melbourne, Melbourne, Victoria, 3207, Australia",
+  "osm_type": "construction",
+  "query": "University of Melbourne, Australia"
+ },
+ "University of Michigan (incl. Ross School of Business)": {
+  "lat": 42.2942142,
+  "lon": -83.7100389,
+  "display_name": "University of Michigan, 500, South State Street, Old Fourth Ward, Ann Arbor, Washtenaw County, Michigan, 48109, United States",
+  "osm_type": "university",
+  "query": "University of Michigan, United States"
+ },
+ "University of Navarra (incl. IESE Business School)": {
+  "lat": 42.801154,
+  "lon": -1.6585695,
+  "display_name": "Universidad de Navarra, San Juan Bosco kalea, Iturrama, Pamplona / Iruña, Iruñerria, Navarra, Navarra / Nafarroa, 31007, España",
+  "osm_type": "university",
+  "query": "Universidad de Navarra, Pamplona",
+  "via_alias": true
+ },
+ "University of New South Wales": {
+  "lat": -33.9175994,
+  "lon": 151.2312369,
+  "display_name": "University of New South Wales, Barker Street, Kensington, Eastern Suburbs, Sydney, New South Wales, 2032, Australia",
+  "osm_type": "university",
+  "query": "University of New South Wales, Australia"
+ },
+ "University of North Carolina at Chapel Hill": {
+  "lat": 35.9050354,
+  "lon": -79.0477533,
+  "display_name": "University of North Carolina at Chapel Hill, Locust Court, Downtown, Chapel Hill, Orange County, North Carolina, 27599, United States",
+  "osm_type": "university",
+  "query": "University of North Carolina at Chapel Hill, United States"
+ },
+ "University of Nottingham": {
+  "lat": 52.9387428,
+  "lon": -1.2002957,
+  "display_name": "University of Nottingham, University Boulevard, Dunkirk, City of Nottingham, East Midlands, England, NG7 2RD, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Nottingham, United Kingdom"
+ },
+ "University of Ottawa": {
+  "lat": 45.4225271,
+  "lon": -75.6833904,
+  "display_name": "University of Ottawa, 75, Laurier Avenue East, Sandy Hill, Rideau-Vanier, Ottawa, Eastern Ontario, Ontario, K1N 6N5, Canada",
+  "osm_type": "university",
+  "query": "University of Ottawa, Canada"
+ },
+ "University of Oxford (incl. Saïd Business School)": {
+  "lat": 51.7525461,
+  "lon": -1.2143168,
+  "display_name": "Old Road Campus, University of Oxford, Roosevelt Drive, Headington, Oxford, Oxfordshire, England, OX3 7LH, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Oxford, United Kingdom"
+ },
+ "University of Pennsylvania (incl. The Wharton School)": {
+  "lat": 39.9522148,
+  "lon": -75.1955729,
+  "display_name": "University of Pennsylvania, 1, Chestnut Street, West Philadelphia, Philadelphia, Philadelphia County, Pennsylvania, 19104, United States",
+  "osm_type": "university",
+  "query": "University of Pennsylvania, United States"
+ },
+ "University of Pretoria/Universiteit van Pretoria": {
+  "lat": -25.7543354,
+  "lon": 28.2308578,
+  "display_name": "University of Pretoria, 23, Lynnwood Road, Hillcrest, Tshwane Ward 56, Pretoria, City of Tshwane Metropolitan Municipality, Gauteng, 0028, South Africa",
+  "osm_type": "university",
+  "query": "University of Pretoria",
+  "via_alias": true
+ },
+ "University of South Wales": {
+  "lat": 51.5710984,
+  "lon": -3.2830327,
+  "display_name": "University of South Wales, Lisvane, Cardiff, Cymru / Wales, CF37 5UP, United Kingdom",
+  "osm_type": "university",
+  "query": "University of South Wales, United Kingdom"
+ },
+ "University of Southampton": {
+  "lat": 50.9617568,
+  "lon": -1.4239975,
+  "display_name": "University of Southampton Science Park, Chilworth Old Village, Chilworth, Test Valley, Hampshire, England, United Kingdom",
+  "osm_type": "commercial",
+  "query": "University of Southampton, United Kingdom"
+ },
+ "University of Southern California": {
+  "lat": 34.021869,
+  "lon": -118.2858579,
+  "display_name": "University of Southern California, West Jefferson Boulevard, University Park, Exposition Park, Los Angeles, Los Angeles County, California, 90089, United States",
+  "osm_type": "university",
+  "query": "University of Southern California, United States"
+ },
+ "University of St. Gallen": {
+  "lat": 47.4300025,
+  "lon": 9.3722184,
+  "display_name": "Universität St.Gallen, 50, Dufourstrasse, St. Jakob, St. Gallen, Wahlkreis St. Gallen, St. Gallen, 9000, Schweiz/Suisse/Svizzera/Svizra",
+  "osm_type": "university",
+  "query": "University of St. Gallen, Switzerland"
+ },
+ "University of Sydney": {
+  "lat": -33.8889072,
+  "lon": 151.1894111,
+  "display_name": "The University of Sydney, Shepherd Street, Darlington, Sydney, New South Wales, 2008, Australia",
+  "osm_type": "university",
+  "query": "University of Sydney, Australia"
+ },
+ "University of Tartu": {
+  "lat": 58.381014,
+  "lon": 26.7195598,
+  "display_name": "Tartu Ülikool, 18, Ülikooli, Vanalinn, Kesklinn, Tartu linn, Tartu maakond, 50090, Eesti",
+  "osm_type": "university",
+  "query": "University of Tartu, Estonia"
+ },
+ "University of Technology - Sydney": {
+  "lat": -33.8832536,
+  "lon": 151.2003294,
+  "display_name": "University of Technology Sydney, Blackwattle Lane, Ultimo, Sydney, New South Wales, 2007, Australia",
+  "osm_type": "university",
+  "query": "University of Technology - Sydney, Australia"
+ },
+ "University of Toronto (incl. Rotman School of Mgt.)": {
+  "lat": 43.6634681,
+  "lon": -79.3968165,
+  "display_name": "University of Toronto St. George, D'Arcy Street, Discovery District, Downtown, Toronto, Golden Horseshoe, Ontario, M5T 1K1, Canada",
+  "osm_type": "university",
+  "query": "University of Toronto, Canada"
+ },
+ "University of Victoria": {
+  "lat": 48.4620599,
+  "lon": -123.3114198,
+  "display_name": "University of Victoria, Finnerty Road, Cadboro Bay, Saanich, Capital Regional District, British Columbia, V8N 4A6, Canada",
+  "osm_type": "university",
+  "query": "University of Victoria, Canada"
+ },
+ "University of Virginia (incl. Darden School of Business)": {
+  "lat": 38.0410576,
+  "lon": -78.5055084,
+  "display_name": "University of Virginia, University Avenue, Venable, Charlottesville, Albemarle County, Virginia, 22908, United States",
+  "osm_type": "university",
+  "query": "University of Virginia, United States"
+ },
+ "University of Warsaw": {
+  "lat": 52.2216394,
+  "lon": 21.007377,
+  "display_name": "Politechnika Warszawska, 1, Plac Politechniki, Koszyki, Śródmieście Południowe, Śródmieście, Warszawa, województwo mazowieckie, 00-661, Polska",
+  "osm_type": "university",
+  "query": "University of Warsaw, Poland"
+ },
+ "University of Warwick (incl. Business School)": {
+  "lat": 52.3813073,
+  "lon": -1.5639569,
+  "display_name": "University of Warwick, Rhododendron Avenue, Green Lane, Cannon Park, Coventry, West Midlands, England, CV4 7BA, United Kingdom",
+  "osm_type": "university",
+  "query": "University of Warwick, United Kingdom"
+ },
+ "University of Washington": {
+  "lat": 47.6554303,
+  "lon": -122.3001692,
+  "display_name": "University of Washington, 1410, Northeast Campus Parkway, West Campus, University District, Seattle, King County, Washington, 98195, United States",
+  "osm_type": "university",
+  "query": "University of Washington, United States"
+ },
+ "University of Waterloo": {
+  "lat": 43.4701994,
+  "lon": -80.5452429,
+  "display_name": "University of Waterloo, Wilmot, Region of Waterloo, Southwestern Ontario, Ontario, N2L 3G1, Canada",
+  "osm_type": "university",
+  "query": "University of Waterloo, Canada"
+ },
+ "University of Wisconsin - Madison": {
+  "lat": 43.0802745,
+  "lon": -89.4309587,
+  "display_name": "University of Wisconsin-Madison, Speedway Road, Regent, Madison, Dane County, Wisconsin, 53726, United States",
+  "osm_type": "university",
+  "query": "University of Wisconsin - Madison, United States"
+ },
+ "University of the Witwatersrand": {
+  "lat": -26.1888766,
+  "lon": 28.0247912,
+  "display_name": "University of the Witwatersrand, Empire Road, Braamfontein, Johannesburg Ward 60, Johannesburg, City of Johannesburg Metropolitan Municipality, Gauteng, 2001, South Africa",
+  "osm_type": "university",
+  "query": "University of the Witwatersrand, South Africa"
+ },
+ "Université Paris-Dauphine - PSL University": {
+  "lat": 48.8701102,
+  "lon": 2.2734842,
+  "display_name": "Université Paris-Dauphine, 1, Place du Maréchal de Lattre de Tassigny, Quartier de la Porte-Dauphine, Paris 16e Arrondissement, Paris, Île-de-France, France métropolitaine, 75116, France",
+  "osm_type": "university",
+  "query": "Université Paris-Dauphine, Paris",
+  "via_alias": true
+ },
+ "Université Paris-Saclay": {
+  "lat": 48.7121501,
+  "lon": 2.1735087,
+  "display_name": "Université Paris-Saclay, Avenue des Sciences, Belvedère, Campus Urbain de Paris-Saclay, Orsay, Palaiseau, Essonne, Île-de-France, France métropolitaine, 91400, France",
+  "osm_type": "train_station",
+  "query": "Université Paris-Saclay, France"
+ },
+ "Université de Montréal": {
+  "lat": 45.5047577,
+  "lon": -73.6145418,
+  "display_name": "Université de Montréal, 2900, Boulevard Édouard-Montpetit, Côte-des-Neiges–Notre-Dame-de-Grâce, Montréal, Agglomération de Montréal, Montréal (région administrative), Québec, H3T 1J4, Canada",
+  "osm_type": "university",
+  "query": "Université de Montréal, Canada"
+ },
+ "Vanderbilt University": {
+  "lat": 36.1438011,
+  "lon": -86.8028189,
+  "display_name": "Vanderbilt University, 2201, West End Avenue, Nashville, Davidson County, Middle Tennessee, Tennessee, 37235, United States",
+  "osm_type": "university",
+  "query": "Vanderbilt University, United States"
+ },
+ "Vellore Institute of Technology": {
+  "lat": 12.9697498,
+  "lon": 79.1606601,
+  "display_name": "Vellore Institute of Technology, Kangeyanallur Road, Kangeyanallur, Brammapuram, Katpadi, Vellore, Tamil Nadu, 632014, India",
+  "osm_type": "university",
+  "query": "Vellore Institute of Technology, India"
+ },
+ "Vienna University of Technology": {
+  "lat": 48.1985397,
+  "lon": 16.3698617,
+  "display_name": "TU Wien, Hauptgebäude, 13, Karlsplatz, Freihausviertel, Wieden, Wien, 1040, Österreich",
+  "osm_type": "university",
+  "query": "Vienna University of Technology, Austria"
+ },
+ "Virginia Tech": {
+  "lat": 37.2219268,
+  "lon": -80.4272818,
+  "display_name": "Virginia Tech, 800, Drillfield Drive, Blacksburg, Montgomery County, Virginia, 24061, United States",
+  "osm_type": "university",
+  "query": "Virginia Tech, United States"
+ },
+ "Washington State University": {
+  "lat": 46.7337716,
+  "lon": -117.1498035,
+  "display_name": "Washington State University, 150, Ward 3, Pullman, Whitman County, Washington, 99164, United States",
+  "osm_type": "administrative",
+  "query": "Washington State University, United States"
+ },
+ "Washington University of Saint Louis": {
+  "lat": 38.6472402,
+  "lon": -90.3084017,
+  "display_name": "Washington University in St. Louis, 1, Brookings Drive, Skinker DeBaliviere, Saint Louis, Missouri, 63130, United States",
+  "osm_type": "university",
+  "query": "Washington University of Saint Louis, United States"
+ },
+ "Yale University": {
+  "lat": 41.2571306,
+  "lon": -72.9896696,
+  "display_name": "Yale University, West Haven, South Central Connecticut Planning Region, Connecticut, 06516, United States",
+  "osm_type": "university",
+  "query": "Yale University, United States"
+ },
+ "Yonsei University": {
+  "lat": 37.5599641,
+  "lon": 126.9354036,
+  "display_name": "연세대앞(중), 성산로, 신촌동, 서대문구, 서울특별시, 03788, 대한민국",
+  "osm_type": "bus_stop",
+  "query": "Yonsei University, South Korea"
+ },
+ "École Polytechnique Fédérale de Lausanne": {
+  "lat": 46.5186594,
+  "lon": 6.5665615,
+  "display_name": "École Polytechnique Fédérale de Lausanne, Chemin des Machines, Quartier Sorge, Ecublens, District de l'Ouest lausannois, Vaud, 1015, Schweiz/Suisse/Svizzera/Svizra",
+  "osm_type": "university",
+  "query": "École Polytechnique Fédérale de Lausanne, Switzerland"
+ },
+ "King Abdullah University of Science and Technology (KAUST)": {
+  "lat": 22.3223754,
+  "lon": 39.1173835,
+  "display_name": "جامعة الملك عبد الله للعلوم و التقنية, Batoul Lane, Safaa Gardens, محافظة رابغ, منطقة مكة المكرمة, 23955, السعودية",
+  "osm_type": "university",
+  "query": "King Abdullah University of Science and Technology, Saudi Arabia"
+ },
+ "Mohamed bin Zayed University of Artificial Intelligence (MBZUAI)": {
+  "lat": 24.4324903,
+  "lon": 54.618379,
+  "display_name": "Mohamed bin Zayed University of Artificial Intelligence, Pedestrian Zone Masdar, مدينة مصدر, أبو ظبي, أبوظبي, أبو ظبي, الإمارات العربية المتحدة",
+  "osm_type": "university",
+  "query": "Mohamed bin Zayed University of Artificial Intelligence, United Arab Emirates"
+ },
+ "University of Bologna": {
+  "lat": 44.4982886,
+  "lon": 11.354457,
+  "display_name": "Università di Bologna, Viale Carlo Berti Pichat, Irnerio, Santo Stefano, Bologna, Emilia-Romagna, 40126, Italia",
+  "osm_type": "university",
+  "query": "University of Bologna, Italy"
+ },
+ "Singapore Management University (SMU)": {
+  "lat": 1.296168,
+  "lon": 103.8500437,
+  "display_name": "Singapore Management University, 81, Victoria Street, Bras Basah, Museum, Central Region, Singapore, 188065, Singapore",
+  "osm_type": "university",
+  "query": "Singapore Management University, Singapore"
+ },
+ "Istanbul Technical University (ITU)": {
+  "lat": 41.1045571,
+  "lon": 29.0263441,
+  "display_name": "İstanbul Teknik Üniversitesi, İnşaat Arka Otopark, Reşitpaşa Mahallesi, Sarıyer, İstanbul, Marmara Bölgesi, 34467, Türkiye",
+  "osm_type": "university",
+  "query": "Istanbul Technical University, Turkey"
+ },
+ "Mohammed VI Polytechnic University (UM6P)": {
+  "lat": 32.2186496,
+  "lon": -7.9363261,
+  "display_name": "Mohammed VI Polytechnic University, Lot 660, RP2109, ابن جرير, Ben Guerir ابن جرير, Ben Guerir ⴱⴰⵏⴳⵔⵉⵔ ابن جرير, Pachalik de Benguerir باشوية ابن جرير, Province de Rhamna إقليم الرحامنة, Marrakech-Safi ⵎⵕⵕⴰⴽⵛ-ⴰⵙⴼⵉ مراكش-أسفي, 43150, Maroc ⵍⵎⵖⵔⵉⴱ المغرب",
+  "osm_type": "university",
+  "query": "Mohammed VI Polytechnic University, Morocco"
+ },
+ "Cairo University": {
+  "lat": 30.026812,
+  "lon": 31.2059186,
+  "display_name": "جامعة القاهرة, شارع أحمد ماهر, بين السرايات, الجيزة, 12541, مصر",
+  "osm_type": "university",
+  "query": "Cairo University, Egypt"
+ },
+ "University of Johannesburg": {
+  "lat": -26.1849374,
+  "lon": 27.9997925,
+  "display_name": "University of Johannesburg, Ditton Avenue, Rossmore, Johannesburg Ward 69, Johannesburg, City of Johannesburg Metropolitan Municipality, Gauteng, 2001, South Africa",
+  "osm_type": "university",
+  "query": "University of Johannesburg, South Africa"
+ },
+ "Universidad Nacional de Colombia": {
+  "lat": 4.6381,
+  "lon": -74.0838,
+  "display_name": "(set manually — main campus)",
+  "osm_type": "manual",
+  "manual": true
+ },
+ "Pontifícia Universidade Católica do Rio Grande do Sul (PUCRS)": {
+  "lat": -30.0551712,
+  "lon": -51.1735106,
+  "display_name": "PUCRS, 6681, Avenida Ipiranga, Jardim Botânico, Porto Alegre, Rio Grande do Sul, Região Sul, 90619-900, Brasil",
+  "osm_type": "university",
+  "query": "Pontifícia Universidade Católica do Rio Grande do Sul, Brazil"
+ },
+ "Torcuato Di Tella University": {
+  "lat": -34.5462,
+  "lon": -58.4494,
+  "display_name": "(set manually — main campus)",
+  "osm_type": "manual",
+  "manual": true
+ }
+}

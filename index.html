@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Digital Leaders World Map - Interactive ranking exploration">
+  <title>Digital Leaders World Map</title>
+
+  <!-- Montserrat, for local development only.
+       In the Webflow embed the host page already loads Montserrat, so this
+       tag can be dropped there and the component will inherit the site font. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- D3 v7 -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- TopoJSON -->
+  <script src="https://d3js.org/topojson.v3.min.js"></script>
+
+  <!-- Lexend — the Digital Leaders wordmark is set in it. The logo SVG holds
+       live text, so without the real font the browser substitutes another and
+       the hard-coded glyph positions fall apart. -->
+  <link rel="stylesheet" href="./vendor/lexend.css">
+
+  <!-- Design tokens (CSS variables) -->
+  <link rel="stylesheet" href="./tokens.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--color-navy);
+      color: var(--color-text);
+      overflow: hidden;
+    }
+
+    #app {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background-color: var(--color-dl-blue);
+      border-bottom: 1px solid var(--color-text-secondary);
+      padding: var(--spacing-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: var(--z-header);
+    }
+
+    header h1 {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: #FFFFFF;
+      letter-spacing: var(--letter-spacing-tight);
+    }
+
+    .title-rule {
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: var(--font-weight-regular);
+      padding: 0 2px;
+    }
+
+    header .controls {
+      display: flex;
+      gap: var(--spacing-md);
+      align-items: center;
+    }
+
+    /* Title lockup — Digital Leaders mark sits beside the title */
+    .title-block {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      min-width: 0;
+    }
+
+    /* The mark is a two-tone lockup — "digital" in blue, "leaders" in navy —
+       and both tones are unreadable on the navy header. Recolouring it was
+       tried twice and is the wrong answer: reversing it to white flattens the
+       two tones into one, and mapping the blue to orange breaks the pairing
+       the brand is built on.
+       So the logo ships untouched and gets the light ground it was drawn for.
+       This is the standard treatment for a dark-background placement, and it
+       keeps the file byte-identical to the one Emerging supplied. */
+    .dl-logo-plate {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      background-color: #FFFFFF;
+      padding: 7px 12px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    }
+
+    .dl-logo-plate.is-missing {
+      display: none;
+    }
+
+    .dl-logo {
+      height: 26px;
+      width: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    /* Emerging mark, bottom-right of the map.
+       It lives inside #map-container rather than being fixed to the viewport:
+       fixed positioning put it on top of the detail panel, hiding card text
+       behind it. Anchored to the map, it moves aside as the panel opens. */
+    .emerging-logo {
+      position: absolute;
+      right: var(--spacing-md);
+      bottom: var(--spacing-md);
+      height: 24px;
+      width: auto;
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: var(--z-header);
+    }
+
+    .emerging-logo.is-missing {
+      display: none;
+    }
+
+    /* Intro — what the ranking measures.
+       It has to sit on one line, and the sentence is long, so the size tracks
+       the viewport instead of being fixed: ~11px at 1280, up to 14px on wide
+       screens. Below roughly 1200px it wraps rather than shrinking to
+       illegibility. */
+    .intro {
+      display: flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 var(--spacing-md);
+      background-color: var(--color-dl-blue);
+      color: rgba(255, 255, 255, 0.92);
+      font-size: clamp(10px, 0.86vw, 14px);
+      line-height: var(--line-height-normal);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 1200px) {
+      .intro {
+        white-space: normal;
+        font-size: var(--font-size-xs);
+        padding-top: var(--spacing-sm);
+        padding-bottom: var(--spacing-sm);
+      }
+    }
+
+    /* Country / Hub vs Institution view */
+    .view-selector {
+      display: inline-flex;
+      gap: 2px;
+      padding: 2px;
+      background-color: rgba(15, 19, 116, 0.55);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+    }
+
+    .view-button {
+      background: none;
+      border: none;
+      color: var(--color-text-secondary);
+      padding: 5px var(--spacing-md);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+      transition: background-color var(--transition-base), color var(--transition-base);
+    }
+
+    .view-button:hover {
+      color: var(--color-text);
+    }
+
+    .view-button.is-active {
+      background-color: var(--color-orange);
+      color: #FFFFFF;
+    }
+
+    .reset-zoom {
+      background-color: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .reset-zoom:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+
+    /* Hover card — countries and hubs share it */
+    .hover-card {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: var(--z-popover);
+      min-width: 216px;
+      max-width: 280px;
+      padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+      background-color: rgba(8, 11, 48, 0.97);
+      border: 1px solid var(--color-blue);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .hover-card[hidden] {
+      display: none;
+    }
+
+    .hover-head {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .hover-title {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: #FFFFFF;
+    }
+
+    .hover-sub {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .hover-points {
+      display: flex;
+      align-items: baseline;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) 0;
+    }
+
+    .hover-figures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+      padding: var(--spacing-sm) 0 2px;
+    }
+
+    .hover-figure {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .hover-scope {
+      font-size: 10px;
+      color: var(--color-orange);
+      font-weight: var(--font-weight-semibold);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .hover-points-value {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-extrabold);
+      color: var(--color-orange);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .hover-points-label {
+      font-size: 10px;
+      line-height: 1.25;
+      color: var(--color-text-secondary);
+    }
+
+    .hover-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .hover-table caption {
+      text-align: left;
+      font-size: 9px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      padding-bottom: 3px;
+    }
+
+    .hover-table td {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      padding: 2px 0;
+    }
+
+    .hover-table .hover-count {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text);
+    }
+
+    .hover-table tr.is-active td {
+      color: #FFFFFF;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .hover-rank-line {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      padding: var(--spacing-md) 0 var(--spacing-sm);
+      line-height: var(--line-height-normal);
+    }
+
+    .hover-rank {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-extrabold);
+      color: #FFFFFF;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Says the mark is a control, not just a symbol */
+    .hover-cta {
+      margin-top: var(--spacing-sm);
+      padding-top: var(--spacing-sm);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.04em;
+      color: var(--color-orange);
+    }
+
+    .hover-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: baseline;
+    }
+
+    /* Module explainer popup */
+    .module-panel {
+      position: absolute;
+      top: 128px;
+      left: var(--spacing-md);
+      z-index: var(--z-popover);
+      max-width: 460px;
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: var(--color-background-elevated);
+      border: 1px solid var(--color-orange);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .module-panel[hidden] {
+      display: none;
+    }
+
+    .module-panel h2 {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-orange);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .module-panel p {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* Search */
+    .search {
+      position: relative;
+    }
+
+    /* Sized to the placeholder: long enough that "institutions…" is never
+       clipped, no longer than it needs to be. Measured, not guessed — see
+       the width check in the QA notes. */
+    #search-input {
+      width: 300px;
+      max-width: 32vw;
+      font-size: var(--font-size-sm);
+    }
+
+    .search-results {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 320px;
+      max-height: 320px;
+      overflow-y: auto;
+      background-color: var(--color-background-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: var(--z-popover);
+    }
+
+    .search-results.visible {
+      display: block;
+    }
+
+    .search-result {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      border-radius: 0;
+      padding: var(--spacing-sm) var(--spacing-md);
+      cursor: pointer;
+    }
+
+    .search-result:hover {
+      background-color: var(--color-navy);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .search-result-name {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+    }
+
+    .search-result-meta {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .search-empty {
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      position: relative;
+    }
+
+    .filter-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      background-color: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      white-space: nowrap;
+    }
+
+    .filter-trigger:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .filter-badge {
+      display: none;
+      min-width: 18px;
+      padding: 0 5px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-gold);
+      color: var(--color-navy);
+      font-size: 10px;
+      font-weight: var(--font-weight-bold);
+      line-height: 16px;
+      text-align: center;
+    }
+
+    .filter-badge.visible {
+      display: inline-block;
+    }
+
+    .filter-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      min-width: 260px;
+      max-width: 360px;
+      background-color: var(--color-background-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: var(--spacing-sm);
+      z-index: var(--z-popover);
+    }
+
+    .filter-menu[hidden] {
+      display: none;
+    }
+
+    .filter-option {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      line-height: var(--line-height-normal);
+    }
+
+    .filter-option:hover {
+      background-color: var(--color-navy);
+      color: var(--color-text);
+    }
+
+    .filter-option input {
+      accent-color: var(--color-gold);
+      margin-top: 2px;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle input {
+      accent-color: var(--color-gold);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* Breadcrumb */
+    #breadcrumb {
+      position: absolute;
+      top: var(--spacing-md);
+      left: var(--spacing-md);
+      display: none;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background-color: rgba(5, 5, 21, 0.75);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      z-index: var(--z-dropdown);
+    }
+
+    #breadcrumb.visible {
+      display: flex;
+    }
+
+    .crumb {
+      background: none;
+      border: none;
+      padding: 0 var(--spacing-xs);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .crumb:hover {
+      color: var(--color-gold);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .crumb.is-current {
+      color: var(--color-gold);
+      font-weight: var(--font-weight-semibold);
+      cursor: default;
+    }
+
+    .crumb-sep {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+    }
+
+    /* Hub list in the country panel */
+    .hub-list {
+      list-style: none;
+    }
+
+    .hub-link {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      padding: var(--spacing-sm) 0;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .hub-link:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .hub-link-name {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+    }
+
+    .hub-link:hover .hub-link-name {
+      color: var(--color-gold);
+    }
+
+    .hub-link-meta {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .panel-eyebrow {
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wider);
+      color: var(--color-text-muted);
+      margin-bottom: 2px;
+    }
+
+    /* Zoom controls — wheel works, but the buttons make it explicit and give
+       trackpad users a target that cannot be mistaken for page zoom. */
+    .zoom-controls {
+      position: absolute;
+      right: var(--spacing-md);
+      top: var(--spacing-md);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      z-index: var(--z-header);
+    }
+
+    .zoom-controls button {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(8, 11, 48, 0.88);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-md);
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .zoom-controls button:first-child {
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    .zoom-controls button:last-child {
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      font-size: var(--font-size-sm);
+    }
+
+    .zoom-controls button:hover {
+      background-color: var(--color-orange);
+      border-color: var(--color-orange);
+      color: #FFFFFF;
+    }
+
+    /* Toolbar — two rows, order fixed by the brief */
+    .toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--color-navy-darker);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-label,
+    .control-label {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .metric-selector {
+      font-size: var(--font-size-sm);
+      padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .help-button {
+      background: none;
+      border: none;
+      border-bottom: 1px dotted var(--color-text-secondary);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+      cursor: pointer;
+      padding: 0 0 1px 0;
+      border-radius: 0;
+    }
+
+    .help-button:hover {
+      color: var(--color-gold);
+      border-bottom-color: var(--color-gold);
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Measure explainer. The band has a fixed height, so the text is centred
+       within it rather than sitting on its top edge. */
+    .metric-description {
+      display: flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 var(--spacing-md);
+      background-color: var(--color-dl-blue);
+      font-size: var(--font-size-xs);
+      color: rgba(255, 255, 255, 0.92);
+      line-height: var(--line-height-normal);
+    }
+
+    /* DL Points explainer */
+    .help-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(520px, calc(100vw - 2 * var(--spacing-xl)));
+      max-height: calc(100vh - 2 * var(--spacing-xl));
+      overflow-y: auto;
+      background-color: var(--color-background-elevated);
+      border: 1px solid var(--color-gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      padding: var(--spacing-lg);
+      z-index: var(--z-modal);
+    }
+
+    .help-panel[hidden] {
+      display: none;
+    }
+
+    .help-panel h2 {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-gold);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .help-panel p {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .help-panel strong {
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .help-panel h3 {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text);
+      margin: var(--spacing-lg) 0 var(--spacing-sm);
+    }
+
+    .help-lede {
+      font-size: var(--font-size-base) !important;
+      color: var(--color-text) !important;
+    }
+
+    .help-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-sm);
+    }
+
+    .help-table th {
+      text-align: left;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wide);
+      color: var(--color-text-muted);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .help-table td {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid rgba(61, 62, 122, 0.4);
+    }
+
+    .help-table td:last-child {
+      color: var(--color-gold);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+    }
+
+    .help-close {
+      background-color: var(--color-blue);
+      border: none;
+      color: white;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .module-selector {
+      display: flex;
+      gap: var(--spacing-xs);
+      flex-wrap: wrap;
+    }
+
+    .module-button {
+      background-color: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      white-space: nowrap;
+    }
+
+    .module-button:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+
+    .module-button[aria-pressed="true"] {
+      background-color: var(--color-gold);
+      border-color: var(--color-gold);
+      color: var(--color-navy);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .module-button[aria-pressed="true"]:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Main content */
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* Map container */
+    #map-container {
+      flex: 1;
+      background-color: var(--color-navy-dark);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Belt and braces: the SVG always fills its container, so a stale
+       measurement can never leave the map sitting in a corner. */
+    .map-container {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-navy-dark);
+      cursor: grab;
+    }
+
+    .map-container:active {
+      cursor: grabbing;
+    }
+
+    /* Map layer styles (.country, .hub, .graticule, .legend-*, .caption)
+       live in tokens.css — keep them there so there is one source of truth.
+       Anything redeclared here would win on cascade order and silently
+       override the stylesheet. */
+
+    /* Detail panel */
+    #detail-panel {
+      width: 340px;
+      flex: 0 0 340px;
+      background-color: var(--color-navy-darker);
+      border-left: 1px solid var(--color-border);
+      overflow-y: auto;
+      padding: var(--spacing-md);
+      display: none;
+    }
+
+    #detail-panel.visible {
+      display: block;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+    }
+
+    .panel-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-gold);
+      line-height: var(--line-height-tight);
+    }
+
+    /* Regions are title-cased in JS by formatRegion(); a CSS capitalize here
+       would also rewrite country names into "United States Of America". */
+    .panel-subtitle {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    .panel-close {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xl);
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 var(--spacing-xs);
+    }
+
+    .panel-close:hover {
+      color: var(--color-gold);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .panel-enrichment {
+      margin-top: var(--spacing-sm);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .panel-section {
+      margin: var(--spacing-lg) 0 var(--spacing-sm);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wide);
+      color: var(--color-text-muted);
+    }
+
+    .panel-count {
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: var(--font-weight-regular);
+      color: var(--color-text-muted);
+      float: right;
+    }
+
+    /* Measures table */
+    .measure-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-sm);
+    }
+
+    .measure-table td {
+      padding: var(--spacing-xs) 0;
+      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      color: var(--color-text-secondary);
+    }
+
+    .measure-table .value {
+      text-align: right;
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+      padding-left: var(--spacing-sm);
+    }
+
+    .measure-table .rank {
+      text-align: right;
+      white-space: nowrap;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      padding-left: var(--spacing-sm);
+    }
+
+    .measure-table .of {
+      opacity: 0.6;
+    }
+
+    .measure-table .is-current td {
+      color: var(--color-gold);
+    }
+
+    .measure-table .is-current .value,
+    .measure-table .is-current .rank {
+      color: var(--color-gold);
+    }
+
+    /* Institution list */
+    .institution-list {
+      list-style: none;
+    }
+
+    .institution {
+      display: flex;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+    }
+
+    .institution-rank {
+      flex: 0 0 32px;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-gold);
+      text-align: right;
+    }
+
+    .institution-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .institution-name {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      line-height: var(--line-height-tight);
+    }
+
+    .institution-type {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .institution.is-unranked .institution-rank,
+    .institution.is-unranked .institution-name {
+      color: var(--color-text-muted);
+    }
+
+    /* Audience analysis blocks */
+    .bar-list {
+      list-style: none;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 1fr 84px auto;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: 3px 0;
+    }
+
+    .bar-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bar-track {
+      height: 6px;
+      background-color: rgba(61, 62, 122, 0.5);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      display: block;
+      height: 100%;
+      background-color: var(--color-blue);
+      border-radius: var(--radius-full);
+    }
+
+    .bar-value {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .bar-row.is-highlight .bar-label,
+    .bar-row.is-highlight .bar-value {
+      color: var(--color-gold);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .bar-row.is-highlight .bar-fill {
+      background-color: var(--color-gold);
+    }
+
+    .panel-note {
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+      margin-top: var(--spacing-sm);
+    }
+
+    .panel-note strong {
+      color: var(--color-text);
+    }
+
+    .big-number {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      margin-top: 0;
+    }
+
+    .big-number.is-up {
+      color: var(--color-gold);
+    }
+
+    .big-number.is-down {
+      color: var(--color-coral);
+    }
+
+    /* Total DL Points — one comparable number, plus the commercial route to
+       the detail behind it */
+    .total-points {
+      margin-top: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: rgba(24, 57, 226, 0.14);
+      border: 1px solid var(--color-dl-blue);
+      border-radius: var(--radius-md);
+    }
+
+    .total-points-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+    }
+
+    .total-points-label {
+      font-size: 10px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+    }
+
+    .score-info {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 10px;
+      color: var(--color-text-muted);
+      text-decoration: underline;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .score-info:hover {
+      color: var(--color-orange);
+    }
+
+    .total-points-value {
+      display: block;
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-extrabold);
+      color: #FFFFFF;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      margin-top: 2px;
+    }
+
+    .score-explainer p {
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+      margin-top: var(--spacing-sm);
+    }
+
+    .commercial-cta {
+      margin-top: var(--spacing-md);
+      padding-top: var(--spacing-sm);
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+    }
+
+    .commercial-cta strong {
+      color: var(--color-text);
+    }
+
+    .cta-link {
+      color: var(--color-orange);
+      font-weight: var(--font-weight-semibold);
+      text-decoration: underline;
+    }
+
+    /* Two columns now — the per-module points conversion is not shown */
+    .ranking-table td.rank {
+      text-align: right;
+    }
+
+    .ranking-table th {
+      padding-bottom: var(--spacing-xs);
+      border-bottom: 1px solid rgba(61, 62, 122, 0.6);
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      text-align: left;
+    }
+
+    .ranking-table th.rank {
+      text-align: right;
+    }
+
+    /* Institution card — competitors */
+    .competitor-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .competitor {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .competitor-link {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      min-width: 0;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 4px 0;
+      cursor: pointer;
+    }
+
+    .competitor-name {
+      font-size: var(--font-size-xs);
+      color: var(--color-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    .competitor-link:hover .competitor-name {
+      color: var(--color-orange);
+    }
+
+    .competitor-meta {
+      font-size: 10px;
+      color: var(--color-text-muted);
+    }
+
+    .competitor-rank {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Next 50 toggle. Styled like the hollow dots it controls: outlined when
+       on, so the control looks like what it does. */
+    .tier-button {
+      background: none;
+      border: 1.5px solid var(--color-border);
+      color: var(--color-text-muted);
+      padding: 4px var(--spacing-md);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+      transition: border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .tier-button:hover {
+      color: var(--color-text-secondary);
+      border-color: var(--color-text-muted);
+    }
+
+    .tier-button.is-on {
+      border-color: var(--color-orange);
+      background-color: var(--color-orange);
+      color: #FFFFFF;
+    }
+
+    /* Dimmed in the country view, where the tier has no effect */
+    .tier-button.is-inactive {
+      opacity: 0.45;
+    }
+
+    .is-next50-panel {
+      border-color: var(--color-orange);
+    }
+
+    .is-next50-panel h2 {
+      color: var(--color-orange);
+      letter-spacing: 0.06em;
+    }
+
+    .next50-lede {
+      font-size: var(--font-size-base) !important;
+      color: var(--color-text) !important;
+    }
+
+    .module-panel em {
+      font-style: italic;
+      color: var(--color-text);
+    }
+
+    /* Next 50 — ranked 151-200 in Global, listed but not scored */
+    .tier-badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      background-color: rgba(255, 73, 1, 0.22);
+      border: 1px solid var(--color-orange);
+      color: var(--color-text-secondary);
+      font-size: 9px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .institution-divider.is-next50 {
+      color: var(--color-blue);
+    }
+
+    .hover-next50 {
+      font-size: 10px;
+      color: var(--color-blue);
+      margin-top: -4px;
+      padding-bottom: var(--spacing-sm);
+    }
+
+    /* Collapsed method note — available, but not in the way */
+    .method {
+      margin-top: var(--spacing-sm);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .method summary {
+      cursor: pointer;
+      color: var(--color-text-muted);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 0;
+    }
+
+    .method summary:hover {
+      color: var(--color-orange);
+    }
+
+    .method p {
+      margin-top: var(--spacing-sm);
+      line-height: var(--line-height-normal);
+    }
+
+    .method strong {
+      color: var(--color-text);
+    }
+
+    .method-formula {
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-muted);
+      padding: var(--spacing-sm);
+      background-color: rgba(15, 19, 116, 0.45);
+      border-radius: var(--radius-sm);
+      line-height: 1.7;
+    }
+
+    /* Upward evolution only — a fall is never drawn */
+    .panel-note.rising {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      color: var(--color-rising);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .rising-arrow {
+      font-size: var(--font-size-md);
+      line-height: 1;
+    }
+
+    .institution-divider {
+      margin-top: var(--spacing-md);
+      padding-bottom: var(--spacing-xs);
+      font-size: var(--font-size-xs);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wide);
+      color: var(--color-text-muted);
+      opacity: 0.7;
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--color-navy);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-text-secondary);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-gold);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header>
+      <div class="title-block">
+        <span class="dl-logo-plate">
+          <!-- dl-logo:start -->
+<svg id="dl-logo" class="dl-logo" role="img" aria-label="Digital Leaders — Higher Education for AI &amp; Tech Careers" id="Calque_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 507.5 83.4"><defs><style>#dl-logo .dllogo-1{fill:none;}#dl-logo .dllogo-2,.dllogo-3,.dllogo-4,.dllogo-5{fill:#04f;}#dl-logo .dllogo-2,.dllogo-6{letter-spacing:-.05em;}#dl-logo .dllogo-3{letter-spacing:-.05em;}#dl-logo .dllogo-4{letter-spacing:-.05em;}#dl-logo .dllogo-7{font-family:Lexend-Light, Lexend;font-size:19px;font-weight:300;}#dl-logo .dllogo-7,.dllogo-8,.dllogo-6{fill:#000b59;}#dl-logo .dllogo-9{clip-path:url(#clippath-1);}#dl-logo .dllogo-10{font-family:Lexend-Medium, Lexend;font-size:66px;font-weight:500;}#dl-logo .dllogo-11{letter-spacing:-.12em;}#dl-logo .dllogo-12{letter-spacing:-.02em;}#dl-logo .dllogo-13{letter-spacing:-.02em;}#dl-logo .dllogo-14{letter-spacing:-.03em;}#dl-logo .dllogo-15{letter-spacing:-.04em;}#dl-logo .dllogo-16{letter-spacing:-.04em;}#dl-logo .dllogo-17{letter-spacing:0em;}#dl-logo .dllogo-18{clip-path:url(#clippath);}#dl-logo .dllogo-8{letter-spacing:-.06em;}</style><clipPath id="clippath"><path class="dllogo-1" d="M479.97,12.04c-.82,3.59-4.7,13.55-21.98,18.44-7.71,2.19-13.98,2.54-27.23-.85,3.23.98,5.94,3.12,7.68,5.93,9.77,1.66,19.58,1.18,31.53-1.6,20.85-4.84,31.92-27.82,31.92-27.82l-21.92,5.89Z"/></clipPath><clipPath id="clippath-1"><rect class="dllogo-1" x="425.76" y="1.14" width="81.13" height="40.38"/></clipPath></defs><g id="Layer_1"><g class="dllogo-18"><g class="dllogo-9"><image width="170" height="85" transform="translate(425.32 .75) scale(.48)" xlink:href="data:image/png;base64,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"/></g></g><path class="dllogo-5" d="M430.76,29.63c-1.25-.38-2.58-.59-3.96-.59-7.55,0-13.68,6.12-13.68,13.68s6.12,13.68,13.68,13.68,13.68-6.12,13.68-13.68c0-2.63-.75-5.08-2.04-7.16-1.73-2.81-4.45-4.95-7.68-5.93Z"/><text class="dllogo-10" transform="translate(0 56.1)"><tspan class="dllogo-2" x="0" y="0">digi</tspan><tspan class="dllogo-4" x="112.13" y="0">t</tspan><tspan class="dllogo-3" x="134.44" y="0">al</tspan><tspan class="dllogo-8" x="188.56" y="0">l</tspan><tspan class="dllogo-6" x="202.68" y="0">eaders</tspan></text><text class="dllogo-7" transform="translate(98.97 78.89)"><tspan class="dllogo-13" x="0" y="0">Higher </tspan><tspan class="dllogo-14" x="62.26" y="0">E</tspan><tspan class="dllogo-17" x="73.13" y="0">d</tspan><tspan class="dllogo-12" x="84.81" y="0">ucation </tspan><tspan class="dllogo-15" x="154.07" y="0">f</tspan><tspan class="dllogo-13" x="160.45" y="0">or AI &amp; </tspan><tspan class="dllogo-11" x="226.55" y="0">T</tspan><tspan class="dllogo-13" x="234.59" y="0">ech Ca</tspan><tspan class="dllogo-16" x="293.64" y="0">r</tspan><tspan class="dllogo-13" x="299.89" y="0">eers</tspan></text></g></svg>
+        <!-- dl-logo:end -->
+        </span>
+        <h1>Digital Leaders 2026 <span class="title-rule">|</span> AI &amp; Tech Careers Edition</h1>
+      </div>
+
+      <div class="controls">
+        <div class="search">
+          <input id="search-input" type="search" placeholder="Search countries, hubs, institutions…"
+                 autocomplete="off" aria-label="Search">
+          <div id="search-results" class="search-results"></div>
+        </div>
+        <button id="reset-zoom" class="reset-zoom" title="Return to the whole-world view">Reset view</button>
+      </div>
+    </header>
+
+    <!-- What the ranking measures -->
+    <p class="intro">
+      A global ranking of universities and schools based on graduate career outcomes
+      across four key areas of the AI &amp; tech economy — showing the Top 150
+      institutions in each ranking.
+    </p>
+
+    <!-- Ranking + measure selectors -->
+    <div class="toolbar">
+      <div class="toolbar-row">
+        <div class="toolbar-group">
+          <span class="toolbar-label">View</span>
+          <div id="view-selector" class="view-selector" role="group" aria-label="Map view">
+            <button type="button" class="view-button is-active" data-view="country">Country / Hub</button>
+            <button type="button" class="view-button" data-view="institution">Institution</button>
+          </div>
+        </div>
+
+        <div class="toolbar-group">
+          <label class="toggle">
+            <input type="checkbox" id="hub-toggle" checked>
+            <span>Show hubs</span>
+          </label>
+        </div>
+
+        <div class="toolbar-group">
+          <label class="toolbar-label" for="metric-selector">Measure</label>
+          <select id="metric-selector" class="metric-selector"></select>
+          <button id="dl-points-help" class="help-button" type="button" aria-expanded="false">
+            What are DL Points?
+          </button>
+        </div>
+      </div>
+
+      <div class="toolbar-row">
+        <div class="toolbar-group">
+          <span class="toolbar-label">Rankings</span>
+          <div id="module-selector" class="module-selector"></div>
+        </div>
+
+        <div class="toolbar-group">
+          <button type="button" id="next50-toggle" class="tier-button"
+                  aria-pressed="false">Next 50</button>
+        </div>
+
+        <div class="toolbar-group">
+          <div id="filters" class="filters"></div>
+        </div>
+      </div>
+    </div>
+
+    <p id="metric-description" class="metric-description"></p>
+
+    <!-- DL Points explainer -->
+    <div id="dl-points-panel" class="help-panel" role="dialog" aria-labelledby="dl-points-title" hidden>
+      <h2 id="dl-points-title">What are DL Points?</h2>
+
+      <p class="help-lede">
+        DL Points are a simple scoring mechanism that lets you compare one
+        country against another, and one institution against another, on a
+        single scale.
+      </p>
+
+      <p>
+        They are not a separate ranking or a sixth module. They are a way of
+        turning ranking positions into a number you can add up and compare.
+      </p>
+
+      <h3>How the score works</h3>
+
+      <p>
+        Each ranking places 150 institutions. An institution&rsquo;s DL Points come
+        from where it sits on that 1&ndash;150 scale: the higher the position, the
+        higher the score.
+      </p>
+
+      <table class="help-table">
+        <tr><th>An institution ranked…</th><th>…scores</th></tr>
+        <tr><td>1st</td><td>150 points</td></tr>
+        <tr><td>50th</td><td>101 points</td></tr>
+        <tr><td>100th</td><td>51 points</td></tr>
+        <tr><td>150th</td><td>1 point</td></tr>
+      </table>
+
+      <p>
+        A country&rsquo;s score is all of its institutions&rsquo; points added together.
+      </p>
+
+      <h3>Why not simply count institutions?</h3>
+
+      <p>Counting would treat a world leader and a borderline entry as the same thing. Adding up points does not:</p>
+
+      <table class="help-table">
+        <tr><th>Country</th><th>Its institutions</th><th>DL Points</th></tr>
+        <tr><td>A</td><td>one, ranked 3rd</td><td>148</td></tr>
+        <tr><td>B</td><td>three, ranked 40th, 60th, 90th</td><td>263</td></tr>
+      </table>
+
+      <p>
+        Country B scores higher without a single top-10 institution &mdash; so DL
+        Points reward <strong>depth as well as excellence</strong>.
+      </p>
+
+      <h3>And the other measures?</h3>
+
+      <p>
+        Talent density divides this total by a country&rsquo;s population, asking who
+        does most with what they have. Evolution compares the DL25 and DL26
+        editions.
+      </p>
+
+      <button id="dl-points-close" class="help-close" type="button">Close</button>
+    </div>
+
+    <!-- Module explainer — filled from MODULE_DESCRIPTIONS when a ranking is picked -->
+    <div id="module-panel" class="module-panel" role="dialog" aria-labelledby="module-panel-title" hidden>
+      <h2 id="module-panel-title"></h2>
+      <p id="module-panel-body"></p>
+      <button id="module-panel-close" class="help-close" type="button">Close</button>
+    </div>
+
+    <!-- Next 50 explainer -->
+    <div id="next50-panel" class="module-panel is-next50-panel" role="dialog"
+         aria-labelledby="next50-panel-title" hidden>
+      <h2 id="next50-panel-title">THE NEXT 50</h2>
+
+      <p class="next50-lede">
+        A spotlight on the institutions ranked <strong>151st to 200th in the Global
+        Ranking</strong>, completing the <strong>Digital Leaders Global Top 200</strong>.
+      </p>
+
+      <p>
+        Turning this on adds the Next 50 to the Institution view in
+        <strong>orange</strong>, alongside the Top 150. The Next 50 are also assessed
+        across Data &amp; AI, Computer Science, Digital Transformation and
+        Entrepreneurship, with some institutions ranking beyond the published Top 150
+        in these areas. <em>However, the Next 50 feature only displays them in the
+        Global Ranking Institution view.</em>
+      </p>
+
+      <p class="commercial-cta">
+        Want to access their DL Points or benchmark an institution against its peers?
+        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
+      </p>
+
+      <button id="next50-panel-close" class="help-close" type="button">Close</button>
+    </div>
+
+    <!-- Main content -->
+    <main>
+      <!-- Map container -->
+      <div id="map-container">
+        <nav id="breadcrumb" aria-label="Drill-down"></nav>
+        <div class="zoom-controls" role="group" aria-label="Zoom">
+          <button type="button" id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+          <button type="button" id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+          <button type="button" id="zoom-fit" title="Fit the whole world" aria-label="Fit the whole world">⤢</button>
+        </div>
+        <img id="emerging-logo" class="emerging-logo" src="./assets/emerging-white.png"
+             alt="Emerging" onerror="this.classList.add('is-missing')">
+      </div>
+
+      <!-- Detail panel — populated by renderDetailPanel() on selection -->
+      <div id="detail-panel"></div>
+    </main>
+
+  </div>
+
+  <!-- D3 Visualization Scripts -->
+  <script src="./scales.js"></script>
+  <script src="./index.js"></script>
+
+  <!-- Initialize -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 Initializing Digital Leaders World Map');
+
+      try {
+        // Initialize map
+        const context = await window.DigitalLeadersMap.init('#map-container');
+        console.log('✅ Map initialized');
+
+        // Render with default state
+        window.DigitalLeadersMap.render(context, window.DigitalLeadersMap.getState(), context.data);
+
+        // Selectors, filters and search
+        window.DigitalLeadersMap.buildModuleSelector(context);
+        window.DigitalLeadersMap.buildMetricSelector(context);
+        window.DigitalLeadersMap.buildFilters(context);
+        window.DigitalLeadersMap.buildSearch(context);
+
+        // DL Points explainer
+        const helpPanel = document.getElementById('dl-points-panel');
+        const helpButton = document.getElementById('dl-points-help');
+
+        const setHelpOpen = (open) => {
+          helpPanel.toggleAttribute('hidden', !open);
+          helpButton.setAttribute('aria-expanded', String(open));
+        };
+
+        helpButton.addEventListener('click', () => {
+          setHelpOpen(helpPanel.hasAttribute('hidden'));
+        });
+        document.getElementById('dl-points-close')
+          .addEventListener('click', () => setHelpOpen(false));
+
+        // Ranking explainer
+        document.getElementById('module-panel-close')
+          .addEventListener('click', () => window.DigitalLeadersMap.hideModulePanel());
+
+        // Next 50 — toggles the tier and explains what it is
+        document.getElementById('next50-toggle').addEventListener('click', () => {
+          const on = !window.DigitalLeadersMap.getState().showNext50;
+          window.DigitalLeadersMap.update(context, { showNext50: on });
+          window.DigitalLeadersMap.showNext50Panel();
+        });
+        document.getElementById('next50-panel-close')
+          .addEventListener('click', () => window.DigitalLeadersMap.hideNext50Panel());
+        document.addEventListener('keydown', (e) => {
+          if (e.key !== 'Escape') return;
+          // Escape closes the explainer first, then clears any selection.
+          // Escape closes the explainer first, then walks back up the
+          // drill-down one level at a time: hub → country → world.
+          const map = window.DigitalLeadersMap;
+          const state = map.getState();
+
+          const modulePanel = document.getElementById('module-panel');
+
+          if (!helpPanel.hasAttribute('hidden')) {
+            setHelpOpen(false);
+          } else if (!modulePanel.hasAttribute('hidden')) {
+            map.hideModulePanel();
+          } else if (!document.getElementById('next50-panel').hasAttribute('hidden')) {
+            map.hideNext50Panel();
+          } else if (state.selectedInstitution) {
+            map.update(context, { selectedInstitution: null });
+            map.resetZoom(context);
+          } else if (state.selectedHub) {
+            map.update(context, { selectedHub: null });
+            map.zoomToCountry(context, state.selectedCountry);
+          } else if (state.selectedCountry) {
+            map.update(context, { selectedCountry: null });
+            map.resetZoom(context);
+          }
+        });
+
+        // Reset view: back to the whole world, selection cleared
+        document.getElementById('reset-zoom').addEventListener('click', () => {
+          window.DigitalLeadersMap.update(context, {
+            selectedCountry: null,
+            selectedHub: null
+          });
+          window.DigitalLeadersMap.resetZoom(context);
+        });
+
+        // Zoom controls
+        const map = window.DigitalLeadersMap;
+        document.getElementById('zoom-in')
+          .addEventListener('click', () => map.zoomBy(context, 1.6));
+        document.getElementById('zoom-out')
+          .addEventListener('click', () => map.zoomBy(context, 1 / 1.6));
+        document.getElementById('zoom-fit')
+          .addEventListener('click', () => map.resetZoom(context));
+
+        // Hub layer toggle
+        document.getElementById('hub-toggle').addEventListener('change', (e) => {
+          window.DigitalLeadersMap.update(context, { showHubs: e.target.checked });
+        });
+
+        // Country / Hub  ↔  Institution view
+        const viewButtons = [...document.querySelectorAll('.view-button')];
+        viewButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const view = button.dataset.view;
+            viewButtons.forEach(b => b.classList.toggle('is-active', b === button));
+            // Switching view drops any selection made in the other one, so the
+            // detail panel never shows a country while institution dots are up.
+            window.DigitalLeadersMap.update(context, {
+              view,
+              selectedInstitution: null,
+              selectedCountry: null,
+              selectedHub: null
+            });
+            window.DigitalLeadersMap.resetZoom(context);
+          });
+        });
+
+        window.DigitalLeadersMap.syncNext50Button();
+
+        console.log('✅ All initialized');
+
+      } catch (error) {
+        console.error('❌ Initialization failed:', error);
+        document.getElementById('map-container').innerHTML = `
+          <div style="color: var(--color-coral); padding: var(--spacing-md);">
+            <p><strong>Error loading map:</strong></p>
+            <p>${error.message}</p>
+          </div>
+        `;
+      }
+    });
+
+  </script>
+</body>
+</html>

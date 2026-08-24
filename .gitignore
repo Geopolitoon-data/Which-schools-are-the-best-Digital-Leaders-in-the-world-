@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Generated QA reports — reproduce them with the scripts rather than
+# committing snapshots that go stale.
+hub_audit.txt
+hub_quality_check.txt
+geocode_review.csv
+geocode_aliases_log.txt
+next50_review.csv
+
+# The master workbook lives one level up and is deliberately NOT in this
+# repository. It is the source of truth and contains more than the map needs.
+../DL_world_map_master_file_all_hubs*.xlsx
+*.xlsx
+
+# Editor / OS noise
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

@@ -1,0 +1,499 @@
+/**
+ * DESIGN TOKENS & CSS VARIABLES
+ * Emerging brand palette + typography + spacing + scales
+ */
+
+:root {
+  /* ====================================================================
+     COLORS - EMERGING BRAND PALETTE
+     ==================================================================== */
+
+  /* Primary Colors */
+  --color-navy: #0F1374;
+
+  /* Digital Leaders blue, as used on the website. Header and the measure
+     banner sit on it. */
+  --color-dl-blue: #1839E2;
+
+  /* The map canvas (sea). Deliberately lighter than the ramp's lowest stop:
+     contrast between navy and the canvas actually IMPROVES going lighter
+     (1.53:1 here vs 1.26:1 on the old near-black), because the canvas passes
+     through and above navy's brightness rather than sitting level with it. */
+  --color-navy-dark: #363D78;
+
+  /* Chrome — toolbar and side panel. Kept well below the canvas so the map
+     reads as the lit surface and the controls recede. */
+  --color-navy-darker: #171B3D;
+
+  /* Land with no ranking. It must be LIGHTER than the canvas: darkening it
+     instead walks it straight into the navy ramp stop (1.01:1, indistinguishable
+     from a low-scoring country). Lighter separates it from both the sea and the
+     ranked ramp, and matches the usual convention of land over water. */
+  --color-land-unranked: #565B8C;
+
+  --color-navy-light: #3D3E7A;
+
+  --color-gold: #DBB67D;
+  --color-blue: #4B5BCB;
+  --color-orange: #FF4901;
+  --color-maroon: #860018;
+  --color-coral: #FF9E79;
+
+  /* Semantic Colors */
+  --color-text: #FFFFFF;
+  --color-text-secondary: #B8B8D4;
+  --color-text-muted: #6B6C8F;
+  --color-background: #0F1374;
+  --color-background-elevated: #1A1C3A;
+  --color-border: #3D3E7A;
+
+  --color-success: #4CAF50;
+  --color-warning: #FF9E79;
+  --color-error: #FF4901;
+  --color-info: #4B5BCB;
+
+  /* Evolution (DL25 → DL26). Direction has to read without a legend, so this
+     is the one encoding that leaves the brand palette for the universal
+     red/green convention. Both are pulled toward the brand's depth rather
+     than signal-bright. */
+  --color-rising: #0E8A5F;
+  --color-falling: #C21E2F;
+
+  /* ====================================================================
+     TYPOGRAPHY - MONTSERRAT
+     ==================================================================== */
+
+  --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Font Sizes */
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 32px;
+  --font-size-3xl: 40px;
+  --font-size-4xl: 48px;
+  --font-size-5xl: 56px;
+  --font-size-6xl: 64px;
+  --font-size-7xl: 72px;
+  --font-size-8xl: 80px;
+  --font-size-9xl: 96px;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  --line-height-loose: 2;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+  --letter-spacing-wider: 0.05em;
+
+  /* ====================================================================
+     SPACING - 8PX GRID SYSTEM
+     ==================================================================== */
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --spacing-4xl: 80px;
+
+  /* ====================================================================
+     SHADOWS
+     ==================================================================== */
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* ====================================================================
+     OPACITY
+     ==================================================================== */
+
+  --opacity-0: 0;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-100: 1;
+
+  /* ====================================================================
+     BORDERS & RADIUS
+     ==================================================================== */
+
+  --border-1: 1px;
+  --border-2: 2px;
+  --border-3: 3px;
+  --border-4: 4px;
+  --border-6: 6px;
+  --border-8: 8px;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* ====================================================================
+     TRANSITIONS & ANIMATIONS
+     ==================================================================== */
+
+  --transition-fast: 150ms ease-out;
+  --transition-base: 250ms ease-out;
+  --transition-slow: 350ms ease-out;
+
+  --easing-linear: linear;
+  --easing-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ====================================================================
+     Z-INDEX SCALE
+     ==================================================================== */
+
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1040;
+  --z-popover: 1050;
+  --z-tooltip: 1060;
+  --z-header: 100;
+  --z-base: 1;
+
+  /* ====================================================================
+     DATA VISUALIZATION SCALES
+     ==================================================================== */
+
+  /* Sequential scale: Navy → Gold → Coral */
+  --scale-seq-0: #0F1374;
+  --scale-seq-25: #4B5BCB;
+  --scale-seq-50: #DBB67D;
+  --scale-seq-75: #FF9E79;
+  --scale-seq-100: #FF4901;
+
+  /* Diverging scale: Maroon ← White → Gold */
+  --scale-div-neg: #860018;
+  --scale-div-zero: #FFFFFF;
+  --scale-div-pos: #DBB67D;
+
+  /* Categorical scale: 5 colors */
+  --scale-cat-1: #0F1374;
+  --scale-cat-2: #4B5BCB;
+  --scale-cat-3: #DBB67D;
+  --scale-cat-4: #FF9E79;
+  --scale-cat-5: #FF4901;
+}
+
+/* ========================================================================
+   D3 ELEMENT STYLES
+   ======================================================================== */
+
+/* Graticule */
+.graticule {
+  fill: none;
+  stroke: #FFFFFF;
+  stroke-width: 0.5px;
+  stroke-opacity: 0.07;
+}
+
+/* Sphere (the ocean behind everything) */
+.sphere {
+  fill: var(--color-navy-dark);
+  stroke: none;
+}
+
+/* Country
+   NOTE: deliberately no `fill` here. A CSS fill declaration outranks the
+   fill *attribute*, so declaring one would silently override every colour
+   D3 computes from the data. Ranked countries are filled from JS; only
+   unranked ones get their fill from the stylesheet. */
+.country {
+  stroke: #FFFFFF;
+  stroke-width: 0.7px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--transition-base), opacity var(--transition-fast);
+  cursor: pointer;
+}
+
+.country.is-unranked {
+  fill: var(--color-land-unranked);
+  opacity: var(--opacity-80);
+  cursor: default;
+}
+
+/* Institution view: land is context, not data. Every country renders the
+   same neutral tone so the coloured dots are the only encoding on screen. */
+.country.is-basemap {
+  fill: var(--color-land-unranked);
+  opacity: var(--opacity-80);
+  cursor: default;
+}
+
+.country.is-basemap:hover {
+  stroke-width: 0.7px;
+}
+
+/* Ranked, but no figures for the metric currently on screen. Distinct from
+   "not ranked" so the reader can tell "we have no number" from "they are not
+   in the ranking" — and, critically, so it never falls through to SVG's
+   black. Every country now carries population and GDP, so this state should
+   be rare; it stays as a guard. */
+.country.is-nodata {
+  fill: var(--color-text-muted);
+  opacity: var(--opacity-40);
+}
+
+.city-state.is-nodata .city-state-dot {
+  fill: var(--color-text-muted);
+  opacity: var(--opacity-40);
+}
+
+.country.is-ranked:hover {
+  stroke: #FFFFFF;
+  stroke-width: 2px;
+}
+
+.country.active {
+  stroke: #FFFFFF;
+  stroke-width: 2.5px;
+}
+
+/* Institution dots — one colour per module, drawn in the institution view */
+.institution-dot {
+  stroke: #FFFFFF;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.institution-dot:hover {
+  stroke-width: 2px;
+}
+
+.institution-dot.active {
+  stroke-width: 2.5px;
+}
+
+/* Next 50 — ranked 151-200 in the Global ranking, listed but not scored.
+   Drawn hollow in the module colour so it reads as the same ranking, one
+   tier down, rather than as a different kind of thing. */
+.institution-dot.is-next50 {
+  stroke-width: 1.6px;
+}
+
+/* City-state markers — countries with no polygon at 110m (Singapore, Hong Kong) */
+.city-state {
+  cursor: pointer;
+}
+
+.city-state-halo {
+  fill: none;
+  stroke: var(--color-navy-darker);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+.city-state-dot {
+  stroke: var(--color-text);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--transition-base);
+}
+
+/* Filtered out entirely — matches how excluded countries are dimmed. */
+.city-state.is-filtered-out {
+  opacity: var(--opacity-30);
+}
+
+.city-state.is-filtered-out .city-state-dot {
+  fill: var(--color-navy-light);
+}
+
+.city-state:hover .city-state-halo,
+.city-state.active .city-state-halo {
+  stroke: var(--color-gold);
+  stroke-width: 3px;
+}
+
+/* Hub bubble.
+   Size carries DL Points; the fill is deliberately uniform and translucent so
+   the layer reads as an annotation on top of the choropleth rather than a
+   second colour encoding competing with it. */
+.hub {
+  cursor: pointer;
+}
+
+.hub-bubble {
+  fill: rgba(255, 255, 255, 0.22);
+  stroke: var(--color-text);
+  stroke-width: 1.25px;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--transition-fast), stroke var(--transition-fast);
+}
+
+.hub:hover .hub-bubble {
+  fill: rgba(219, 182, 125, 0.45);
+  stroke: var(--color-gold);
+}
+
+.hub.active .hub-bubble {
+  fill: rgba(219, 182, 125, 0.55);
+  stroke: var(--color-gold);
+  stroke-width: 2.5px;
+}
+
+/* Legend */
+.legend {
+  background-color: rgba(15, 19, 116, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-size: var(--font-size-xs);
+  box-shadow: var(--shadow-lg);
+}
+
+.legend-title {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gold);
+  margin-bottom: var(--spacing-sm);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-secondary);
+}
+
+.legend-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+/* SVG legend (drawn by index.js) */
+.legend-heading {
+  fill: var(--color-gold);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.legend-tick {
+  fill: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.legend-swatch-unranked {
+  fill: var(--color-navy-light);
+  opacity: var(--opacity-30);
+}
+
+.legend-swatch-nodata {
+  fill: var(--color-text-muted);
+  opacity: var(--opacity-40);
+}
+
+/* Tooltip */
+.tooltip {
+  background-color: rgba(15, 19, 116, 0.95);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+  pointer-events: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.tooltip-title {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gold);
+  margin-bottom: var(--spacing-xs);
+}
+
+.tooltip-content {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-tight);
+}
+
+/* Caption */
+.caption {
+  font-size: var(--font-size-xs);
+  fill: var(--color-text-muted);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+/* Filters narrow what the whole map is showing, so the caption says so. */
+.caption.is-filtered {
+  fill: var(--color-gold);
+}
+
+/* ========================================================================
+   INTERACTIVE STATES
+   ======================================================================== */
+
+button {
+  font-family: var(--font-family);
+  transition: all var(--transition-base);
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+select,
+input {
+  font-family: var(--font-family);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-background-elevated);
+  color: var(--color-text);
+  transition: border-color var(--transition-base);
+}
+
+select:hover,
+input:hover {
+  border-color: var(--color-gold);
+}
+
+select:focus,
+input:focus {
+  outline: none;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(75, 91, 203, 0.1);
+}
