@@ -467,6 +467,7 @@ function render(context, state, data) {
   rescaleMarkers(context);
 
   renderScopeBanner(STATE, data, agg);
+  renderMeasureLine(STATE, data, agg);
   drawLegend(layers.legend, STATE, data, values, colorScale, height, agg);
   drawCaption(layers.caption, STATE, data, width, height, agg);
   renderBreadcrumb(context, STATE);
@@ -1311,6 +1312,37 @@ function buildSearch(context, inputSelector = '#search-input', resultsSelector =
  * coverage figures lived in a small caption in the corner and the band held a
  * measure description nobody read.
  */
+/**
+ * The measure line: what is being read, and the scale it runs on.
+ *
+ * The scale is the part that was missing — a bare "704" meant nothing without
+ * knowing the range it sits in, so the observed high and low for the ranking
+ * on screen are stated alongside the description.
+ */
+function renderMeasureLine(state, data, agg) {
+  const line = document.getElementById('metric-description');
+  if (!line) return;
+
+  const metric = metricMeta(state.colorMetric);
+  const probe = { ...state, colorMetric: state.colorMetric };
+  const values = data.countries
+    .filter(c => agg.byCountry.has(c.name))
+    .map(c => countryMetricValue(c, probe, agg))
+    .filter(v => v !== null && !Number.isNaN(v))
+    .sort((a, b) => a - b);
+
+  const format = (v) => scales.formatDataValue(v, state.colorMetric);
+  const scale = values.length
+    ? `<span class="measure-scale">Scale on this map: <strong>${escapeHtml(format(values[0]))}</strong>
+        to <strong>${escapeHtml(format(values[values.length - 1]))}</strong>
+        ${escapeHtml(metric.unit)}, across ${values.length} countries</span>`
+    : '';
+
+  line.innerHTML = `<span class="measure-name">${escapeHtml(metric.label)}</span>
+    <span>${escapeHtml(metric.description)}</span>
+    ${scale}`;
+}
+
 function renderScopeBanner(state, data, agg) {
   const banner = document.getElementById('scope-banner');
   if (!banner) return;
@@ -1461,8 +1493,12 @@ function hoverFigures(entity, kind, state, data, agg) {
       label: 'DL Points per million people'
     },
     delta: {
-      figure: value === null ? '—' : (value > 0 ? '+' : '') + Math.round(value).toLocaleString(),
-      label: 'DL Points gained or lost, DL25 → DL26'
+      // Unsigned: red or green already says which way, and a large signed
+      // number reads as a verdict this measure should not be delivering.
+      figure: value === null ? '—' : Math.abs(Math.round(value)).toLocaleString(),
+      label: value === null ? 'DL Points, DL25 → DL26'
+        : (value > 0 ? 'DL Points gained since DL25'
+          : value < 0 ? 'DL Points lost since DL25' : 'No change since DL25')
     }
   }[state.colorMetric] || {
     figure: value === null ? '—' : Math.round(value).toLocaleString(),
@@ -1513,7 +1549,7 @@ function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
     <p class="hover-measure">${escapeHtml(metricMeta(state.colorMetric).label)}</p>
     ${hoverFigures(entity, kind, state, data, agg)}
     <table class="hover-table">
-      <caption>Ranked institutions, across all rankings</caption>
+      <caption>Ranked institutions</caption>
       ${rows}
     </table>
     <p class="hover-cta">Click to view more information</p>`;
@@ -2406,14 +2442,18 @@ function countrySections(country, state, data, agg) {
     })), v => scales.formatDataValue(v, state.colorMetric))}` : '';
 
   // --- Movement between the two editions ----------------------------------
+  // Direction is carried by colour and by the word, not by a large signed
+  // number: this reading is contestable and should not present itself as the
+  // headline conclusion about a country.
   const change = totals ? totals.DL26 - totals.DL25 : 0;
+  const direction = change > 0 ? 'Rising' : change < 0 ? 'Falling' : 'Unchanged';
   const movement = `
     <h3 class="panel-section">Movement since DL25</h3>
     <p class="panel-note big-number ${change > 0 ? 'is-up' : change < 0 ? 'is-down' : ''}">
-      ${change > 0 ? '+' : ''}${Math.round(change).toLocaleString()} points
+      ${direction}${change === 0 ? '' : ` · ${Math.abs(Math.round(change)).toLocaleString()} DL Points`}
     </p>
     <p class="panel-note">
-      ${escapeHtml(MODULE_LABELS[state.selectedModule])} DL Points, DL25 → DL26.
+      ${escapeHtml(MODULE_LABELS[state.selectedModule])}, DL25 → DL26.
     </p>`;
 
   // --- Institution mix ----------------------------------------------------

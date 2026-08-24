@@ -68,6 +68,11 @@
   --color-rising: #0E8A5F;
   --color-falling: #C21E2F;
 
+  /* The same pair lifted for use as TEXT on the dark panel, where the map
+     colours measure 3.83:1 and 2.80:1 and are too weak to read. */
+  --color-rising-text: #26966F;
+  --color-falling-text: #D4626D;
+
   /* ====================================================================
      TYPOGRAPHY - MONTSERRAT
      ==================================================================== */

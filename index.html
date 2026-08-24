@@ -303,8 +303,8 @@
     }
 
     /* Evolution reads direction, so the figure itself carries it */
-    .hover-points-value.is-up { color: var(--color-rising); }
-    .hover-points-value.is-down { color: var(--color-falling); }
+    .hover-points-value.is-up { color: var(--color-rising-text); }
+    .hover-points-value.is-down { color: var(--color-falling-text); }
 
     .hover-points-label {
       font-size: 10px;
@@ -658,13 +658,17 @@
       box-shadow: none;
     }
 
+    /* Hubs are one of the more interesting things on the map, so the name
+       carries the weight here rather than the edition-to-edition change. */
     .hub-link-name {
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
       color: var(--color-text);
+      line-height: var(--line-height-tight);
     }
 
     .hub-link:hover .hub-link-name {
-      color: var(--color-gold);
+      color: var(--color-dl-blue-text);
     }
 
     .hub-link-meta {
@@ -807,6 +811,38 @@
     .scope-banner .scope-note {
       font-size: var(--font-size-xs);
       color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* What the selected measure is, and the scale it runs on. This line was
+       briefly removed in favour of the coverage banner above; both are needed
+       — the banner says how much is on screen, this says how to read it. */
+    .metric-description {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      min-height: 30px;
+      padding: 4px var(--spacing-md);
+      background-color: var(--color-navy-darker);
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .metric-description .measure-name {
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dl-blue-text);
+    }
+
+    .metric-description .measure-scale {
+      color: var(--color-text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-description .measure-scale strong {
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-semibold);
     }
 
     /* Small round info affordance, next to a control */
@@ -1234,19 +1270,26 @@
       color: var(--color-text);
     }
 
+    /* Deliberately NOT a hero number. The edition-to-edition change is one
+       reading among several and an institution can reasonably dispute it, so
+       it is sized like the surrounding text and leans on colour for
+       direction rather than a large signed figure. */
     .big-number {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--color-text);
       margin-top: 0;
     }
 
+    /* The same green/red the Evolution measure uses on the map, so direction
+       reads identically wherever it appears. These were still gold and coral
+       from before Evolution had its own colours. */
     .big-number.is-up {
-      color: var(--color-gold);
+      color: var(--color-rising-text);
     }
 
     .big-number.is-down {
-      color: var(--color-coral);
+      color: var(--color-falling-text);
     }
 
     /* Total DL Points — one comparable number, plus the commercial route to
@@ -1528,7 +1571,7 @@
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
-      color: var(--color-rising);
+      color: var(--color-rising-text);
       font-weight: var(--font-weight-semibold);
     }
 
@@ -1644,6 +1687,7 @@
     </div>
 
     <p id="scope-banner" class="scope-banner"></p>
+    <p id="metric-description" class="metric-description"></p>
 
     <!-- DL Points explainer -->
     <div id="dl-points-panel" class="help-panel" role="dialog" aria-labelledby="dl-points-title" hidden>

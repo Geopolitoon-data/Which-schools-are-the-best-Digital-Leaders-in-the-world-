@@ -247,6 +247,11 @@
   --color-rising: #0E8A5F;
   --color-falling: #C21E2F;
 
+  /* The same pair lifted for use as TEXT on the dark panel, where the map
+     colours measure 3.83:1 and 2.80:1 and are too weak to read. */
+  --color-rising-text: #26966F;
+  --color-falling-text: #D4626D;
+
   /* ====================================================================
      TYPOGRAPHY - MONTSERRAT
      ==================================================================== */
@@ -964,8 +969,8 @@ input:focus {
     }
 
     /* Evolution reads direction, so the figure itself carries it */
-    .hover-points-value.is-up { color: var(--color-rising); }
-    .hover-points-value.is-down { color: var(--color-falling); }
+    .hover-points-value.is-up { color: var(--color-rising-text); }
+    .hover-points-value.is-down { color: var(--color-falling-text); }
 
     .hover-points-label {
       font-size: 10px;
@@ -1319,13 +1324,17 @@ input:focus {
       box-shadow: none;
     }
 
+    /* Hubs are one of the more interesting things on the map, so the name
+       carries the weight here rather than the edition-to-edition change. */
     .hub-link-name {
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
       color: var(--color-text);
+      line-height: var(--line-height-tight);
     }
 
     .hub-link:hover .hub-link-name {
-      color: var(--color-gold);
+      color: var(--color-dl-blue-text);
     }
 
     .hub-link-meta {
@@ -1468,6 +1477,38 @@ input:focus {
     .scope-banner .scope-note {
       font-size: var(--font-size-xs);
       color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* What the selected measure is, and the scale it runs on. This line was
+       briefly removed in favour of the coverage banner above; both are needed
+       — the banner says how much is on screen, this says how to read it. */
+    .metric-description {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      min-height: 30px;
+      padding: 4px var(--spacing-md);
+      background-color: var(--color-navy-darker);
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .metric-description .measure-name {
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dl-blue-text);
+    }
+
+    .metric-description .measure-scale {
+      color: var(--color-text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-description .measure-scale strong {
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-semibold);
     }
 
     /* Small round info affordance, next to a control */
@@ -1895,19 +1936,26 @@ input:focus {
       color: var(--color-text);
     }
 
+    /* Deliberately NOT a hero number. The edition-to-edition change is one
+       reading among several and an institution can reasonably dispute it, so
+       it is sized like the surrounding text and leans on colour for
+       direction rather than a large signed figure. */
     .big-number {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--color-text);
       margin-top: 0;
     }
 
+    /* The same green/red the Evolution measure uses on the map, so direction
+       reads identically wherever it appears. These were still gold and coral
+       from before Evolution had its own colours. */
     .big-number.is-up {
-      color: var(--color-gold);
+      color: var(--color-rising-text);
     }
 
     .big-number.is-down {
-      color: var(--color-coral);
+      color: var(--color-falling-text);
     }
 
     /* Total DL Points — one comparable number, plus the commercial route to
@@ -2189,7 +2237,7 @@ input:focus {
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
-      color: var(--color-rising);
+      color: var(--color-rising-text);
       font-weight: var(--font-weight-semibold);
     }
 
@@ -2304,6 +2352,7 @@ input:focus {
     </div>
 
     <p id="scope-banner" class="scope-banner"></p>
+    <p id="metric-description" class="metric-description"></p>
 
     <!-- DL Points explainer -->
     <div id="dl-points-panel" class="help-panel" role="dialog" aria-labelledby="dl-points-title" hidden>
@@ -3094,6 +3143,7 @@ function render(context, state, data) {
   rescaleMarkers(context);
 
   renderScopeBanner(STATE, data, agg);
+  renderMeasureLine(STATE, data, agg);
   drawLegend(layers.legend, STATE, data, values, colorScale, height, agg);
   drawCaption(layers.caption, STATE, data, width, height, agg);
   renderBreadcrumb(context, STATE);
@@ -3938,6 +3988,37 @@ function buildSearch(context, inputSelector = '#search-input', resultsSelector =
  * coverage figures lived in a small caption in the corner and the band held a
  * measure description nobody read.
  */
+/**
+ * The measure line: what is being read, and the scale it runs on.
+ *
+ * The scale is the part that was missing — a bare "704" meant nothing without
+ * knowing the range it sits in, so the observed high and low for the ranking
+ * on screen are stated alongside the description.
+ */
+function renderMeasureLine(state, data, agg) {
+  const line = document.getElementById('metric-description');
+  if (!line) return;
+
+  const metric = metricMeta(state.colorMetric);
+  const probe = { ...state, colorMetric: state.colorMetric };
+  const values = data.countries
+    .filter(c => agg.byCountry.has(c.name))
+    .map(c => countryMetricValue(c, probe, agg))
+    .filter(v => v !== null && !Number.isNaN(v))
+    .sort((a, b) => a - b);
+
+  const format = (v) => scales.formatDataValue(v, state.colorMetric);
+  const scale = values.length
+    ? `<span class="measure-scale">Scale on this map: <strong>${escapeHtml(format(values[0]))}</strong>
+        to <strong>${escapeHtml(format(values[values.length - 1]))}</strong>
+        ${escapeHtml(metric.unit)}, across ${values.length} countries</span>`
+    : '';
+
+  line.innerHTML = `<span class="measure-name">${escapeHtml(metric.label)}</span>
+    <span>${escapeHtml(metric.description)}</span>
+    ${scale}`;
+}
+
 function renderScopeBanner(state, data, agg) {
   const banner = document.getElementById('scope-banner');
   if (!banner) return;
@@ -4088,8 +4169,12 @@ function hoverFigures(entity, kind, state, data, agg) {
       label: 'DL Points per million people'
     },
     delta: {
-      figure: value === null ? '—' : (value > 0 ? '+' : '') + Math.round(value).toLocaleString(),
-      label: 'DL Points gained or lost, DL25 → DL26'
+      // Unsigned: red or green already says which way, and a large signed
+      // number reads as a verdict this measure should not be delivering.
+      figure: value === null ? '—' : Math.abs(Math.round(value)).toLocaleString(),
+      label: value === null ? 'DL Points, DL25 → DL26'
+        : (value > 0 ? 'DL Points gained since DL25'
+          : value < 0 ? 'DL Points lost since DL25' : 'No change since DL25')
     }
   }[state.colorMetric] || {
     figure: value === null ? '—' : Math.round(value).toLocaleString(),
@@ -4140,7 +4225,7 @@ function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
     <p class="hover-measure">${escapeHtml(metricMeta(state.colorMetric).label)}</p>
     ${hoverFigures(entity, kind, state, data, agg)}
     <table class="hover-table">
-      <caption>Ranked institutions, across all rankings</caption>
+      <caption>Ranked institutions</caption>
       ${rows}
     </table>
     <p class="hover-cta">Click to view more information</p>`;
@@ -5033,14 +5118,18 @@ function countrySections(country, state, data, agg) {
     })), v => scales.formatDataValue(v, state.colorMetric))}` : '';
 
   // --- Movement between the two editions ----------------------------------
+  // Direction is carried by colour and by the word, not by a large signed
+  // number: this reading is contestable and should not present itself as the
+  // headline conclusion about a country.
   const change = totals ? totals.DL26 - totals.DL25 : 0;
+  const direction = change > 0 ? 'Rising' : change < 0 ? 'Falling' : 'Unchanged';
   const movement = `
     <h3 class="panel-section">Movement since DL25</h3>
     <p class="panel-note big-number ${change > 0 ? 'is-up' : change < 0 ? 'is-down' : ''}">
-      ${change > 0 ? '+' : ''}${Math.round(change).toLocaleString()} points
+      ${direction}${change === 0 ? '' : ` · ${Math.abs(Math.round(change)).toLocaleString()} DL Points`}
     </p>
     <p class="panel-note">
-      ${escapeHtml(MODULE_LABELS[state.selectedModule])} DL Points, DL25 → DL26.
+      ${escapeHtml(MODULE_LABELS[state.selectedModule])}, DL25 → DL26.
     </p>`;
 
   // --- Institution mix ----------------------------------------------------
