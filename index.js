@@ -12,7 +12,7 @@
 const CONFIG = {
   // Map
   projection: 'equalEarth',
-  zoom: { min: 1, max: 8 },
+  zoom: { min: 1, max: 24 },   // deep enough to separate a dense city cluster
 
   // Data
   dataUrl: './data/dl-data.json',
@@ -1509,13 +1509,17 @@ const INSTITUTION_DOT_RADIUS = 5;
  * dot never becomes too small to hit.
  */
 function institutionRadius(baseRadius, k) {
-  // Dots live inside the zoom group, so what the reader sees is
-  // attribute × k. Work in on-screen pixels first, then divide by k once at
-  // the end — flooring the attribute instead would make dots grow at high
-  // zoom, which is the opposite of the intent.
-  const damping = 1 / (1 + 0.09 * Math.max(0, k - 1));
-  const onScreen = Math.max(3, baseRadius * damping);
-  return onScreen / k;
+  // Dots live inside the zoom group, so what the reader sees is attribute × k.
+  // Dividing by k once holds them at a CONSTANT on-screen size at every zoom
+  // level.
+  //
+  // An earlier version shrank them further as the map magnified, on the theory
+  // that smaller marks separate sooner. That was the wrong lever: it made the
+  // dots hard to see and hit long before a dense cluster came apart. Deeper
+  // zoom is what separates overlapping institutions — the geography spreads
+  // while the marks stay the same size — so the zoom ceiling does that work
+  // now and the dots simply stay legible.
+  return baseRadius / k;
 }
 
 /**

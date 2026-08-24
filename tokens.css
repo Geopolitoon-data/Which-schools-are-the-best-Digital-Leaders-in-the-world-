@@ -15,21 +15,24 @@
      banner sit on it. */
   --color-dl-blue: #1839E2;
 
-  /* The map canvas (sea). Deliberately lighter than the ramp's lowest stop:
-     contrast between navy and the canvas actually IMPROVES going lighter
-     (1.53:1 here vs 1.26:1 on the old near-black), because the canvas passes
-     through and above navy's brightness rather than sitting level with it. */
-  --color-navy-dark: #363D78;
+  /* The map canvas (sea). Sits in the Emerging navy family above, so the page
+     is grounded in the brand colour while the brighter Digital Leaders blue
+     stays an accent in the header.
+     Deliberately LIGHTER than the ramp's lowest stop: a canvas level with navy
+     in brightness makes low-scoring countries disappear (a mid-tone like
+     #1E2569 measures 1.12:1 against navy — effectively invisible). At #323A8C
+     the gap is 1.55:1. */
+  --color-navy-dark: #323A8C;
 
   /* Chrome — toolbar and side panel. Kept well below the canvas so the map
      reads as the lit surface and the controls recede. */
-  --color-navy-darker: #171B3D;
+  --color-navy-darker: #14184A;
 
   /* Land with no ranking. It must be LIGHTER than the canvas: darkening it
-     instead walks it straight into the navy ramp stop (1.01:1, indistinguishable
-     from a low-scoring country). Lighter separates it from both the sea and the
+     instead walks it straight into the navy ramp stop, indistinguishable from
+     a low-scoring country. Lighter separates it from both the sea and the
      ranked ramp, and matches the usual convention of land over water. */
-  --color-land-unranked: #565B8C;
+  --color-land-unranked: #6E74AE;
 
   --color-navy-light: #3D3E7A;
 
@@ -44,8 +47,8 @@
   --color-text-secondary: #B8B8D4;
   --color-text-muted: #6B6C8F;
   --color-background: #0F1374;
-  --color-background-elevated: #1A1C3A;
-  --color-border: #3D3E7A;
+  --color-background-elevated: #1D2154;
+  --color-border: #454C99;
 
   --color-success: #4CAF50;
   --color-warning: #FF9E79;

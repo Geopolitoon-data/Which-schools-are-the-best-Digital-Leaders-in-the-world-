@@ -194,21 +194,24 @@
      banner sit on it. */
   --color-dl-blue: #1839E2;
 
-  /* The map canvas (sea). Deliberately lighter than the ramp's lowest stop:
-     contrast between navy and the canvas actually IMPROVES going lighter
-     (1.53:1 here vs 1.26:1 on the old near-black), because the canvas passes
-     through and above navy's brightness rather than sitting level with it. */
-  --color-navy-dark: #363D78;
+  /* The map canvas (sea). Sits in the Emerging navy family above, so the page
+     is grounded in the brand colour while the brighter Digital Leaders blue
+     stays an accent in the header.
+     Deliberately LIGHTER than the ramp's lowest stop: a canvas level with navy
+     in brightness makes low-scoring countries disappear (a mid-tone like
+     #1E2569 measures 1.12:1 against navy — effectively invisible). At #323A8C
+     the gap is 1.55:1. */
+  --color-navy-dark: #323A8C;
 
   /* Chrome — toolbar and side panel. Kept well below the canvas so the map
      reads as the lit surface and the controls recede. */
-  --color-navy-darker: #171B3D;
+  --color-navy-darker: #14184A;
 
   /* Land with no ranking. It must be LIGHTER than the canvas: darkening it
-     instead walks it straight into the navy ramp stop (1.01:1, indistinguishable
-     from a low-scoring country). Lighter separates it from both the sea and the
+     instead walks it straight into the navy ramp stop, indistinguishable from
+     a low-scoring country. Lighter separates it from both the sea and the
      ranked ramp, and matches the usual convention of land over water. */
-  --color-land-unranked: #565B8C;
+  --color-land-unranked: #6E74AE;
 
   --color-navy-light: #3D3E7A;
 
@@ -223,8 +226,8 @@
   --color-text-secondary: #B8B8D4;
   --color-text-muted: #6B6C8F;
   --color-background: #0F1374;
-  --color-background-elevated: #1A1C3A;
-  --color-border: #3D3E7A;
+  --color-background-elevated: #1D2154;
+  --color-border: #454C99;
 
   --color-success: #4CAF50;
   --color-warning: #FF9E79;
@@ -2167,8 +2170,8 @@ input:focus {
         <div class="toolbar-group">
           <span class="toolbar-label">View</span>
           <div id="view-selector" class="view-selector" role="group" aria-label="Map view">
-            <button type="button" class="view-button is-active" data-view="country">Country / Hub</button>
-            <button type="button" class="view-button" data-view="institution">Institution</button>
+            <button type="button" class="view-button is-active" data-view="country">Countries / Hubs</button>
+            <button type="button" class="view-button" data-view="institution">Institutions</button>
           </div>
         </div>
 
@@ -2532,7 +2535,7 @@ console.log('[Scales] Module loaded');
 const CONFIG = {
   // Map
   projection: 'equalEarth',
-  zoom: { min: 1, max: 8 },
+  zoom: { min: 1, max: 24 },   // deep enough to separate a dense city cluster
 
   // Data
   dataUrl: './data/dl-data.json',
@@ -4029,13 +4032,17 @@ const INSTITUTION_DOT_RADIUS = 5;
  * dot never becomes too small to hit.
  */
 function institutionRadius(baseRadius, k) {
-  // Dots live inside the zoom group, so what the reader sees is
-  // attribute × k. Work in on-screen pixels first, then divide by k once at
-  // the end — flooring the attribute instead would make dots grow at high
-  // zoom, which is the opposite of the intent.
-  const damping = 1 / (1 + 0.09 * Math.max(0, k - 1));
-  const onScreen = Math.max(3, baseRadius * damping);
-  return onScreen / k;
+  // Dots live inside the zoom group, so what the reader sees is attribute × k.
+  // Dividing by k once holds them at a CONSTANT on-screen size at every zoom
+  // level.
+  //
+  // An earlier version shrank them further as the map magnified, on the theory
+  // that smaller marks separate sooner. That was the wrong lever: it made the
+  // dots hard to see and hit long before a dense cluster came apart. Deeper
+  // zoom is what separates overlapping institutions — the geography spreads
+  // while the marks stay the same size — so the zoom ceiling does that work
+  // now and the dots simply stay legible.
+  return baseRadius / k;
 }
 
 /**
