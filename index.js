@@ -466,6 +466,7 @@ function render(context, state, data) {
   // their on-screen size after any redraw while zoomed in.
   rescaleMarkers(context);
 
+  renderScopeBanner(STATE, data, agg);
   drawLegend(layers.legend, STATE, data, values, colorScale, height, agg);
   drawCaption(layers.caption, STATE, data, width, height, agg);
   renderBreadcrumb(context, STATE);
@@ -715,19 +716,38 @@ const METRICS = [
     id: 'dlPoints',
     label: 'Overall strength',
     legend: 'DL Points',
-    description: 'Total DL Points — one score for comparing countries directly, built from each institution’s position on the 1–150 ranking scale.'
+    unit: 'DL Points',
+    description: 'Total DL Points — one score for comparing countries directly, built from each institution’s position on the 1–150 ranking scale.',
+    // Answers "704 — out of what?", which the one-line description never did.
+    explainer: [
+      'How many ranked institutions a country has, and how well they rank, expressed as one number.',
+      'Each ranking places 150 institutions. An institution ranked 1st is worth 150 DL Points, 100th is worth 51, 150th is worth 1. A country’s score is all of its institutions’ points added together.',
+      'So a high score means either many ranked institutions, or a few that rank very highly — usually both.'
+    ]
   },
   {
     id: 'perCapita',
     label: 'Talent density',
     legend: 'DL Points per million people',
-    description: 'DL Points against population. Surfaces small countries that rank far above their size.'
+    unit: 'DL Points per million people',
+    description: 'DL Points against population. Surfaces small countries that rank far above their size.',
+    explainer: [
+      'The same DL Points, divided by the country’s population in millions.',
+      'It answers a different question: not who has the most, but who has the most relative to their size. A country of five million with three strong institutions scores far higher here than a country of a hundred million with the same three.',
+      'This is where small countries that punch above their weight become visible.'
+    ]
   },
   {
     id: 'delta',
     label: 'Evolution',
     legend: 'Change in DL Points, DL25 → DL26',
-    description: 'Movement between DL25 and DL26 editions. Green is rising, red is falling.'
+    unit: 'DL Points gained or lost since DL25',
+    description: 'Movement between DL25 and DL26 editions. Green is rising, red is falling.',
+    explainer: [
+      'The change in a country’s DL Points between the DL25 and DL26 editions.',
+      'A positive number means its institutions collectively climbed the ranking; a negative one means they slipped. Green is rising, red is falling.',
+      'A country can gain points by adding newly ranked institutions, or because the ones it already had moved up.'
+    ]
   }
 ];
 
@@ -867,6 +887,63 @@ function readableOn(colour, background, target = 4.5) {
 }
 
 /**
+ * The explainer for a measure.
+ *
+ * It opens whenever the measure changes, not only on demand: the description
+ * used to sit in a quiet line under the toolbar and readers never looked at
+ * it, then met a bare "704" with no idea what scale it was on. The observed
+ * range is computed from the data on screen, so the number always has
+ * something to be measured against.
+ */
+function showMeasurePanel(metricId, context) {
+  const panel = document.getElementById('measure-panel');
+  const metric = metricMeta(metricId);
+  if (!panel || !metric) return;
+
+  hideModulePanel();
+  hideNext50Panel();
+
+  panel.querySelector('#measure-panel-title').textContent = metric.label;
+  panel.querySelector('#measure-panel-body').innerHTML =
+    (metric.explainer || [metric.description]).map(p => `<p>${p}</p>`).join('');
+
+  // The range across every country currently on the map.
+  const agg = context && context.agg;
+  const data = context && context.data;
+  const scale = panel.querySelector('#measure-panel-scale');
+  scale.innerHTML = '';
+
+  if (agg && data) {
+    const probe = { ...STATE, colorMetric: metricId };
+    const values = data.countries
+      .filter(c => agg.byCountry.has(c.name))
+      .map(c => ({ name: c.name, value: countryMetricValue(c, probe, agg) }))
+      .filter(row => row.value !== null && !Number.isNaN(row.value))
+      .sort((a, b) => b.value - a.value);
+
+    if (values.length) {
+      const top = values[0];
+      const bottom = values[values.length - 1];
+      const format = (v) => scales.formatDataValue(v, metricId);
+      scale.innerHTML = `
+        <p class="measure-scale-caption">On this map, ${escapeHtml(MODULE_LABELS[STATE.selectedModule])}:</p>
+        <table class="help-table">
+          <tr><th>Highest</th><td>${escapeHtml(top.name)}</td><td class="rank">${format(top.value)}</td></tr>
+          <tr><th>Lowest</th><td>${escapeHtml(bottom.name)}</td><td class="rank">${format(bottom.value)}</td></tr>
+        </table>
+        <p class="measure-scale-caption">${values.length} countries carry a figure. The unit is ${escapeHtml(metric.unit)}.</p>`;
+    }
+  }
+
+  panel.removeAttribute('hidden');
+}
+
+function hideMeasurePanel() {
+  const panel = document.getElementById('measure-panel');
+  if (panel) panel.setAttribute('hidden', '');
+}
+
+/**
  * The explainer for a ranking, shown when its filter is clicked.
  * Closes on its own button, on Escape, or when another ranking is picked.
  */
@@ -991,6 +1068,7 @@ function buildMetricSelector(context, mountSelector = '#metric-selector') {
   mount.value = STATE.colorMetric;
   mount.addEventListener('change', (event) => {
     update(context, { colorMetric: event.target.value });
+    showMeasurePanel(event.target.value, context);
   });
 
   syncControls();
@@ -1228,6 +1306,33 @@ function buildSearch(context, inputSelector = '#search-input', resultsSelector =
   });
 }
 
+/**
+ * The scope band: how much of the ranking is on screen. Previously the
+ * coverage figures lived in a small caption in the corner and the band held a
+ * measure description nobody read.
+ */
+function renderScopeBanner(state, data, agg) {
+  const banner = document.getElementById('scope-banner');
+  if (!banner) return;
+
+  const institutions = agg.scored.length;
+  const total = data.institutions.filter(i => !i.next50Only).length;
+  const countries = agg.byCountry.size;
+  const hubs = data.hubs.filter(h => agg.byHub.has(h.name)).length;
+
+  const filtered = agg.active;
+  banner.innerHTML = `
+    <span><strong>${institutions.toLocaleString()}</strong>${
+      filtered ? ` of ${total.toLocaleString()}` : ''} institutions</span>
+    <span class="scope-sep">·</span>
+    <span><strong>${countries}</strong> countries</span>
+    <span class="scope-sep">·</span>
+    <span><strong>${hubs}</strong> hubs</span>
+    <span class="scope-sep">·</span>
+    <span class="scope-note">${escapeHtml(MODULE_LABELS[state.selectedModule])} ranking, ${
+      escapeHtml(state.selectedEdition)}${filtered ? ' · filtered' : ''}</span>`;
+}
+
 function syncControls() {
   document.querySelectorAll('.module-button').forEach(button => {
     button.setAttribute(
@@ -1239,11 +1344,6 @@ function syncControls() {
   const metricSelect = document.querySelector('#metric-selector');
   if (metricSelect && metricSelect.value !== STATE.colorMetric) {
     metricSelect.value = STATE.colorMetric;
-  }
-
-  const description = document.querySelector('#metric-description');
-  if (description) {
-    description.textContent = metricMeta(STATE.colorMetric).description;
   }
 
   // Filter badges show how many options are active in each menu.
@@ -2129,8 +2229,16 @@ function renderDetailPanel(context, state, data, agg) {
 
     ${enrichment ? `<p class="panel-enrichment">${escapeHtml(enrichment)}</p>` : ''}
 
-    <h3 class="panel-section">${escapeHtml(moduleLabel)} · how it measures up</h3>
+    <h3 class="panel-section">
+      ${escapeHtml(moduleLabel)} · how it measures up
+      <button class="info-button panel-info" type="button" data-measures
+              aria-label="What do these measures mean?"
+              title="What do these measures mean?">i</button>
+    </h3>
     <table class="measure-table">${measureRows}</table>
+    <p class="panel-note measure-hint">
+      ${escapeHtml(metricMeta(state.colorMetric).label)}: ${escapeHtml(metricMeta(state.colorMetric).unit)}.
+    </p>
 
     ${countrySections(country, state, data, agg)}
 
@@ -2147,6 +2255,12 @@ function renderDetailPanel(context, state, data, agg) {
       update(context, { selectedCountry: null, selectedHub: null });
       resetZoom(context);
     });
+
+  const measuresInfo = panel.querySelector('[data-measures]');
+  if (measuresInfo) {
+    measuresInfo.addEventListener('click', () =>
+      showMeasurePanel(STATE.colorMetric, context));
+  }
 
   panel.querySelectorAll('.hub-link').forEach(button => {
     button.addEventListener('click', () => {
@@ -2648,6 +2762,8 @@ window.DigitalLeadersMap = {
   buildSearch,
   showModulePanel,
   hideModulePanel,
+  showMeasurePanel,
+  hideMeasurePanel,
   showNext50Panel,
   hideNext50Panel,
   syncNext50Button,
