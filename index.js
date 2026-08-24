@@ -833,6 +833,9 @@ function update(context, patch) {
 // The elevated surface the explainer panels sit on, from tokens.css.
 const PANEL_BACKGROUND = '#1D2154';
 
+// The hover card's own ground, for the same contrast checks.
+const HOVER_BACKGROUND = '#080B30';
+
 /** Relative luminance, for contrast checks. */
 function luminance(hex) {
   const channels = [1, 3, 5]
@@ -1338,8 +1341,7 @@ function standingOn(entity, kind, state, data, agg) {
  * institutions" gave no clue whether it meant Global or the module the reader
  * had just clicked.
  */
-function hoverFigures(entity, kind, totals, state, data, agg) {
-  const module = MODULE_LABELS[state.selectedModule];
+function hoverFigures(entity, kind, state, data, agg) {
   const standing = standingOn(entity, kind, state, data, agg);
   const peers = kind === 'hub' ? 'hubs' : 'countries';
 
@@ -1347,39 +1349,44 @@ function hoverFigures(entity, kind, totals, state, data, agg) {
     ? hubPoints(entity, state, agg)
     : countryMetricValue(entity, state, agg);
 
+  // The module is already stated as a chip above, so these labels say what the
+  // number IS, not which ranking it came from.
   const headline = {
     dlPoints: {
       figure: value === null ? '—' : Math.round(value).toLocaleString(),
-      label: `DL Points in ${module}`
+      label: 'DL Points'
     },
     perCapita: {
       figure: value === null ? '—' : value.toFixed(1),
-      label: `DL Points per million people, ${module}`
+      label: 'DL Points per million people'
     },
     delta: {
       figure: value === null ? '—' : (value > 0 ? '+' : '') + Math.round(value).toLocaleString(),
-      label: `DL Points gained or lost, DL25 → DL26, ${module}`
+      label: 'DL Points gained or lost, DL25 → DL26'
     }
   }[state.colorMetric] || {
     figure: value === null ? '—' : Math.round(value).toLocaleString(),
-    label: `DL Points in ${module}`
+    label: 'DL Points'
   };
+
+  const direction = state.colorMetric === 'delta'
+    ? (value > 0 ? ' is-up' : value < 0 ? ' is-down' : '') : '';
 
   return `
     <div class="hover-figures">
       <div class="hover-figure">
-        <span class="hover-points-value${state.colorMetric === 'delta'
-          ? (value > 0 ? ' is-up' : value < 0 ? ' is-down' : '') : ''}">${headline.figure}</span>
+        <span class="hover-points-value${direction}">${headline.figure}</span>
         <span class="hover-points-label">${escapeHtml(headline.label)}</span>
       </div>
       <div class="hover-figure">
         <span class="hover-points-value">${standing ? '#' + standing.rank : '—'}</span>
         <span class="hover-points-label">${standing
-          ? `of ${standing.of} ${peers} · ${escapeHtml(metricMeta(state.colorMetric).label)}`
+          ? `of ${standing.of} ${peers}`
           : 'not ranked here'}</span>
       </div>
     </div>`;
 }
+
 
 function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
   const selected = state.selectedModule;
@@ -1394,13 +1401,17 @@ function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
       </tr>`;
   }).join('');
 
+  // Name, then where it is, then the ranking being filtered on, then the
+  // measure being read — so the figures below arrive already framed.
   return `
     <div class="hover-head">
       <span class="hover-title">${escapeHtml(entity.name)}</span>
       ${subtitle ? `<span class="hover-sub">${escapeHtml(subtitle)}</span>` : ''}
     </div>
-    ${hoverFigures(entity, kind, totals, state, data, agg)}
-    <p class="hover-scope">${escapeHtml(MODULE_LABELS[selected])} ranking</p>
+    <span class="hover-module" style="border-color:${MODULE_COLORS[selected]};
+      color:${readableOn(MODULE_COLORS[selected], HOVER_BACKGROUND)}">${escapeHtml(MODULE_LABELS[selected])}</span>
+    <p class="hover-measure">${escapeHtml(metricMeta(state.colorMetric).label)}</p>
+    ${hoverFigures(entity, kind, state, data, agg)}
     <table class="hover-table">
       <caption>Ranked institutions, across all rankings</caption>
       ${rows}

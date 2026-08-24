@@ -15,6 +15,12 @@
      banner sit on it. */
   --color-dl-blue: #1839E2;
 
+  /* The same blue lifted for use as TEXT on a dark surface. At full strength
+     it measures 2.47:1 on the hover card and cannot be read; this clears
+     4.5:1 while staying recognisably the brand blue. Borders and fills keep
+     the true colour above. */
+  --color-dl-blue-text: #5D74EB;
+
   /* The map canvas (sea). Sits in the Emerging navy family above, so the page
      is grounded in the brand colour while the brighter Digital Leaders blue
      stays an accent in the header.

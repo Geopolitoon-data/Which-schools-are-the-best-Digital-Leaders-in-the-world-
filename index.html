@@ -220,7 +220,7 @@
       max-width: 300px;
       padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
       background-color: rgba(8, 11, 48, 0.97);
-      border: 1px solid var(--color-blue);
+      border: 1px solid var(--color-dl-blue);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-lg);
       pointer-events: none;
@@ -271,19 +271,33 @@
       gap: 1px;
     }
 
-    .hover-scope {
+    /* The ranking currently filtered on, as a chip in its own colour */
+    .hover-module {
+      display: inline-block;
+      margin-top: var(--spacing-sm);
+      padding: 2px 9px;
+      border: 1px solid;
+      border-radius: var(--radius-full);
       font-size: 10px;
-      color: var(--color-orange);
       font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    /* The measure being read */
+    .hover-measure {
+      margin-top: var(--spacing-sm);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-dl-blue-text);
       padding-bottom: var(--spacing-sm);
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      margin-bottom: var(--spacing-sm);
     }
 
     .hover-points-value {
       font-size: var(--font-size-lg);
       font-weight: var(--font-weight-extrabold);
-      color: var(--color-orange);
+      color: var(--color-dl-blue-text);
       font-variant-numeric: tabular-nums;
       line-height: 1;
     }
@@ -351,7 +365,7 @@
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: 0.04em;
-      color: var(--color-orange);
+      color: var(--color-dl-blue-text);
     }
 
     .hover-dot {
