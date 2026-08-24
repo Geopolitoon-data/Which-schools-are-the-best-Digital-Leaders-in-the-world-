@@ -804,13 +804,18 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .scope-banner .scope-sep {
-      opacity: 0.45;
+    .scope-banner .banner-sep {
+      opacity: 0.4;
     }
 
-    .scope-banner .scope-note {
+    .scope-banner .banner-measure {
+      color: #FFFFFF;
+    }
+
+    .scope-banner .banner-scale,
+    .scope-banner .banner-scope {
       font-size: var(--font-size-xs);
-      color: rgba(255, 255, 255, 0.75);
+      color: rgba(255, 255, 255, 0.82);
     }
 
     /* What the selected measure is, and the scale it runs on. This line was
@@ -1661,8 +1666,6 @@
         <div class="toolbar-group">
           <label class="toolbar-label" for="metric-selector">Measure</label>
           <select id="metric-selector" class="metric-selector"></select>
-          <button id="measure-help" class="info-button" type="button"
-                  aria-label="What does this measure mean?" title="What does this measure mean?">i</button>
           <button id="dl-points-help" class="help-button" type="button" aria-expanded="false">
             What are DL Points?
           </button>
@@ -1687,7 +1690,6 @@
     </div>
 
     <p id="scope-banner" class="scope-banner"></p>
-    <p id="metric-description" class="metric-description"></p>
 
     <!-- DL Points explainer -->
     <div id="dl-points-panel" class="help-panel" role="dialog" aria-labelledby="dl-points-title" hidden>
@@ -1724,21 +1726,6 @@
         A country&rsquo;s score is all of its institutions&rsquo; points added together.
       </p>
 
-      <h3>Why not simply count institutions?</h3>
-
-      <p>Counting would treat a world leader and a borderline entry as the same thing. Adding up points does not:</p>
-
-      <table class="help-table">
-        <tr><th>Country</th><th>Its institutions</th><th>DL Points</th></tr>
-        <tr><td>A</td><td>one, ranked 3rd</td><td>148</td></tr>
-        <tr><td>B</td><td>three, ranked 40th, 60th, 90th</td><td>263</td></tr>
-      </table>
-
-      <p>
-        Country B scores higher without a single top-10 institution &mdash; so DL
-        Points reward <strong>depth as well as excellence</strong>.
-      </p>
-
       <h3>And the other measures?</h3>
 
       <p>
@@ -1755,15 +1742,6 @@
       <h2 id="module-panel-title"></h2>
       <p id="module-panel-body"></p>
       <button id="module-panel-close" class="help-close" type="button">Close</button>
-    </div>
-
-    <!-- Measure explainer -->
-    <div id="measure-panel" class="module-panel is-measure-panel" role="dialog"
-         aria-labelledby="measure-panel-title" hidden>
-      <h2 id="measure-panel-title"></h2>
-      <div id="measure-panel-body"></div>
-      <div id="measure-panel-scale"></div>
-      <button id="measure-panel-close" class="help-close" type="button">Close</button>
     </div>
 
     <!-- Next 50 explainer -->
@@ -1855,13 +1833,6 @@
         document.getElementById('module-panel-close')
           .addEventListener('click', () => window.DigitalLeadersMap.hideModulePanel());
 
-        // Measure explainer
-        document.getElementById('measure-help').addEventListener('click', () => {
-          window.DigitalLeadersMap.showMeasurePanel(
-            window.DigitalLeadersMap.getState().colorMetric, context);
-        });
-        document.getElementById('measure-panel-close')
-          .addEventListener('click', () => window.DigitalLeadersMap.hideMeasurePanel());
 
         // Next 50 — toggles the tier and explains what it is
         document.getElementById('next50-toggle').addEventListener('click', () => {
@@ -1887,8 +1858,6 @@
             map.hideModulePanel();
           } else if (!document.getElementById('next50-panel').hasAttribute('hidden')) {
             map.hideNext50Panel();
-          } else if (!document.getElementById('measure-panel').hasAttribute('hidden')) {
-            map.hideMeasurePanel();
           } else if (state.selectedInstitution) {
             map.update(context, { selectedInstitution: null });
             map.resetZoom(context);
