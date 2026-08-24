@@ -1309,8 +1309,79 @@ function hoverCard() {
   return hoverCardNode;
 }
 
-function hoverCardHtml(title, subtitle, totals, state, data) {
-  const points = totals ? totals[state.selectedEdition] : 0;
+/**
+ * Where an entity places against its peers on the measure currently on screen
+ * — countries against countries, hubs against hubs.
+ */
+function standingOn(entity, kind, state, data, agg) {
+  const pool = kind === 'hub'
+    ? data.hubs
+        .filter(h => agg.byHub.has(h.name))
+        .map(h => ({ name: h.name, value: hubPoints(h, state, agg) }))
+    : data.countries
+        .filter(c => agg.byCountry.has(c.name))
+        .map(c => ({ name: c.name, value: countryMetricValue(c, state, agg) }));
+
+  const ordered = pool
+    .filter(row => row.value !== null && !Number.isNaN(row.value))
+    .sort((a, b) => b.value - a.value);
+
+  const index = ordered.findIndex(row => row.name === entity.name);
+  return index === -1 ? null : { rank: index + 1, of: ordered.length };
+}
+
+/**
+ * The two headline figures follow the selected measure, so the card answers
+ * the question the map is currently colouring by — not always DL Points.
+ *
+ * Every label names the ranking it belongs to. Without that, "45 ranked
+ * institutions" gave no clue whether it meant Global or the module the reader
+ * had just clicked.
+ */
+function hoverFigures(entity, kind, totals, state, data, agg) {
+  const module = MODULE_LABELS[state.selectedModule];
+  const standing = standingOn(entity, kind, state, data, agg);
+  const peers = kind === 'hub' ? 'hubs' : 'countries';
+
+  const value = kind === 'hub'
+    ? hubPoints(entity, state, agg)
+    : countryMetricValue(entity, state, agg);
+
+  const headline = {
+    dlPoints: {
+      figure: value === null ? '—' : Math.round(value).toLocaleString(),
+      label: `DL Points in ${module}`
+    },
+    perCapita: {
+      figure: value === null ? '—' : value.toFixed(1),
+      label: `DL Points per million people, ${module}`
+    },
+    delta: {
+      figure: value === null ? '—' : (value > 0 ? '+' : '') + Math.round(value).toLocaleString(),
+      label: `DL Points gained or lost, DL25 → DL26, ${module}`
+    }
+  }[state.colorMetric] || {
+    figure: value === null ? '—' : Math.round(value).toLocaleString(),
+    label: `DL Points in ${module}`
+  };
+
+  return `
+    <div class="hover-figures">
+      <div class="hover-figure">
+        <span class="hover-points-value${state.colorMetric === 'delta'
+          ? (value > 0 ? ' is-up' : value < 0 ? ' is-down' : '') : ''}">${headline.figure}</span>
+        <span class="hover-points-label">${escapeHtml(headline.label)}</span>
+      </div>
+      <div class="hover-figure">
+        <span class="hover-points-value">${standing ? '#' + standing.rank : '—'}</span>
+        <span class="hover-points-label">${standing
+          ? `of ${standing.of} ${peers} · ${escapeHtml(metricMeta(state.colorMetric).label)}`
+          : 'not ranked here'}</span>
+      </div>
+    </div>`;
+}
+
+function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
   const selected = state.selectedModule;
 
   const rows = data.modules.map(module => {
@@ -1323,26 +1394,15 @@ function hoverCardHtml(title, subtitle, totals, state, data) {
       </tr>`;
   }).join('');
 
-  const rankedHere = totals?.byModule?.[selected] ?? 0;
-
   return `
     <div class="hover-head">
-      <span class="hover-title">${escapeHtml(title)}</span>
+      <span class="hover-title">${escapeHtml(entity.name)}</span>
       ${subtitle ? `<span class="hover-sub">${escapeHtml(subtitle)}</span>` : ''}
     </div>
-    <div class="hover-figures">
-      <div class="hover-figure">
-        <span class="hover-points-value">${Math.round(points).toLocaleString()}</span>
-        <span class="hover-points-label">DL Points</span>
-      </div>
-      <div class="hover-figure">
-        <span class="hover-points-value">${rankedHere}</span>
-        <span class="hover-points-label">Ranked institutions</span>
-      </div>
-    </div>
-    <p class="hover-scope">${escapeHtml(MODULE_LABELS[selected])}</p>
+    ${hoverFigures(entity, kind, totals, state, data, agg)}
+    <p class="hover-scope">${escapeHtml(MODULE_LABELS[selected])} ranking</p>
     <table class="hover-table">
-      <caption>Across all rankings</caption>
+      <caption>Ranked institutions, across all rankings</caption>
       ${rows}
     </table>
     <p class="hover-cta">Click to view more information</p>`;
@@ -1433,7 +1493,7 @@ function drawCountries(selection, context, data, state, colorScale, agg) {
       const totals = country && agg.byCountry.get(country.name);
       if (!totals) return hideHoverCard();
       showHoverCard(event, hoverCardHtml(
-        country.name, formatRegion(country.region), totals, state, data));
+        country, 'country', formatRegion(country.region), totals, state, data, agg));
     })
     .on('mouseleave', hideHoverCard);
 }
@@ -1486,7 +1546,7 @@ function drawCityStates(selection, context, data, state, colorScale, agg) {
       const totals = agg.byCountry.get(d.name);
       if (!totals) return hideHoverCard();
       showHoverCard(event, hoverCardHtml(
-        d.name, formatRegion(d.region), totals, state, data));
+        d, 'country', formatRegion(d.region), totals, state, data, agg));
     })
     .on('mouseleave', hideHoverCard);
 }
@@ -1547,7 +1607,7 @@ function drawHubs(selection, context, data, state, agg) {
       const totals = agg.byHub.get(d.name);
       if (!totals) return hideHoverCard();
       showHoverCard(event, hoverCardHtml(
-        d.name, `${d.country} · hub`, totals, state, data));
+        d, 'hub', `${d.country} · hub`, totals, state, data, agg));
     })
     .on('mouseleave', hideHoverCard);
 }

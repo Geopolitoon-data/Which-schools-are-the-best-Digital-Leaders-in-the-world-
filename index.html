@@ -216,8 +216,8 @@
       top: 0;
       left: 0;
       z-index: var(--z-popover);
-      min-width: 216px;
-      max-width: 280px;
+      min-width: 232px;
+      max-width: 300px;
       padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
       background-color: rgba(8, 11, 48, 0.97);
       border: 1px solid var(--color-blue);
@@ -259,8 +259,9 @@
 
     .hover-figures {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr auto;
       gap: var(--spacing-md);
+      align-items: start;
       padding: var(--spacing-sm) 0 2px;
     }
 
@@ -280,12 +281,16 @@
     }
 
     .hover-points-value {
-      font-size: var(--font-size-xl);
+      font-size: var(--font-size-lg);
       font-weight: var(--font-weight-extrabold);
       color: var(--color-orange);
       font-variant-numeric: tabular-nums;
       line-height: 1;
     }
+
+    /* Evolution reads direction, so the figure itself carries it */
+    .hover-points-value.is-up { color: var(--color-rising); }
+    .hover-points-value.is-down { color: var(--color-falling); }
 
     .hover-points-label {
       font-size: 10px;
