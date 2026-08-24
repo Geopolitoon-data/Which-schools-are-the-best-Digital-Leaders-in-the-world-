@@ -235,6 +235,20 @@ async function init(container) {
         .attr('r', institutionRadius(INSTITUTION_DOT_RADIUS, event.transform.k));
     });
 
+  // Re-run the overlap relaxation once the gesture settles. Doing it on every
+  // frame would be wasteful, and the layout only needs to be right when the
+  // reader stops moving. As zoom deepens the dots converge on their true
+  // coordinates, because the collisions that displaced them stop happening.
+  let relaxTimer = null;
+  zoom.on('end.relax', () => {
+    if (STATE.view !== 'institution') return;
+    clearTimeout(relaxTimer);
+    relaxTimer = setTimeout(() => {
+      drawInstitutions(layers.institutions, context, data, STATE, context.agg);
+      rescaleMarkers(context);
+    }, 120);
+  });
+
   svg.call(zoom);
   svg.on('dblclick.zoom', null);
 
@@ -816,6 +830,39 @@ function update(context, patch) {
   syncNext50Button();
 }
 
+// The elevated surface the explainer panels sit on, from tokens.css.
+const PANEL_BACKGROUND = '#1D2154';
+
+/** Relative luminance, for contrast checks. */
+function luminance(hex) {
+  const channels = [1, 3, 5]
+    .map(i => parseInt(hex.substr(i, 2), 16) / 255)
+    .map(v => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
+
+function contrast(a, b) {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/**
+ * Lighten a colour just enough to be readable as text on `background`,
+ * preserving its hue. A brand colour chosen to work as a fill is often far
+ * too dark to double as type on a dark surface.
+ */
+function readableOn(colour, background, target = 4.5) {
+  let result = colour;
+  for (let step = 0; step <= 17 && contrast(result, background) < target; step += 1) {
+    const amount = step * 0.05;
+    result = '#' + [1, 3, 5].map(i => {
+      const value = parseInt(colour.substr(i, 2), 16);
+      return Math.round(value + (255 - value) * amount).toString(16).padStart(2, '0');
+    }).join('').toUpperCase();
+  }
+  return result;
+}
+
 /**
  * The explainer for a ranking, shown when its filter is clicked.
  * Closes on its own button, on Escape, or when another ranking is picked.
@@ -827,7 +874,18 @@ function showModulePanel(module) {
   const description = MODULE_DESCRIPTIONS[module];
   if (!description) return hideModulePanel();
 
-  panel.querySelector('#module-panel-title').textContent = MODULE_LABELS[module] || module;
+  // Title and frame carry the ranking's own colour, so the explainer is
+  // visibly about the module you just clicked.
+  //
+  // The frame takes the colour as-is. The title cannot: Global's navy sits at
+  // 1.02:1 on this panel and Entrepreneurship's violet at 2.56:1 — both
+  // unreadable as text. Those are lightened until they clear 4.5:1, which
+  // keeps the hue while making the word legible.
+  const colour = MODULE_COLORS[module] || MODULE_COLORS.global;
+  const title = panel.querySelector('#module-panel-title');
+  title.textContent = MODULE_LABELS[module] || module;
+  title.style.color = readableOn(colour, PANEL_BACKGROUND);
+  panel.style.borderColor = colour;
   panel.querySelector('#module-panel-body').textContent = description;
   panel.removeAttribute('hidden');
 }
@@ -1523,6 +1581,38 @@ function institutionRadius(baseRadius, k) {
 }
 
 /**
+ * Nudge overlapping institution dots apart.
+ *
+ * Institutions genuinely sit on top of one another: Delhi University and IIT
+ * Delhi share a coordinate exactly, and twenty pairs sit within 2 km — the
+ * Paris-Saclay cluster spans 350 m. Zooming cannot fix that on its own, and
+ * two dots drawn at the same point read as one institution.
+ *
+ * The relaxation runs in SCREEN space at the current zoom, so it self-cancels:
+ * as you zoom in, real separation grows, collisions stop happening, and the
+ * dots settle onto their true coordinates. The displacement only ever exists
+ * where dots would otherwise be indistinguishable, and never exceeds a few
+ * pixels.
+ */
+function resolveOverlaps(plotted, projection, k, radius) {
+  const nodes = plotted.map(institution => {
+    const [px, py] = projection([institution.longitude, institution.latitude]);
+    // Work at the scale the reader actually sees.
+    return { id: institution.id, tx: px * k, ty: py * k, x: px * k, y: py * k };
+  });
+
+  d3.forceSimulation(nodes)
+    .force('home-x', d3.forceX(d => d.tx).strength(0.55))
+    .force('home-y', d3.forceY(d => d.ty).strength(0.55))
+    .force('collide', d3.forceCollide(radius + 0.9).strength(0.9))
+    .stop()
+    .tick(80);
+
+  // Back into the zoom group's own units.
+  return new Map(nodes.map(n => [n.id, [n.x / k, n.y / k]]));
+}
+
+/**
  * Institution dots — the institution-level view.
  *
  * One precisely placed dot per institution, coloured by module. Only
@@ -1545,6 +1635,10 @@ function drawInstitutions(selection, context, data, state, agg) {
 
   const color = MODULE_COLORS[module] || MODULE_COLORS.global;
 
+  const k = d3.zoomTransform(context.svg.node()).k || 1;
+  const placed = resolveOverlaps(plotted, projection, k,
+                                 institutionRadius(INSTITUTION_DOT_RADIUS, k) * k);
+
   selection.selectAll('circle.institution-dot')
     .data(plotted, d => d.id)
     .join('circle')
@@ -1553,14 +1647,11 @@ function drawInstitutions(selection, context, data, state, agg) {
     .attr('class', d => 'institution-dot'
       + (d.tier?.[state.selectedEdition]?.[module] === 'next50' ? ' is-next50' : '')
       + (d.id === state.selectedInstitution ? ' active' : ''))
-    .attr('cx', d => projection([d.longitude, d.latitude])[0])
-    .attr('cy', d => projection([d.longitude, d.latitude])[1])
+    .attr('cx', d => placed.get(d.id)[0])
+    .attr('cy', d => placed.get(d.id)[1])
     // Every dot is the same size. A dot marks where a ranked institution is;
     // its standing is read from the card, not from the mark.
-    .attr('r', () => {
-      const k = d3.zoomTransform(context.svg.node()).k || 1;
-      return institutionRadius(INSTITUTION_DOT_RADIUS, k);
-    })
+    .attr('r', institutionRadius(INSTITUTION_DOT_RADIUS, k))
     // The Next 50 is picked out in orange so the two tiers separate at a
     // glance while sharing the map. Solid, like the scored dots — the tier is
     // distinguished by hue, not by weight.
