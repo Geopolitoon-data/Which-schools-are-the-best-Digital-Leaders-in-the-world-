@@ -1,8 +1,11 @@
 # Digital Leaders 2026 — World Map
 
 Interactive map of the Emerging **Digital Leaders 2026 | AI & Tech Careers Edition**
-ranking: 276 institutions across 45 countries, explorable by country, hub and
-institution.
+ranking: 276 institutions, explorable by country, hub and institution.
+
+> **Taking this into production?** Start with [HANDOVER.md](HANDOVER.md) — it
+> covers publishing, the Webflow embed, what every file is for, and the
+> non-obvious things that will otherwise cost you an afternoon.
 
 Built as static files (D3 v7 + TopoJSON, no build step for the app itself) so it
 can be served from a CDN and embedded in Webflow.
