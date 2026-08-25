@@ -931,7 +931,7 @@ input:focus {
       grid-template-columns: 1fr auto;
       gap: var(--spacing-md);
       align-items: start;
-      padding: var(--spacing-sm) 0 2px;
+      padding-top: var(--spacing-sm);
     }
 
     .hover-figure {
@@ -953,14 +953,23 @@ input:focus {
       white-space: nowrap;
     }
 
+    /* The ranking, the measure and its figures belong together: they are one
+       reading, and the rule below them separates that reading from the
+       institution counts. */
+    .hover-block {
+      margin-top: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-md);
+    }
+
     /* The measure being read */
     .hover-measure {
       margin-top: var(--spacing-sm);
       font-size: var(--font-size-xs);
       font-weight: var(--font-weight-semibold);
       color: var(--color-dl-blue-text);
-      padding-bottom: var(--spacing-sm);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .hover-points-value {
@@ -984,6 +993,9 @@ input:focus {
     .hover-table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: var(--spacing-md);
+      padding-top: var(--spacing-sm);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .hover-table caption {
@@ -2118,22 +2130,24 @@ input:focus {
 
     /* Next 50 toggle. Styled like the hollow dots it controls: outlined when
        on, so the control looks like what it does. */
+    /* The Next 50 is a headline feature, so it reads as one even when off:
+       filled rather than outlined, and in its own orange. */
     .tier-button {
-      background: none;
-      border: 1.5px solid var(--color-border);
-      color: var(--color-text-secondary);
+      background-color: rgba(255, 73, 1, 0.18);
+      border: 1.5px solid var(--color-orange);
+      color: #FF8A54;
       padding: 4px var(--spacing-md);
       border-radius: var(--radius-full);
       cursor: pointer;
       font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
+      font-weight: var(--font-weight-bold);
       white-space: nowrap;
-      transition: border-color var(--transition-fast), color var(--transition-fast);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
     }
 
     .tier-button:hover {
+      background-color: rgba(255, 73, 1, 0.34);
       color: #FFFFFF;
-      border-color: var(--color-text-secondary);
     }
 
     .tier-button.is-on {
@@ -2142,9 +2156,10 @@ input:focus {
       color: #FFFFFF;
     }
 
-    /* Dimmed in the country view, where the tier has no effect */
+    /* Quieter in the country view, where the tier has no effect — but still
+       plainly legible; it was previously faded almost out of existence. */
     .tier-button.is-inactive {
-      opacity: 0.45;
+      opacity: 0.8;
     }
 
     .is-next50-panel {
@@ -4116,10 +4131,12 @@ function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
       <span class="hover-title">${escapeHtml(entity.name)}</span>
       ${subtitle ? `<span class="hover-sub">${escapeHtml(subtitle)}</span>` : ''}
     </div>
-    <span class="hover-module" style="border-color:${MODULE_COLORS[selected]};
-      color:${readableOn(MODULE_COLORS[selected], HOVER_BACKGROUND)}">${escapeHtml(MODULE_LABELS[selected])}</span>
-    <p class="hover-measure">${escapeHtml(metricMeta(state.colorMetric).label)}</p>
-    ${hoverFigures(entity, kind, state, data, agg)}
+    <div class="hover-block">
+      <span class="hover-module" style="border-color:${MODULE_COLORS[selected]};
+        color:${readableOn(MODULE_COLORS[selected], HOVER_BACKGROUND)}">${escapeHtml(MODULE_LABELS[selected])}</span>
+      <p class="hover-measure">${escapeHtml(metricMeta(state.colorMetric).label)}</p>
+      ${hoverFigures(entity, kind, state, data, agg)}
+    </div>
     <table class="hover-table">
       <caption>Ranked institutions</caption>
       ${rows}

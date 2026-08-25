@@ -1457,10 +1457,12 @@ function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
       <span class="hover-title">${escapeHtml(entity.name)}</span>
       ${subtitle ? `<span class="hover-sub">${escapeHtml(subtitle)}</span>` : ''}
     </div>
-    <span class="hover-module" style="border-color:${MODULE_COLORS[selected]};
-      color:${readableOn(MODULE_COLORS[selected], HOVER_BACKGROUND)}">${escapeHtml(MODULE_LABELS[selected])}</span>
-    <p class="hover-measure">${escapeHtml(metricMeta(state.colorMetric).label)}</p>
-    ${hoverFigures(entity, kind, state, data, agg)}
+    <div class="hover-block">
+      <span class="hover-module" style="border-color:${MODULE_COLORS[selected]};
+        color:${readableOn(MODULE_COLORS[selected], HOVER_BACKGROUND)}">${escapeHtml(MODULE_LABELS[selected])}</span>
+      <p class="hover-measure">${escapeHtml(metricMeta(state.colorMetric).label)}</p>
+      ${hoverFigures(entity, kind, state, data, agg)}
+    </div>
     <table class="hover-table">
       <caption>Ranked institutions</caption>
       ${rows}
