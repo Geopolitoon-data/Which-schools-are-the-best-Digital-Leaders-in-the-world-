@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated": "2026-08-24T17:54:41.511174",
+  "generated": "2026-08-25T09:59:41.696210",
   "editions": [
     "DL25",
     "DL26"
@@ -8154,50 +8154,6 @@
       "next50Only": false
     },
     {
-      "id": "universidad-del-pacifico",
-      "name": "Universidad del Pacifico",
-      "type": "University",
-      "country": "Peru",
-      "region": "latin america",
-      "hub": null,
-      "hubSubtitle": null,
-      "latitude": -12.083883,
-      "longitude": -77.048319,
-      "ranks": {
-        "DL25": {
-          "global": null,
-          "AI": null,
-          "CS": null,
-          "transform": 114,
-          "create": null
-        },
-        "DL26": {
-          "global": null,
-          "AI": null,
-          "CS": null,
-          "transform": 132,
-          "create": null
-        }
-      },
-      "tier": {
-        "DL25": {
-          "global": null,
-          "AI": null,
-          "CS": null,
-          "transform": "top150",
-          "create": null
-        },
-        "DL26": {
-          "global": null,
-          "AI": null,
-          "CS": null,
-          "transform": "top150",
-          "create": null
-        }
-      },
-      "next50Only": false
-    },
-    {
       "id": "universidad-del-pac-fico-incl-business-school",
       "name": "Universidad del Pacífico (incl. Business School)",
       "type": "University and Business School",
@@ -8212,14 +8168,14 @@
           "global": null,
           "AI": null,
           "CS": null,
-          "transform": null,
+          "transform": 114,
           "create": 98
         },
         "DL26": {
           "global": null,
           "AI": null,
           "CS": null,
-          "transform": null,
+          "transform": 132,
           "create": 98
         }
       },
@@ -8228,14 +8184,14 @@
           "global": null,
           "AI": null,
           "CS": null,
-          "transform": null,
+          "transform": "top150",
           "create": "top150"
         },
         "DL26": {
           "global": null,
           "AI": null,
           "CS": null,
-          "transform": null,
+          "transform": "top150",
           "create": "top150"
         }
       },
@@ -13134,7 +13090,7 @@
       },
       "metrics": {
         "DL25": {
-          "institutions": 5,
+          "institutions": 4,
           "dlPoints": {
             "global": 0.0,
             "AI": 4.0,
@@ -13144,7 +13100,7 @@
           }
         },
         "DL26": {
-          "institutions": 5,
+          "institutions": 4,
           "dlPoints": {
             "global": 0.0,
             "AI": 15.0,
@@ -13734,7 +13690,7 @@
     },
     {
       "name": "latin america",
-      "institutions": 23,
+      "institutions": 22,
       "metrics": {
         "DL25": {
           "dlPoints": {
