@@ -750,13 +750,15 @@
       flex-wrap: wrap;
     }
 
+    /* Group labels. Uppercase at 11px is already hard work; they were also
+       the darkest text on the darkest band, which is why they disappeared. */
     .toolbar-label,
     .control-label {
       font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
+      font-weight: var(--font-weight-bold);
       letter-spacing: var(--letter-spacing-wider);
       text-transform: uppercase;
-      color: var(--color-text-muted);
+      color: var(--color-text-secondary);
       white-space: nowrap;
     }
 
@@ -1450,7 +1452,7 @@
     .tier-button {
       background: none;
       border: 1.5px solid var(--color-border);
-      color: var(--color-text-muted);
+      color: var(--color-text-secondary);
       padding: 4px var(--spacing-md);
       border-radius: var(--radius-full);
       cursor: pointer;
@@ -1461,8 +1463,8 @@
     }
 
     .tier-button:hover {
-      color: var(--color-text-secondary);
-      border-color: var(--color-text-muted);
+      color: #FFFFFF;
+      border-color: var(--color-text-secondary);
     }
 
     .tier-button.is-on {

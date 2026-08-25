@@ -209,9 +209,10 @@
      the gap is 1.55:1. */
   --color-navy-dark: #323A8C;
 
-  /* Chrome — toolbar and side panel. Kept well below the canvas so the map
-     reads as the lit surface and the controls recede. */
-  --color-navy-darker: #14184A;
+  /* Chrome — toolbar and side panel. Kept below the canvas so the map reads
+     as the lit surface, but no darker than that: at #14184A the control band
+     was so dark that its own labels sat at 3.31:1 and read as invisible. */
+  --color-navy-darker: #242B66;
 
   /* Land with no ranking. It must be LIGHTER than the canvas: darkening it
      instead walks it straight into the navy ramp stop, indistinguishable from
@@ -230,7 +231,9 @@
   /* Semantic Colors */
   --color-text: #FFFFFF;
   --color-text-secondary: #B8B8D4;
-  --color-text-muted: #6B6C8F;
+  /* Lifted from #6B6C8F, which failed on the control band (2.58:1 there).
+     Muted still means quieter than secondary — not unreadable. */
+  --color-text-muted: #9EA1C6;
   --color-background: #0F1374;
   --color-background-elevated: #1D2154;
   --color-border: #454C99;
@@ -1416,13 +1419,15 @@ input:focus {
       flex-wrap: wrap;
     }
 
+    /* Group labels. Uppercase at 11px is already hard work; they were also
+       the darkest text on the darkest band, which is why they disappeared. */
     .toolbar-label,
     .control-label {
       font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
+      font-weight: var(--font-weight-bold);
       letter-spacing: var(--letter-spacing-wider);
       text-transform: uppercase;
-      color: var(--color-text-muted);
+      color: var(--color-text-secondary);
       white-space: nowrap;
     }
 
@@ -2116,7 +2121,7 @@ input:focus {
     .tier-button {
       background: none;
       border: 1.5px solid var(--color-border);
-      color: var(--color-text-muted);
+      color: var(--color-text-secondary);
       padding: 4px var(--spacing-md);
       border-radius: var(--radius-full);
       cursor: pointer;
@@ -2127,8 +2132,8 @@ input:focus {
     }
 
     .tier-button:hover {
-      color: var(--color-text-secondary);
-      border-color: var(--color-text-muted);
+      color: #FFFFFF;
+      border-color: var(--color-text-secondary);
     }
 
     .tier-button.is-on {
