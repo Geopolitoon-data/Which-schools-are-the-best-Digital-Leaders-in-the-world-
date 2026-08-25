@@ -39,21 +39,20 @@ git push -u origin main
 
 The repository must be **public** if you intend to use jsDelivr.
 
-### What becomes public
+### What is and isn't in the repository
 
-`data/dl-data.json` contains every institution's rank in every ranking, for
-both editions. That is unavoidable for a browser-based map — whatever it
-displays, it must download — but it is worth being explicit with Emerging
-before the repository goes public, because the commercial offer in the
-interface ("Access your detailed DL Points") is built on that data.
+`data/dl-data.json` holds every institution's rank in every ranking, for both
+editions. It is public by necessity — a browser-based map must download what
+it displays — and Emerging has confirmed that is fine.
 
-The per-institution DL Points are **deliberately not published**: they are
-`151 − rank` and the front end computes them at runtime, so shipping them
-would hand out the module-by-module breakdown the interface is careful not to
-expose. Please keep it that way.
+Two things are deliberately kept out, and should stay out:
 
-The master Excel workbook is **not** in this repository and should not be
-added — it lives one directory above and is excluded in `.gitignore`.
+- **Per-institution DL Points.** They are `151 − rank`, and the front end
+  computes them at runtime. Publishing them would hand out the
+  module-by-module breakdown that the interface is built to withhold, which is
+  the basis of the commercial offer in the institution card.
+- **The master Excel workbook.** It is the source of truth, lives one directory
+  above the repository, and is excluded in `.gitignore`. Do not add it.
 
 ---
 
@@ -251,27 +250,7 @@ per-ranking colours.
 
 ---
 
-## 7. Open items
-
-Not defects, but things that need a decision from Emerging:
-
-1. **UT Austin has `rank CS DL25 = 239`** in a 150-deep ranking. The pipeline
-   treats it as unranked and reports it on every build. The true value is
-   unknown and must come from Emerging.
-2. **A duplicate institution**: *Universidad del Pacifico* and *Universidad del
-   Pacífico (incl. Business School)* are two rows at identical coordinates for
-   one institution. They carry different types, so merging needs Emerging to
-   choose which is correct. (An identical case, Universidad Adolfo Ibáñez, has
-   already been merged.)
-3. **Institution types for the 11 institutions the Next 50 added** are
-   provisional and need Emerging's confirmation.
-4. **The Next 50 exists for the Global ranking only.** If module-level Next 50s
-   arrive, the tier mechanism already supports them — set `NEXT50_MODULES` in
-   `build_data.py` and `index.js`.
-
----
-
-## 8. Where the decisions are recorded
+## 7. Where the decisions are recorded
 
 `git log` is written to be read. Each commit explains what changed and why,
 including the approaches that were tried and rejected — the Next 50 scoring
