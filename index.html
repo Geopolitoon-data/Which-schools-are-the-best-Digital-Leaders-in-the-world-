@@ -34,11 +34,19 @@
       box-sizing: border-box;
     }
 
+    /* The pill controls set an explicit `display`, which outranks the user
+       agent's `[hidden] { display: none }` on specificity. Without this, the
+       Clear filters chip and any hidden panel stay on screen. */
+    [hidden] {
+      display: none !important;
+    }
+
     body {
       font-family: var(--font-family);
-      background-color: var(--color-navy);
+      background-color: var(--color-background);
       color: var(--color-text);
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     #app {
@@ -51,11 +59,11 @@
     /* Header */
     header {
       background-color: var(--color-dl-blue);
-      border-bottom: 1px solid var(--color-text-secondary);
       padding: var(--spacing-md);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: var(--spacing-md);
       z-index: var(--z-header);
     }
 
@@ -101,7 +109,7 @@
       background-color: #FFFFFF;
       padding: 7px 12px;
       border-radius: var(--radius-md);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 1px 3px rgba(9, 12, 60, 0.30);
     }
 
     .dl-logo-plate.is-missing {
@@ -119,13 +127,20 @@
        It lives inside #map-container rather than being fixed to the viewport:
        fixed positioning put it on top of the detail panel, hiding card text
        behind it. Anchored to the map, it moves aside as the panel opens. */
+    /* The supplied mark is reversed out for dark backgrounds, so on a light
+       map it needs a ground of its own. A navy plate keeps the file as
+       delivered rather than recolouring the artwork. */
     .emerging-logo {
       position: absolute;
       right: var(--spacing-md);
       bottom: var(--spacing-md);
       height: 24px;
       width: auto;
-      opacity: 0.9;
+      padding: 6px 10px;
+      background-color: var(--color-navy);
+      border-radius: var(--radius-sm);
+      box-sizing: content-box;
+      opacity: 0.92;
       pointer-events: none;
       z-index: var(--z-header);
     }
@@ -142,23 +157,34 @@
     .intro {
       display: flex;
       align-items: center;
-      min-height: 34px;
-      padding: 0 var(--spacing-md);
+      justify-content: space-between;
+      gap: var(--spacing-md);
+      min-height: 44px;
+      padding: var(--spacing-sm) var(--spacing-md);
       background-color: var(--color-dl-blue);
-      color: rgba(255, 255, 255, 0.92);
+      border-bottom: 3px solid var(--color-orange);
+      color: rgba(255, 255, 255, 0.94);
       font-size: clamp(10px, 0.86vw, 14px);
       line-height: var(--line-height-normal);
+    }
+
+    /* The sentence holds one line and truncates; the guide button never
+       shrinks, because it is the only instruction on the page. */
+    .intro-text {
+      min-width: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    #guide-open {
+      flex: none;
+    }
+
     @media (max-width: 1200px) {
-      .intro {
+      .intro-text {
         white-space: normal;
         font-size: var(--font-size-xs);
-        padding-top: var(--spacing-sm);
-        padding-bottom: var(--spacing-sm);
       }
     }
 
@@ -167,47 +193,32 @@
       display: inline-flex;
       gap: 2px;
       padding: 2px;
-      background-color: rgba(15, 19, 116, 0.55);
-      border: 1px solid var(--color-border);
+      background-color: var(--chip-bg);
+      border: 1px solid var(--chip-border);
       border-radius: var(--radius-full);
     }
 
     .view-button {
       background: none;
       border: none;
-      color: var(--color-text-secondary);
+      color: var(--chip-ink);
       padding: 5px var(--spacing-md);
       border-radius: var(--radius-full);
       cursor: pointer;
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-semibold);
       white-space: nowrap;
-      transition: background-color var(--transition-base), color var(--transition-base);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
     }
 
     .view-button:hover {
-      color: var(--color-text);
+      background-color: var(--chip-bg-hover);
     }
 
-    .view-button.is-active {
-      background-color: var(--color-orange);
-      color: #FFFFFF;
-    }
-
-    .reset-zoom {
-      background-color: transparent;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-secondary);
-      padding: var(--spacing-sm) var(--spacing-md);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
-    }
-
-    .reset-zoom:hover {
-      border-color: var(--color-gold);
-      color: var(--color-gold);
+    .view-button.is-active,
+    .view-button.is-active:hover {
+      background-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
     }
 
     /* Hover card — countries and hubs share it */
@@ -219,7 +230,7 @@
       min-width: 232px;
       max-width: 300px;
       padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
-      background-color: rgba(8, 11, 48, 0.97);
+      background-color: #FFFFFF;
       border: 1px solid var(--color-dl-blue);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-lg);
@@ -236,13 +247,13 @@
       flex-direction: column;
       gap: 1px;
       padding-bottom: var(--spacing-sm);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid var(--color-border);
     }
 
     .hover-title {
       font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
-      color: #FFFFFF;
+      color: var(--color-text);
     }
 
     .hover-sub {
@@ -290,8 +301,8 @@
     .hover-block {
       margin-top: var(--spacing-sm);
       padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background-color: var(--color-background);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
     }
 
@@ -326,7 +337,7 @@
       border-collapse: collapse;
       margin-top: var(--spacing-md);
       padding-top: var(--spacing-sm);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid var(--color-border);
     }
 
     .hover-table caption {
@@ -351,7 +362,7 @@
     }
 
     .hover-table tr.is-active td {
-      color: #FFFFFF;
+      color: var(--color-text);
       font-weight: var(--font-weight-semibold);
     }
 
@@ -365,7 +376,7 @@
     .hover-rank {
       font-size: var(--font-size-lg);
       font-weight: var(--font-weight-extrabold);
-      color: #FFFFFF;
+      color: var(--color-text);
       font-variant-numeric: tabular-nums;
     }
 
@@ -373,7 +384,7 @@
     .hover-cta {
       margin-top: var(--spacing-sm);
       padding-top: var(--spacing-sm);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid var(--color-border);
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: 0.04em;
@@ -390,36 +401,9 @@
     }
 
     /* Module explainer popup */
-    .module-panel {
-      position: absolute;
-      top: 128px;
-      left: var(--spacing-md);
-      z-index: var(--z-popover);
-      max-width: 460px;
-      padding: var(--spacing-md) var(--spacing-lg);
-      background-color: var(--color-background-elevated);
-      border: 1px solid var(--color-orange);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-    }
 
-    .module-panel[hidden] {
-      display: none;
-    }
 
-    .module-panel h2 {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-orange);
-      margin-bottom: var(--spacing-sm);
-    }
 
-    .module-panel p {
-      font-size: var(--font-size-sm);
-      line-height: var(--line-height-normal);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-md);
-    }
 
     /* Search */
     .search {
@@ -469,7 +453,7 @@
     }
 
     .search-result:hover {
-      background-color: var(--color-navy);
+      background-color: var(--color-background);
       transform: none;
       box-shadow: none;
     }
@@ -502,34 +486,15 @@
       position: relative;
     }
 
-    .filter-trigger {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      background-color: transparent;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-secondary);
-      padding: var(--spacing-xs) var(--spacing-md);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      white-space: nowrap;
-    }
 
-    .filter-trigger:hover {
-      border-color: var(--color-gold);
-      color: var(--color-gold);
-      transform: none;
-      box-shadow: none;
-    }
 
     .filter-badge {
       display: none;
       min-width: 18px;
       padding: 0 5px;
       border-radius: var(--radius-full);
-      background-color: var(--color-gold);
-      color: var(--color-navy);
+      background-color: var(--color-orange);
+      color: #FFFFFF;
       font-size: 10px;
       font-weight: var(--font-weight-bold);
       line-height: 16px;
@@ -571,12 +536,12 @@
     }
 
     .filter-option:hover {
-      background-color: var(--color-navy);
+      background-color: var(--color-background);
       color: var(--color-text);
     }
 
     .filter-option input {
-      accent-color: var(--color-gold);
+      accent-color: var(--color-orange);
       margin-top: 2px;
       padding: 0;
       flex: 0 0 auto;
@@ -593,7 +558,7 @@
     }
 
     .toggle input {
-      accent-color: var(--color-gold);
+      accent-color: var(--color-orange);
       cursor: pointer;
       padding: 0;
     }
@@ -607,9 +572,10 @@
       align-items: center;
       gap: var(--spacing-xs);
       padding: var(--spacing-xs) var(--spacing-sm);
-      background-color: rgba(5, 5, 21, 0.75);
+      background-color: rgba(255, 255, 255, 0.94);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
       z-index: var(--z-dropdown);
     }
 
@@ -659,7 +625,7 @@
       text-align: left;
       background: none;
       border: none;
-      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      border-bottom: 1px solid var(--color-border);
       padding: var(--spacing-sm) 0;
       cursor: pointer;
       border-radius: 0;
@@ -701,7 +667,7 @@
     .zoom-controls {
       position: absolute;
       right: var(--spacing-md);
-      top: var(--spacing-md);
+      top: 60px;
       display: flex;
       flex-direction: column;
       gap: 1px;
@@ -714,8 +680,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(8, 11, 48, 0.88);
-      border: 1px solid var(--color-border);
+      background-color: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--color-border-strong);
       color: var(--color-text-secondary);
       font-size: var(--font-size-md);
       line-height: 1;
@@ -743,8 +709,8 @@
       display: flex;
       flex-direction: column;
       gap: var(--spacing-sm);
-      padding: var(--spacing-sm) var(--spacing-md);
-      background-color: var(--color-navy-darker);
+      padding: var(--spacing-md);
+      background-color: #FFFFFF;
       border-bottom: 1px solid var(--color-border);
     }
 
@@ -762,6 +728,11 @@
       flex-wrap: wrap;
     }
 
+    /* The export is not a filter, so it sits apart from them. */
+    .toolbar-group-end {
+      margin-left: auto;
+    }
+
     /* Group labels. Uppercase at 11px is already hard work; they were also
        the darkest text on the darkest band, which is why they disappeared. */
     .toolbar-label,
@@ -770,229 +741,47 @@
       font-weight: var(--font-weight-bold);
       letter-spacing: var(--letter-spacing-wider);
       text-transform: uppercase;
-      color: var(--color-text-secondary);
+      color: var(--color-text-muted);
       white-space: nowrap;
     }
 
-    .metric-selector {
-      font-size: var(--font-size-sm);
-      padding: var(--spacing-xs) var(--spacing-sm);
-    }
 
-    .help-button {
-      background: none;
-      border: none;
-      border-bottom: 1px dotted var(--color-text-secondary);
-      color: var(--color-text-secondary);
-      font-size: var(--font-size-xs);
-      cursor: pointer;
-      padding: 0 0 1px 0;
-      border-radius: 0;
-    }
 
-    .help-button:hover {
-      color: var(--color-gold);
-      border-bottom-color: var(--color-gold);
-      transform: none;
-      box-shadow: none;
-    }
 
     /* Scope of what is on screen. This band used to hold the measure
        description, which nobody read; the coverage figures were meanwhile
        buried in a caption in the bottom-left corner. They have swapped, and
        the measure now explains itself in a popup. */
-    .scope-banner {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      min-height: 34px;
-      padding: 0 var(--spacing-md);
-      background-color: var(--color-dl-blue);
-      font-size: var(--font-size-sm);
-      color: #FFFFFF;
-      line-height: var(--line-height-normal);
-    }
 
-    .scope-banner strong {
-      font-weight: var(--font-weight-bold);
-      font-variant-numeric: tabular-nums;
-    }
 
-    .scope-banner .banner-sep {
-      opacity: 0.4;
-    }
 
-    .scope-banner .banner-measure {
-      color: #FFFFFF;
-    }
 
-    .scope-banner .banner-scale,
-    .scope-banner .banner-scope {
-      font-size: var(--font-size-xs);
-      color: rgba(255, 255, 255, 0.82);
-    }
 
     /* What the selected measure is, and the scale it runs on. This line was
        briefly removed in favour of the coverage banner above; both are needed
        — the banner says how much is on screen, this says how to read it. */
-    .metric-description {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: var(--spacing-sm);
-      min-height: 30px;
-      padding: 4px var(--spacing-md);
-      background-color: var(--color-navy-darker);
-      border-bottom: 1px solid var(--color-border);
-      font-size: var(--font-size-xs);
-      color: var(--color-text-secondary);
-      line-height: var(--line-height-normal);
-    }
 
-    .metric-description .measure-name {
-      font-weight: var(--font-weight-bold);
-      color: var(--color-dl-blue-text);
-    }
 
-    .metric-description .measure-scale {
-      color: var(--color-text-muted);
-      font-variant-numeric: tabular-nums;
-    }
 
-    .metric-description .measure-scale strong {
-      color: var(--color-text-secondary);
-      font-weight: var(--font-weight-semibold);
-    }
 
     /* Small round info affordance, next to a control */
-    .info-button {
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      border-radius: 50%;
-      border: 1px solid var(--color-text-muted);
-      background: none;
-      color: var(--color-text-secondary);
-      font-size: 11px;
-      font-style: italic;
-      font-weight: var(--font-weight-bold);
-      line-height: 1;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
 
-    .info-button:hover {
-      border-color: var(--color-dl-blue-text);
-      color: var(--color-dl-blue-text);
-    }
 
-    .is-measure-panel {
-      border-color: var(--color-dl-blue);
-      max-width: 480px;
-    }
 
-    .is-measure-panel h2 {
-      color: var(--color-dl-blue-text);
-    }
 
-    .measure-scale-caption {
-      font-size: var(--font-size-xs) !important;
-      color: var(--color-text-muted) !important;
-      margin-bottom: var(--spacing-xs) !important;
-    }
 
     /* DL Points explainer */
-    .help-panel {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(520px, calc(100vw - 2 * var(--spacing-xl)));
-      max-height: calc(100vh - 2 * var(--spacing-xl));
-      overflow-y: auto;
-      background-color: var(--color-background-elevated);
-      border: 1px solid var(--color-gold);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
-      padding: var(--spacing-lg);
-      z-index: var(--z-modal);
-    }
 
-    .help-panel[hidden] {
-      display: none;
-    }
 
-    .help-panel h2 {
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-gold);
-      margin-bottom: var(--spacing-md);
-    }
 
-    .help-panel p {
-      font-size: var(--font-size-sm);
-      line-height: var(--line-height-relaxed);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-md);
-    }
 
-    .help-panel strong {
-      color: var(--color-text);
-      font-weight: var(--font-weight-semibold);
-    }
 
-    .help-panel h3 {
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-text);
-      margin: var(--spacing-lg) 0 var(--spacing-sm);
-    }
 
-    .help-lede {
-      font-size: var(--font-size-base) !important;
-      color: var(--color-text) !important;
-    }
 
-    .help-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: var(--spacing-md);
-      font-size: var(--font-size-sm);
-    }
 
-    .help-table th {
-      text-align: left;
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
-      text-transform: uppercase;
-      letter-spacing: var(--letter-spacing-wide);
-      color: var(--color-text-muted);
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border-bottom: 1px solid var(--color-border);
-    }
 
-    .help-table td {
-      padding: var(--spacing-xs) var(--spacing-sm);
-      color: var(--color-text-secondary);
-      border-bottom: 1px solid rgba(61, 62, 122, 0.4);
-    }
 
-    .help-table td:last-child {
-      color: var(--color-gold);
-      font-weight: var(--font-weight-semibold);
-      white-space: nowrap;
-    }
 
-    .help-close {
-      background-color: var(--color-blue);
-      border: none;
-      color: white;
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
-    }
 
     .module-selector {
       display: flex;
@@ -1000,34 +789,9 @@
       flex-wrap: wrap;
     }
 
-    .module-button {
-      background-color: transparent;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-secondary);
-      padding: var(--spacing-xs) var(--spacing-md);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
-      white-space: nowrap;
-    }
 
-    .module-button:hover {
-      border-color: var(--color-gold);
-      color: var(--color-gold);
-    }
 
-    .module-button[aria-pressed="true"] {
-      background-color: var(--color-gold);
-      border-color: var(--color-gold);
-      color: var(--color-navy);
-      font-weight: var(--font-weight-semibold);
-    }
 
-    .module-button[aria-pressed="true"]:hover {
-      transform: none;
-      box-shadow: none;
-    }
 
     /* Main content */
     main {
@@ -1150,7 +914,7 @@
 
     .measure-table td {
       padding: var(--spacing-xs) 0;
-      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      border-bottom: 1px solid var(--color-border);
       color: var(--color-text-secondary);
     }
 
@@ -1192,7 +956,7 @@
       display: flex;
       gap: var(--spacing-sm);
       padding: var(--spacing-sm) 0;
-      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      border-bottom: 1px solid var(--color-border);
     }
 
     .institution-rank {
@@ -1249,7 +1013,7 @@
 
     .bar-track {
       height: 6px;
-      background-color: rgba(61, 62, 122, 0.5);
+      background-color: var(--color-background);
       border-radius: var(--radius-full);
       overflow: hidden;
     }
@@ -1316,7 +1080,7 @@
     .total-points {
       margin-top: var(--spacing-md);
       padding: var(--spacing-md);
-      background-color: rgba(24, 57, 226, 0.14);
+      background-color: #EEF1FE;
       border: 1px solid var(--color-dl-blue);
       border-radius: var(--radius-md);
     }
@@ -1354,7 +1118,7 @@
       display: block;
       font-size: var(--font-size-2xl);
       font-weight: var(--font-weight-extrabold);
-      color: #FFFFFF;
+      color: var(--color-text);
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
       margin-top: 2px;
@@ -1370,7 +1134,7 @@
     .commercial-cta {
       margin-top: var(--spacing-md);
       padding-top: var(--spacing-sm);
-      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      border-top: 1px solid var(--color-border);
       font-size: var(--font-size-xs);
       line-height: var(--line-height-normal);
       color: var(--color-text-secondary);
@@ -1393,7 +1157,7 @@
 
     .ranking-table th {
       padding-bottom: var(--spacing-xs);
-      border-bottom: 1px solid rgba(61, 62, 122, 0.6);
+      border-bottom: 1px solid var(--color-border-strong);
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: 0.09em;
@@ -1463,63 +1227,24 @@
        on, so the control looks like what it does. */
     /* The Next 50 is a headline feature, so it reads as one even when off:
        filled rather than outlined, and in its own orange. */
-    .tier-button {
-      background-color: rgba(255, 73, 1, 0.18);
-      border: 1.5px solid var(--color-orange);
-      color: #FF8A54;
-      padding: 4px var(--spacing-md);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-bold);
-      white-space: nowrap;
-      transition: background-color var(--transition-fast), color var(--transition-fast);
-    }
 
-    .tier-button:hover {
-      background-color: rgba(255, 73, 1, 0.34);
-      color: #FFFFFF;
-    }
 
-    .tier-button.is-on {
-      border-color: var(--color-orange);
-      background-color: var(--color-orange);
-      color: #FFFFFF;
-    }
 
     /* Quieter in the country view, where the tier has no effect — but still
        plainly legible; it was previously faded almost out of existence. */
-    .tier-button.is-inactive {
-      opacity: 0.8;
-    }
 
-    .is-next50-panel {
-      border-color: var(--color-orange);
-    }
 
-    .is-next50-panel h2 {
-      color: var(--color-orange);
-      letter-spacing: 0.06em;
-    }
 
-    .next50-lede {
-      font-size: var(--font-size-base) !important;
-      color: var(--color-text) !important;
-    }
 
-    .module-panel em {
-      font-style: italic;
-      color: var(--color-text);
-    }
 
     /* Next 50 — ranked 151-200 in Global, listed but not scored */
     .tier-badge {
       display: inline-block;
       padding: 1px 6px;
       border-radius: var(--radius-full);
-      background-color: rgba(255, 73, 1, 0.22);
+      background-color: var(--color-orange-wash);
       border: 1px solid var(--color-orange);
-      color: var(--color-text-secondary);
+      color: #A8330A;
       font-size: 9px;
       letter-spacing: 0.04em;
       white-space: nowrap;
@@ -1618,28 +1343,511 @@
     }
 
     ::-webkit-scrollbar-track {
-      background: var(--color-navy);
+      background-color: var(--color-background);
     }
 
     ::-webkit-scrollbar-thumb {
-      background: var(--color-text-secondary);
-      border-radius: 4px;
+      background-color: var(--color-border-strong);
+      border-radius: var(--radius-full);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: var(--color-gold);
+      background-color: var(--color-text-muted);
     }
+    /* ==================================================================
+       PILL CONTROLS
+
+       One capsule, used for every call to action on the page, matching the
+       Digital Leaders website: a pale periwinkle capsule with navy type,
+       turning solid orange with white type when it is the one selected.
+       Montserrat semibold throughout, which is the site's own face.
+
+       Everything that was a bordered ghost button in the dark theme is now
+       one of these: the rankings, the Next 50, the filter triggers, Reset
+       view and the user guide. There is exactly one button idiom on screen.
+       ================================================================== */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 16px;
+      border: 1px solid var(--chip-border);
+      border-radius: var(--radius-full);
+      background-color: var(--chip-bg);
+      color: var(--chip-ink);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.15;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip:hover {
+      background-color: var(--chip-bg-hover);
+      border-color: var(--chip-bg-hover);
+    }
+
+    /* Selected. aria-pressed is the source of truth for the rankings and the
+       Next 50, so the selected look is driven off the attribute the control
+       already sets rather than a second class that could drift from it. */
+    .chip[aria-pressed="true"],
+    .chip.is-on,
+    .chip.is-active {
+      background-color: var(--chip-bg-active);
+      border-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
+    }
+
+    .chip[aria-pressed="true"]:hover,
+    .chip.is-on:hover {
+      background-color: #E63F00;
+      border-color: #E63F00;
+    }
+
+    /* On the blue band, where the pale capsule needs to be lighter still to
+       hold against #1839E2. */
+    .chip-on-blue {
+      background-color: var(--chip-on-blue-bg);
+      border-color: transparent;
+      color: var(--color-navy);
+    }
+
+    .chip-on-blue:hover {
+      background-color: var(--chip-on-blue-hover);
+      border-color: transparent;
+    }
+
+    /* A secondary action: the same capsule, drawn back to an outline. */
+    .chip.is-quiet {
+      background-color: transparent;
+      border-color: var(--color-border-strong);
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .chip.is-quiet:hover {
+      background-color: var(--color-background);
+      border-color: var(--color-text-muted);
+      color: var(--color-text);
+    }
+
+    /* The rankings and the Next 50 sit on one line and read as one group, so
+       they share the capsule and differ only in what they mean. */
+    .module-selector {
+      display: flex;
+      gap: var(--spacing-xs);
+      flex-wrap: wrap;
+    }
+
+    /* The Next 50 extends Global to 200 places, so it stands beside Global
+       wearing the tier's own light orange rather than the periwinkle of a
+       ranking it is not. */
+    .tier-button {
+      background-color: var(--color-orange-wash);
+      border-color: var(--color-orange-soft);
+      color: #A8330A;
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0.02em;
+    }
+
+    .tier-button:hover {
+      background-color: #FFE0D2;
+      border-color: var(--color-orange-soft);
+    }
+
+    /* Quieter in the country view, where the tier has no effect, but still
+       plainly legible. */
+    .tier-button.is-inactive {
+      opacity: 0.75;
+    }
+
+    /* The separator inside the Next 50 label, matching the one in the title. */
+    .chip-rule {
+      opacity: 0.45;
+      font-weight: var(--font-weight-regular);
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .select-control {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      padding: 6px var(--spacing-sm);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--chip-border);
+      background-color: var(--chip-bg);
+      color: var(--chip-ink);
+      cursor: pointer;
+    }
+
+    /* ==================================================================
+       INFO AFFORDANCE
+
+       Every control carries one, and it opens that control's explainer in
+       place. Small, quiet, and always in the same position: immediately to
+       the right of the thing it explains.
+       ================================================================== */
+    .info-button {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid var(--chip-border);
+      background-color: var(--chip-bg);
+      color: var(--chip-ink);
+      font-family: var(--font-family);
+      font-size: 11px;
+      font-weight: var(--font-weight-bold);
+      font-style: italic;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .info-button:hover {
+      background-color: var(--chip-bg-active);
+      border-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
+    }
+
+    /* The same mark, set inline in a sentence in the guide. */
+    .info-button.is-inline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      font-size: 11px;
+      vertical-align: -4px;
+      cursor: default;
+    }
+
+    /* ==================================================================
+       THE KEY STRIP
+
+       How to read the map, directly under the controls at the top left.
+       This is where the SVG legend and the coverage caption went: they used
+       to sit in the bottom-left corner of the map, which is the last place a
+       reader looks and, on a short window, below the fold.
+       ================================================================== */
+    .map-key {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: var(--spacing-sm) var(--spacing-md) 10px;
+      background-color: #FFFFFF;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .key-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+      min-height: 22px;
+    }
+
+    .key-heading {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--letter-spacing-wider);
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+
+    .key-scale {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    /* The bar is sampled from the same scale function that fills the
+       countries, so the key cannot drift from the map. */
+    .key-ramp {
+      display: block;
+      width: 190px;
+      height: 10px;
+      border-radius: var(--radius-xs);
+      border: 1px solid rgba(15, 19, 116, 0.12);
+    }
+
+    .key-tick {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .key-items {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+    }
+
+    .key-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    .key-swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: var(--radius-xs);
+      border: 1px solid rgba(15, 19, 116, 0.12);
+    }
+
+    .key-swatch-unranked { background-color: var(--color-land-unranked); }
+    .key-swatch-nodata   { background-color: #E3E5EF; }
+
+    .key-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(15, 19, 116, 0.25);
+    }
+
+    .key-scope {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      line-height: var(--line-height-normal);
+    }
+
+    .key-scope strong {
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .key-measure {
+      color: var(--color-text-secondary);
+    }
+
+    .key-sep {
+      opacity: 0.45;
+      padding: 0 2px;
+    }
+
+    /* A filter is narrowing everything on screen, so the line says so in the
+       accent rather than quietly. */
+    .key-scope.is-filtered .key-coverage strong {
+      color: var(--color-orange);
+    }
+
+    /* ==================================================================
+       CONTROL POPOVER
+
+       One panel, opened against whichever control asked for it. Fixed
+       position, so it can overhang the control band and the map.
+       ================================================================== */
+    .control-pop {
+      position: fixed;
+      width: min(420px, calc(100vw - 24px));
+      overflow-y: auto;
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-top: 3px solid var(--color-dl-blue);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      padding: var(--spacing-md);
+      z-index: var(--z-popover);
+    }
+
+    .control-pop[hidden] {
+      display: none;
+    }
+
+    .pop-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .pop-title {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      line-height: var(--line-height-tight);
+    }
+
+    .pop-close {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-lg);
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 var(--spacing-xs);
+    }
+
+    .pop-close:hover {
+      color: var(--color-orange);
+    }
+
+    .pop-body p {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .pop-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .pop-body strong {
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .pop-body em {
+      font-style: italic;
+      color: var(--color-text);
+    }
+
+    .pop-body h3 {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      margin: var(--spacing-md) 0 var(--spacing-xs);
+    }
+
+    .pop-lede {
+      font-size: var(--font-size-base) !important;
+      color: var(--color-text) !important;
+    }
+
+    .pop-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+    }
+
+    .pop-table th {
+      text-align: left;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wide);
+      color: var(--color-text-muted);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pop-table td {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--color-border);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pop-table td:last-child {
+      color: var(--color-orange);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+    }
+
+    /* ==================================================================
+       USER GUIDE
+       ================================================================== */
+    .guide-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(560px, calc(100vw - 2 * var(--spacing-xl)));
+      max-height: calc(100vh - 2 * var(--spacing-xl));
+      overflow-y: auto;
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-top: 4px solid var(--color-orange);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      padding: var(--spacing-lg);
+      z-index: var(--z-modal);
+    }
+
+    .guide-panel[hidden] {
+      display: none;
+    }
+
+    .guide-panel .pop-title {
+      font-size: var(--font-size-xl);
+    }
+
+    .guide-list {
+      margin: 0 0 var(--spacing-sm);
+      padding-left: var(--spacing-md);
+    }
+
+    .guide-list li {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .guide-list li strong {
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    /* ==================================================================
+       RESET VIEW
+
+       On the map, top right, above the zoom stack. It used to sit in the
+       header, three bands away from the thing it resets.
+       ================================================================== */
+    .map-reset {
+      position: absolute;
+      right: var(--spacing-md);
+      top: var(--spacing-md);
+      z-index: var(--z-header);
+      background-color: rgba(255, 255, 255, 0.94);
+      border-color: var(--color-border-strong);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .map-reset:hover {
+      background-color: var(--chip-bg-active);
+      border-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
+    }
+
+    /* The search field, on the blue band */
+    #search-input {
+      border-color: transparent;
+    }
+
   </style>
 </head>
 
 <body>
   <div id="app">
-    <!-- Header -->
+
+    <!-- The Digital Leaders band. Blue #1839E2, unchanged: it is the one
+         surface on the page that carries the brand colour, and everything
+         below it is paper. -->
     <header>
       <div class="title-block">
         <span class="dl-logo-plate">
-          <!-- dl-logo:start -->
-<svg id="dl-logo" class="dl-logo" role="img" aria-label="Digital Leaders — Higher Education for AI &amp; Tech Careers" id="Calque_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 507.5 83.4"><defs><style>#dl-logo .dllogo-1{fill:none;}#dl-logo .dllogo-2,.dllogo-3,.dllogo-4,.dllogo-5{fill:#04f;}#dl-logo .dllogo-2,.dllogo-6{letter-spacing:-.05em;}#dl-logo .dllogo-3{letter-spacing:-.05em;}#dl-logo .dllogo-4{letter-spacing:-.05em;}#dl-logo .dllogo-7{font-family:Lexend-Light, Lexend;font-size:19px;font-weight:300;}#dl-logo .dllogo-7,.dllogo-8,.dllogo-6{fill:#000b59;}#dl-logo .dllogo-9{clip-path:url(#clippath-1);}#dl-logo .dllogo-10{font-family:Lexend-Medium, Lexend;font-size:66px;font-weight:500;}#dl-logo .dllogo-11{letter-spacing:-.12em;}#dl-logo .dllogo-12{letter-spacing:-.02em;}#dl-logo .dllogo-13{letter-spacing:-.02em;}#dl-logo .dllogo-14{letter-spacing:-.03em;}#dl-logo .dllogo-15{letter-spacing:-.04em;}#dl-logo .dllogo-16{letter-spacing:-.04em;}#dl-logo .dllogo-17{letter-spacing:0em;}#dl-logo .dllogo-18{clip-path:url(#clippath);}#dl-logo .dllogo-8{letter-spacing:-.06em;}</style><clipPath id="clippath"><path class="dllogo-1" d="M479.97,12.04c-.82,3.59-4.7,13.55-21.98,18.44-7.71,2.19-13.98,2.54-27.23-.85,3.23.98,5.94,3.12,7.68,5.93,9.77,1.66,19.58,1.18,31.53-1.6,20.85-4.84,31.92-27.82,31.92-27.82l-21.92,5.89Z"/></clipPath><clipPath id="clippath-1"><rect class="dllogo-1" x="425.76" y="1.14" width="81.13" height="40.38"/></clipPath></defs><g id="Layer_1"><g class="dllogo-18"><g class="dllogo-9"><image width="170" height="85" transform="translate(425.32 .75) scale(.48)" xlink:href="data:image/png;base64,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"/></g></g><path class="dllogo-5" d="M430.76,29.63c-1.25-.38-2.58-.59-3.96-.59-7.55,0-13.68,6.12-13.68,13.68s6.12,13.68,13.68,13.68,13.68-6.12,13.68-13.68c0-2.63-.75-5.08-2.04-7.16-1.73-2.81-4.45-4.95-7.68-5.93Z"/><text class="dllogo-10" transform="translate(0 56.1)"><tspan class="dllogo-2" x="0" y="0">digi</tspan><tspan class="dllogo-4" x="112.13" y="0">t</tspan><tspan class="dllogo-3" x="134.44" y="0">al</tspan><tspan class="dllogo-8" x="188.56" y="0">l</tspan><tspan class="dllogo-6" x="202.68" y="0">eaders</tspan></text><text class="dllogo-7" transform="translate(98.97 78.89)"><tspan class="dllogo-13" x="0" y="0">Higher </tspan><tspan class="dllogo-14" x="62.26" y="0">E</tspan><tspan class="dllogo-17" x="73.13" y="0">d</tspan><tspan class="dllogo-12" x="84.81" y="0">ucation </tspan><tspan class="dllogo-15" x="154.07" y="0">f</tspan><tspan class="dllogo-13" x="160.45" y="0">or AI &amp; </tspan><tspan class="dllogo-11" x="226.55" y="0">T</tspan><tspan class="dllogo-13" x="234.59" y="0">ech Ca</tspan><tspan class="dllogo-16" x="293.64" y="0">r</tspan><tspan class="dllogo-13" x="299.89" y="0">eers</tspan></text></g></svg>
+<!-- dl-logo:start -->
+<svg id="dl-logo" class="dl-logo" role="img" aria-label="Digital Leaders: Higher Education for AI &amp; Tech Careers" id="Calque_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 507.5 83.4"><defs><style>#dl-logo .dllogo-1{fill:none;}#dl-logo .dllogo-2,.dllogo-3,.dllogo-4,.dllogo-5{fill:#04f;}#dl-logo .dllogo-2,.dllogo-6{letter-spacing:-.05em;}#dl-logo .dllogo-3{letter-spacing:-.05em;}#dl-logo .dllogo-4{letter-spacing:-.05em;}#dl-logo .dllogo-7{font-family:Lexend-Light, Lexend;font-size:19px;font-weight:300;}#dl-logo .dllogo-7,.dllogo-8,.dllogo-6{fill:#000b59;}#dl-logo .dllogo-9{clip-path:url(#clippath-1);}#dl-logo .dllogo-10{font-family:Lexend-Medium, Lexend;font-size:66px;font-weight:500;}#dl-logo .dllogo-11{letter-spacing:-.12em;}#dl-logo .dllogo-12{letter-spacing:-.02em;}#dl-logo .dllogo-13{letter-spacing:-.02em;}#dl-logo .dllogo-14{letter-spacing:-.03em;}#dl-logo .dllogo-15{letter-spacing:-.04em;}#dl-logo .dllogo-16{letter-spacing:-.04em;}#dl-logo .dllogo-17{letter-spacing:0em;}#dl-logo .dllogo-18{clip-path:url(#clippath);}#dl-logo .dllogo-8{letter-spacing:-.06em;}</style><clipPath id="clippath"><path class="dllogo-1" d="M479.97,12.04c-.82,3.59-4.7,13.55-21.98,18.44-7.71,2.19-13.98,2.54-27.23-.85,3.23.98,5.94,3.12,7.68,5.93,9.77,1.66,19.58,1.18,31.53-1.6,20.85-4.84,31.92-27.82,31.92-27.82l-21.92,5.89Z"/></clipPath><clipPath id="clippath-1"><rect class="dllogo-1" x="425.76" y="1.14" width="81.13" height="40.38"/></clipPath></defs><g id="Layer_1"><g class="dllogo-18"><g class="dllogo-9"><image width="170" height="85" transform="translate(425.32 .75) scale(.48)" xlink:href="data:image/png;base64,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"/></g></g><path class="dllogo-5" d="M430.76,29.63c-1.25-.38-2.58-.59-3.96-.59-7.55,0-13.68,6.12-13.68,13.68s6.12,13.68,13.68,13.68,13.68-6.12,13.68-13.68c0-2.63-.75-5.08-2.04-7.16-1.73-2.81-4.45-4.95-7.68-5.93Z"/><text class="dllogo-10" transform="translate(0 56.1)"><tspan class="dllogo-2" x="0" y="0">digi</tspan><tspan class="dllogo-4" x="112.13" y="0">t</tspan><tspan class="dllogo-3" x="134.44" y="0">al</tspan><tspan class="dllogo-8" x="188.56" y="0">l</tspan><tspan class="dllogo-6" x="202.68" y="0">eaders</tspan></text><text class="dllogo-7" transform="translate(98.97 78.89)"><tspan class="dllogo-13" x="0" y="0">Higher </tspan><tspan class="dllogo-14" x="62.26" y="0">E</tspan><tspan class="dllogo-17" x="73.13" y="0">d</tspan><tspan class="dllogo-12" x="84.81" y="0">ucation </tspan><tspan class="dllogo-15" x="154.07" y="0">f</tspan><tspan class="dllogo-13" x="160.45" y="0">or AI &amp; </tspan><tspan class="dllogo-11" x="226.55" y="0">T</tspan><tspan class="dllogo-13" x="234.59" y="0">ech Ca</tspan><tspan class="dllogo-16" x="293.64" y="0">r</tspan><tspan class="dllogo-13" x="299.89" y="0">eers</tspan></text></g></svg>
         <!-- dl-logo:end -->
         </span>
         <h1>Digital Leaders 2026 <span class="title-rule">|</span> AI &amp; Tech Careers Edition</h1>
@@ -1647,22 +1855,29 @@
 
       <div class="controls">
         <div class="search">
-          <input id="search-input" type="search" placeholder="Search countries, hubs, institutions…"
+          <input id="search-input" type="search" placeholder="Search countries, hubs, institutions&hellip;"
                  autocomplete="off" aria-label="Search">
           <div id="search-results" class="search-results"></div>
         </div>
-        <button id="reset-zoom" class="reset-zoom" title="Return to the whole-world view">Reset view</button>
       </div>
     </header>
 
-    <!-- What the ranking measures -->
-    <p class="intro">
-      A global ranking of universities and schools based on graduate career outcomes
-      across four key areas of the AI &amp; tech economy — showing the Top 150
-      institutions in each ranking.
-    </p>
+    <!-- What the ranking measures, with the user guide at its right-hand end.
+         The guide sits here rather than in the control band because this is
+         the sentence a first-time reader finishes before wondering what to do
+         next. -->
+    <div class="intro">
+      <p class="intro-text">
+        A global ranking of universities and schools based on graduate career outcomes
+        across four key areas of the AI &amp; tech economy, showing the Top 150
+        institutions in each ranking.
+      </p>
+      <button id="guide-open" class="chip chip-on-blue" type="button" aria-expanded="false">
+        How to use this map
+      </button>
+    </div>
 
-    <!-- Ranking + measure selectors -->
+    <!-- Controls. Two rows, each control carrying its own explainer. -->
     <div class="toolbar">
       <div class="toolbar-row">
         <div class="toolbar-group">
@@ -1671,6 +1886,8 @@
             <button type="button" class="view-button is-active" data-view="country">Countries / Hubs</button>
             <button type="button" class="view-button" data-view="institution">Institutions</button>
           </div>
+          <button class="info-button" type="button" data-explain="view"
+                  aria-label="What the two views show">i</button>
         </div>
 
         <div class="toolbar-group">
@@ -1678,114 +1895,97 @@
             <input type="checkbox" id="hub-toggle" checked>
             <span>Show hubs</span>
           </label>
+          <button class="info-button" type="button" data-explain="hubs"
+                  aria-label="What a hub is">i</button>
         </div>
 
         <div class="toolbar-group">
           <label class="toolbar-label" for="metric-selector">Measure</label>
-          <select id="metric-selector" class="metric-selector"></select>
-          <button id="dl-points-help" class="help-button" type="button" aria-expanded="false">
-            What are DL Points?
-          </button>
+          <select id="metric-selector" class="select-control"></select>
+          <button class="info-button" type="button" data-explain="measure"
+                  aria-label="What DL Points are">i</button>
         </div>
       </div>
 
       <div class="toolbar-row">
         <div class="toolbar-group">
           <span class="toolbar-label">Rankings</span>
+          <!-- The Next 50 button is declared here and moved next to Global by
+               buildModuleSelector(), which rebuilds that list from the data. -->
           <div id="module-selector" class="module-selector"></div>
+          <button type="button" id="next50-toggle" class="chip tier-button"
+                  aria-pressed="false">NEW 50 <span class="chip-rule">|</span> 151&ndash;200</button>
+          <button class="info-button" type="button" data-explain="rankings"
+                  aria-label="What the rankings are">i</button>
         </div>
 
         <div class="toolbar-group">
-          <button type="button" id="next50-toggle" class="tier-button"
-                  aria-pressed="false">Next 50</button>
-        </div>
-
-        <div class="toolbar-group">
+          <span class="toolbar-label">Filter</span>
           <div id="filters" class="filters"></div>
+        </div>
+
+        <div class="toolbar-group toolbar-group-end">
+          <button id="download-dataset" class="chip is-quiet" type="button">
+            Download dataset
+          </button>
+          <button class="info-button" type="button" data-explain="download"
+                  aria-label="What the download contains">i</button>
         </div>
       </div>
     </div>
 
-    <p id="scope-banner" class="scope-banner"></p>
+    <!-- The key. It used to be two SVG groups in the bottom-left corner of the
+         map, which is the last place a reader looks. It is now the first thing
+         under the controls. -->
+    <div id="map-key" class="map-key"></div>
 
-    <!-- DL Points explainer -->
-    <div id="dl-points-panel" class="help-panel" role="dialog" aria-labelledby="dl-points-title" hidden>
-      <h2 id="dl-points-title">What are DL Points?</h2>
-
-      <p class="help-lede">
-        DL Points are a simple scoring mechanism that lets you compare one
-        country against another, and one institution against another, on a
-        single scale.
-      </p>
-
-      <p>
-        They are not a separate ranking or a sixth module. They are a way of
-        turning ranking positions into a number you can add up and compare.
-      </p>
-
-      <h3>How the score works</h3>
-
-      <p>
-        Each ranking places 150 institutions. An institution&rsquo;s DL Points come
-        from where it sits on that 1&ndash;150 scale: the higher the position, the
-        higher the score.
-      </p>
-
-      <table class="help-table">
-        <tr><th>An institution ranked…</th><th>…scores</th></tr>
-        <tr><td>1st</td><td>150 points</td></tr>
-        <tr><td>50th</td><td>101 points</td></tr>
-        <tr><td>100th</td><td>51 points</td></tr>
-        <tr><td>150th</td><td>1 point</td></tr>
-      </table>
-
-      <p>
-        A country&rsquo;s score is all of its institutions&rsquo; points added together.
-      </p>
-
-      <h3>And the other measures?</h3>
-
-      <p>
-        Talent density divides this total by a country&rsquo;s population, asking who
-        does most with what they have. Evolution compares the DL25 and DL26
-        editions.
-      </p>
-
-      <button id="dl-points-close" class="help-close" type="button">Close</button>
+    <!-- One popover, anchored to whichever control asked for it. Filled by
+         openPop() in index.js. -->
+    <div id="control-pop" class="control-pop" role="dialog" aria-live="polite" hidden>
+      <div class="pop-head">
+        <h2 class="pop-title"></h2>
+        <button class="pop-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <div class="pop-body"></div>
     </div>
 
-    <!-- Module explainer — filled from MODULE_DESCRIPTIONS when a ranking is picked -->
-    <div id="module-panel" class="module-panel" role="dialog" aria-labelledby="module-panel-title" hidden>
-      <h2 id="module-panel-title"></h2>
-      <p id="module-panel-body"></p>
-      <button id="module-panel-close" class="help-close" type="button">Close</button>
-    </div>
+    <!-- User guide -->
+    <div id="guide-panel" class="guide-panel" role="dialog"
+         aria-labelledby="guide-title" hidden>
+      <div class="pop-head">
+        <h2 id="guide-title" class="pop-title">How to use this map</h2>
+        <button id="guide-close" class="pop-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <div class="pop-body">
+        <p class="pop-lede">
+          One global ranking and four specialist ones, mapped across 41 countries
+          and 15 hubs. Pick a ranking, choose how to measure it, then click any
+          country, hub or institution to open its card.
+        </p>
 
-    <!-- Next 50 explainer -->
-    <div id="next50-panel" class="module-panel is-next50-panel" role="dialog"
-         aria-labelledby="next50-panel-title" hidden>
-      <h2 id="next50-panel-title">THE NEXT 50</h2>
+        <h3>What each control does</h3>
+        <ul class="guide-list">
+          <li><strong>View</strong> switches between the world coloured by score,
+          and every ranked institution plotted as a dot.</li>
+          <li><strong>Rankings</strong> moves the whole map to Global or to one of
+          the four areas. <strong>Next 50</strong> extends Global to 200 places.</li>
+          <li><strong>Measure</strong> reads the map three ways: overall strength,
+          talent density against population, or <strong>evolution</strong> between
+          the DL25 and DL26 editions.</li>
+          <li><strong>Show hubs</strong> draws each city cluster as a bubble sized
+          by the weight of the institutions in it, so you can see where the
+          ranking concentrates.</li>
+          <li><strong>Filter</strong> narrows to a type of institution or to the
+          top of the ranking. Every figure on screen follows.</li>
+        </ul>
 
-      <p class="next50-lede">
-        A spotlight on the institutions ranked <strong>151st to 200th in the Global
-        Ranking</strong>, completing the <strong>Digital Leaders Global Top 200</strong>.
-      </p>
-
-      <p>
-        Turning this on adds the Next 50 to the Institution view in
-        <strong>orange</strong>, alongside the Top 150. The Next 50 are also assessed
-        across Data &amp; AI, Computer Science, Digital Transformation and
-        Entrepreneurship, with some institutions ranking beyond the published Top 150
-        in these areas. <em>However, the Next 50 feature only displays them in the
-        Global Ranking Institution view.</em>
-      </p>
-
-      <p class="commercial-cta">
-        Want to access their DL Points or benchmark an institution against its peers?
-        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
-      </p>
-
-      <button id="next50-panel-close" class="help-close" type="button">Close</button>
+        <h3>Finding your way</h3>
+        <p>Click a country to drill into it, then a hub inside it. Search flies
+        straight to any country, hub or school. <strong>Reset view</strong>, at the
+        top right of the map, returns to the whole world.</p>
+        <p>Every control has an <span class="info-button is-inline">i</span> beside
+        it that explains it in place.</p>
+      </div>
     </div>
 
     <!-- Main content -->
@@ -1793,6 +1993,8 @@
       <!-- Map container -->
       <div id="map-container">
         <nav id="breadcrumb" aria-label="Drill-down"></nav>
+        <button id="reset-zoom" class="chip map-reset" type="button"
+                title="Return to the whole-world view">Reset view</button>
         <div class="zoom-controls" role="group" aria-label="Zoom">
           <button type="button" id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
           <button type="button" id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
@@ -1810,6 +2012,7 @@
 
   <!-- D3 Visualization Scripts -->
   <script src="./scales.js"></script>
+  <script src="./xlsx.js"></script>
   <script src="./index.js"></script>
 
   <!-- Initialize -->
@@ -1831,50 +2034,74 @@
         window.DigitalLeadersMap.buildFilters(context);
         window.DigitalLeadersMap.buildSearch(context);
 
-        // DL Points explainer
-        const helpPanel = document.getElementById('dl-points-panel');
-        const helpButton = document.getElementById('dl-points-help');
+        // Every control explains itself, in a popover anchored to it.
+        // The filter controls wire their own, because their markup is rebuilt
+        // from the data; these are the ones declared in this page.
+        const map = window.DigitalLeadersMap;
+        map.wireExplainers(document);
 
-        const setHelpOpen = (open) => {
-          helpPanel.toggleAttribute('hidden', !open);
-          helpButton.setAttribute('aria-expanded', String(open));
+        const pop = document.getElementById('control-pop');
+        pop.querySelector('.pop-close')
+          .addEventListener('click', () => map.closePop());
+
+        // A click inside the popover must not reach the document handler that
+        // closes it, or picking up a link inside it would dismiss it first.
+        pop.addEventListener('click', (event) => event.stopPropagation());
+
+        document.addEventListener('click', (event) => {
+          if (!event.target.closest('[data-explain], .module-button, #next50-toggle')) {
+            map.closePop();
+          }
+        });
+
+        // The popover is positioned against its anchor in viewport pixels, so
+        // anything that moves the anchor has to close it rather than leave it
+        // pointing at nothing.
+        window.addEventListener('resize', () => map.closePop());
+
+        // Dataset export
+        document.getElementById('download-dataset').addEventListener('click', () => {
+          map.exportDataset(context);
+        });
+
+        // User guide
+        const guide = document.getElementById('guide-panel');
+        const guideButton = document.getElementById('guide-open');
+
+        const setGuideOpen = (open) => {
+          guide.toggleAttribute('hidden', !open);
+          guideButton.setAttribute('aria-expanded', String(open));
+          if (open) map.closePop();
         };
 
-        helpButton.addEventListener('click', () => {
-          setHelpOpen(helpPanel.hasAttribute('hidden'));
+        guideButton.addEventListener('click', () => setGuideOpen(guide.hasAttribute('hidden')));
+        document.getElementById('guide-close')
+          .addEventListener('click', () => setGuideOpen(false));
+
+        // Next 50: toggles the tier and explains what it is
+        document.getElementById('next50-toggle').addEventListener('click', (event) => {
+          event.stopPropagation();
+          const on = !map.getState().showNext50;
+          map.update(context, { showNext50: on });
+          map.showNext50Panel();
         });
-        document.getElementById('dl-points-close')
-          .addEventListener('click', () => setHelpOpen(false));
 
-        // Ranking explainer
-        document.getElementById('module-panel-close')
-          .addEventListener('click', () => window.DigitalLeadersMap.hideModulePanel());
+        // A ranking button both selects and explains, so its click must not
+        // reach the dismiss handler above.
+        document.getElementById('module-selector')
+          .addEventListener('click', (event) => event.stopPropagation());
 
-
-        // Next 50 — toggles the tier and explains what it is
-        document.getElementById('next50-toggle').addEventListener('click', () => {
-          const on = !window.DigitalLeadersMap.getState().showNext50;
-          window.DigitalLeadersMap.update(context, { showNext50: on });
-          window.DigitalLeadersMap.showNext50Panel();
-        });
-        document.getElementById('next50-panel-close')
-          .addEventListener('click', () => window.DigitalLeadersMap.hideNext50Panel());
         document.addEventListener('keydown', (e) => {
           if (e.key !== 'Escape') return;
-          // Escape closes the explainer first, then clears any selection.
-          // Escape closes the explainer first, then walks back up the
-          // drill-down one level at a time: hub → country → world.
-          const map = window.DigitalLeadersMap;
+
+          // Escape closes what is open, innermost first, then walks back up the
+          // drill-down one level at a time: hub, country, world.
           const state = map.getState();
 
-          const modulePanel = document.getElementById('module-panel');
-
-          if (!helpPanel.hasAttribute('hidden')) {
-            setHelpOpen(false);
-          } else if (!modulePanel.hasAttribute('hidden')) {
-            map.hideModulePanel();
-          } else if (!document.getElementById('next50-panel').hasAttribute('hidden')) {
-            map.hideNext50Panel();
+          if (!guide.hasAttribute('hidden')) {
+            setGuideOpen(false);
+          } else if (map.isPopOpen()) {
+            map.closePop();
           } else if (state.selectedInstitution) {
             map.update(context, { selectedInstitution: null });
             map.resetZoom(context);
@@ -1887,17 +2114,14 @@
           }
         });
 
-        // Reset view: back to the whole world, selection cleared
+        // Reset view: back to the whole world, selection cleared. It lives on
+        // the map itself now, top right, beside the zoom stack.
         document.getElementById('reset-zoom').addEventListener('click', () => {
-          window.DigitalLeadersMap.update(context, {
-            selectedCountry: null,
-            selectedHub: null
-          });
-          window.DigitalLeadersMap.resetZoom(context);
+          map.update(context, { selectedCountry: null, selectedHub: null });
+          map.resetZoom(context);
         });
 
         // Zoom controls
-        const map = window.DigitalLeadersMap;
         document.getElementById('zoom-in')
           .addEventListener('click', () => map.zoomBy(context, 1.6));
         document.getElementById('zoom-out')

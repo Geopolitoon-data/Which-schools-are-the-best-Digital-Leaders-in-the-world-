@@ -9,14 +9,31 @@ const scales = (() => {
   // ========================================================================
 
   // ------------------------------------------------------------------------
-  // Country fills use the Emerging palette and nothing else:
-  //   navy #0F1374 · periwinkle #4B5BCB · orange #FF4901
-  //   salmon #FF9E79 · gold #DBB67D · maroon #860018
+  // THE COUNTRY RAMP: pale blue, periwinkle, indigo, violet.
   //
-  // The ramp climbs navy → periwinkle → orange → salmon, so intensity rises
-  // with the value and the busiest countries read as the most luminous.
+  // It used to top out in Emerging orange. That was wrong for a quantity.
+  // Orange sits next to red, and red on a map is read as a warning before it
+  // is read as a value: the United States looked flagged rather than first.
+  // A reader should not have to overrule an instinct to interpret a score.
+  //
+  // Blue through violet has no such baggage. It also stays monotonic in
+  // lightness, which is what actually makes a sequential scale legible:
+  // every step down the ramp is darker than the one before, so the order
+  // survives a greyscale print and the common forms of colour blindness.
+  //
+  //   #EAEEFC  L 92   the floor, barely off the paper
+  //   #A7B3EE  L 73
+  //   #5566D2  L 47
+  //   #4C1D95  L 22   the peak
+  //
+  // Green is deliberately NOT in this ramp. Green already means "rising" on
+  // the Evolution measure; using it for magnitude as well would make the one
+  // colour answer two different questions.
+  //
+  // Orange stays where it belongs: the interface accent, and the Global
+  // institution dots. Neither is a quantity.
   // ------------------------------------------------------------------------
-  const COUNTRY_RAMP = ['#0F1374', '#4B5BCB', '#FF4901', '#FF9E79'];
+  const COUNTRY_RAMP = ['#EAEEFC', '#A7B3EE', '#5566D2', '#4C1D95'];
 
   const dlPointsSequential = (maxValue) => {
     return d3.scaleLinear()
@@ -50,29 +67,30 @@ const scales = (() => {
     const absMax = Math.max(Math.abs(range[0]), Math.abs(range[1])) || 1;
     return d3.scaleDiverging()
       .domain([-absMax, 0, absMax])
-      .range(['#C21E2F', '#F2F0F4', '#0E8A5F'])
+      .range(['#C21E2F', '#EDEFF6', '#0E8A5F'])
       .clamp(true);
   };
 
-  // Per-capita strength: the same ramp, minus the darkest stop, so small
-  // high-density countries stay legible instead of sinking into the ground.
+  // Per-capita strength: the same ramp, minus the palest stop, so small
+  // high-density countries do not wash out into the sea.
   const perCapitaStrength = (maxValue) => {
     return d3.scaleLinear()
       .domain([0, maxValue * 0.5, maxValue])
-      .range(['#4B5BCB', '#FF4901', '#FF9E79'])
+      .range(['#C2CBF4', '#5566D2', '#4C1D95'])
       .clamp(true);
   };
 
   // One colour per ranking, matching MODULE_COLORS in index.js. Keep the two
-  // in step: green is Digital Transformation, mauve is Entrepreneurship.
+  // in step: Global is orange, green is Digital Transformation, violet is
+  // Entrepreneurship.
   const moduleColor = d3.scaleOrdinal()
     .domain(['global', 'AI', 'CS', 'transform', 'create'])
-    .range(['#0F1374', '#EFB41C', '#B87308', '#93B23C', '#9B1FD8']);
+    .range(['#FF4901', '#EFB41C', '#B87308', '#93B23C', '#9B1FD8']);
 
   // Categorical: 5 Emerging brand colors
   const categorical = d3.scaleOrdinal()
     .domain(['AI', 'CS', 'Transform', 'Create', 'Global'])
-    .range(['#4B5BCB', '#FF4901', '#DBB67D', '#FF9E79', '#0F1374']);
+    .range(['#4B5BCB', '#FF4901', '#FF9E79', '#93B23C', '#0F1374']);
 
   // ========================================================================
   // SIZE SCALES
@@ -113,9 +131,9 @@ const scales = (() => {
       dlPoints: dlPointsScale(maxValue),
       perCapita: perCapitaStrength(maxValue),
       delta: editionDelta(range || [-50, 50]),
-      top50Count: d3.scaleLinear().domain([0, 5]).range(['#0F1374', '#FF9E79']),
-      breadth: d3.scaleLinear().domain([0, 5]).range(['#0F1374', '#DBB67D']),
-      concentration: d3.scaleLinear().domain([0, 100]).range(['#0F1374', '#FF4901'])
+      top50Count: d3.scaleLinear().domain([0, 5]).range(['#EAEEFC', '#4C1D95']),
+      breadth: d3.scaleLinear().domain([0, 5]).range(['#EAEEFC', '#5566D2']),
+      concentration: d3.scaleLinear().domain([0, 100]).range(['#EAEEFC', '#4C1D95'])
     };
     return scaleMap[metric] || dlPointsSequential(maxValue);
   };
@@ -131,7 +149,7 @@ const scales = (() => {
 
   // Format data value for display
   const formatDataValue = (value, metric) => {
-    if (value === null || value === undefined) return '—';
+    if (value === null || value === undefined) return 'n/a';
 
     const formatters = {
       dlPoints: (v) => Math.round(v).toLocaleString(),

@@ -133,7 +133,7 @@ To force a refresh of a mutable URL: `https://purge.jsdelivr.net/gh/<org>/<repo>
 | `index.html` | The page. Markup, all component CSS in one `<style>` block, and the bootstrap script that wires the controls at the bottom. **The Digital Leaders logo is inline SVG here** — see §6. |
 | `index.js` | The whole map, ~2,600 lines. Exposes `window.DigitalLeadersMap`. Sections are signposted with banner comments: config, state, init, rendering, filtering/aggregation, metrics, controls, search, map layers, zoom, detail panels. |
 | `scales.js` | D3 colour and size scales, and value formatting. The country ramp and the per-ranking colours live here and must stay in step with `MODULE_COLORS` in `index.js`. |
-| `tokens.css` | Design tokens — Emerging palette, Digital Leaders blue, type scale, spacing, radii — plus the SVG map element styles (`.country`, `.hub`, `.institution-dot`, legend). |
+| `tokens.css` | Design tokens: Emerging palette, Digital Leaders blue, type scale, spacing, radii, plus the SVG map element styles (`.country`, `.hub`, `.institution-dot`). **The theme is light**, so every surface token is a paper value and the country ramp runs pale to orange. `--color-gold` is retired and aliases to the orange accent. |
 | `serve.py` | Development server. Threaded, sends `no-store`, and version-stamps asset URLs. Not needed in production. |
 
 ### Data
@@ -195,7 +195,8 @@ changed:
 
 - USA reads **44** ranked institutions in Data and AI and **62** in Computer Science
 - Golden Triangle reads **7** in Global
-- the banner reads **265 institutions · 41 countries · 15 hubs**
+- the key strip under the controls reads
+  **264 institutions · 41 countries · 15 hubs**
 
 If those drift, something upstream broke.
 
@@ -241,12 +242,28 @@ separate them. A collision relaxation runs in screen space and re-runs when a
 zoom gesture settles; it self-cancels as real separation grows. Dots are only
 ever displaced where they would otherwise be indistinguishable.
 
-**Colour tokens come in pairs.** Several brand colours are unreadable as text
-on the dark surfaces — the Digital Leaders blue measures 2.47:1 on the hover
-card. Tokens ending `-text` (`--color-dl-blue-text`, `--color-rising-text`,
-`--color-falling-text`) are lifted variants for type; borders and fills use the
-true colour. `readableOn()` in `index.js` does the same at runtime for the
-per-ranking colours.
+**`readableOn()` moves a colour toward the background, not always upward.**
+A brand colour picked to work as a fill is rarely readable as type. On the old
+dark surfaces the fix was always to lighten it; on paper it is always to darken
+it, and the function now picks the direction from the background's luminance.
+If you ever put a control back on a dark ground, it will lift the colour again
+on its own. The `-text` token pairs (`--color-dl-blue-text`,
+`--color-rising-text`, `--color-falling-text`) survive for the same reason, but
+on white most of them now resolve to the true brand colour.
+
+**The key and the coverage line are HTML, not SVG.** They used to be two `<g>`
+groups pinned to the bottom-left corner of the map. They are now `#map-key`,
+a strip directly under the control band, filled by `renderKey()`. If you need
+to add something to the key, add it there: there is no longer a legend layer
+in the SVG, and putting one back at the top of the map would collide with the
+breadcrumb.
+
+**One popover explains every control.** `#control-pop` is positioned against
+whichever control asked for it, in viewport pixels. That is why anything which
+moves a control (a resize) closes it rather than repositioning it. Adding a
+control to the band means adding a `data-explain="key"` attribute and an entry
+in `CONTROL_EXPLAINERS`; `wireExplainers()` does the rest, and has to be called
+again for any markup built from the data (`buildFilters()` does).
 
 ---
 

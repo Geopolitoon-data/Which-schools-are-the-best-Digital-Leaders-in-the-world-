@@ -1,6 +1,15 @@
 /**
  * DESIGN TOKENS & CSS VARIABLES
  * Emerging brand palette + typography + spacing + scales
+ *
+ * EDITORIAL LIGHT. The page is paper: light ground, ink type, hairline rules.
+ * Two things stay exactly as they were, because they are the brand:
+ *   1. the Digital Leaders blue banner (--color-dl-blue, #1839E2)
+ *   2. the accent, which is Emerging orange (--color-orange, #FF4901)
+ *
+ * Gold (#DBB67D) has been retired from this interface. It is the GEURS
+ * colour and does not belong to Digital Leaders. --color-gold is kept as an
+ * alias so no rule breaks, but it now resolves to the orange accent.
  */
 
 :root {
@@ -11,70 +20,92 @@
   /* Primary Colors */
   --color-navy: #0F1374;
 
-  /* Digital Leaders blue, as used on the website. Header and the measure
-     banner sit on it. */
+  /* Digital Leaders blue, as used on the website. The header band and the
+     intro band sit on it. Do not change this value. */
   --color-dl-blue: #1839E2;
 
-  /* The same blue lifted for use as TEXT on a dark surface. At full strength
-     it measures 2.47:1 on the hover card and cannot be read; this clears
-     4.5:1 while staying recognisably the brand blue. Borders and fills keep
-     the true colour above. */
-  --color-dl-blue-text: #5D74EB;
+  /* On a light ground the true blue is readable as type at 7.4:1, so the
+     lifted variant the dark theme needed now simply resolves to the brand
+     blue itself. */
+  --color-dl-blue-text: #1839E2;
 
-  /* The map canvas (sea). Sits in the Emerging navy family above, so the page
-     is grounded in the brand colour while the brighter Digital Leaders blue
-     stays an accent in the header.
-     Deliberately LIGHTER than the ramp's lowest stop: a canvas level with navy
-     in brightness makes low-scoring countries disappear (a mid-tone like
-     #1E2569 measures 1.12:1 against navy — effectively invisible). At #323A8C
-     the gap is 1.55:1. */
-  --color-navy-dark: #323A8C;
+  /* The map canvas (sea). Pale enough to read as paper, cool enough to still
+     say "water", and clearly separated from the unranked land above it. */
+  --color-navy-dark: #EAEDF7;
 
-  /* Chrome — toolbar and side panel. Kept below the canvas so the map reads
-     as the lit surface, but no darker than that: at #14184A the control band
-     was so dark that its own labels sat at 3.31:1 and read as invisible. */
-  --color-navy-darker: #242B66;
+  /* Chrome: the control band and the side panel. White, so the controls read
+     as page furniture and the map is the only coloured surface. */
+  --color-navy-darker: #FFFFFF;
 
-  /* Land with no ranking. It must be LIGHTER than the canvas: darkening it
-     instead walks it straight into the navy ramp stop, indistinguishable from
-     a low-scoring country. Lighter separates it from both the sea and the
-     ranked ramp, and matches the usual convention of land over water. */
-  --color-land-unranked: #6E74AE;
+  /* Land with no ranking. Sits BETWEEN the sea and the lightest ramp stop:
+     darker than the water so the coastline reads without a stroke, lighter
+     than any scored country so it never passes for a low score. */
+  --color-land-unranked: #D2D7E6;
 
-  --color-navy-light: #3D3E7A;
+  /* One step down again, for the "not ranked" swatch and dimmed land. */
+  --color-navy-light: #BFC5DA;
 
-  --color-gold: #DBB67D;
-  --color-blue: #4B5BCB;
+  /* The accent. Emerging orange: the selected state, the active ranking, and
+     the Global institution dots. It is deliberately NOT in the country ramp.
+     Orange sits next to red, and a reader takes red on a map for a warning
+     before they take it for a large number. The ramp is blue to violet. */
   --color-orange: #FF4901;
+
+  /* The same orange, lightened. This is the Next 50 tier: visibly the same
+     family as Global, one step down. */
+  --color-orange-soft: #FF9E79;
+
+  /* A tint of the accent, for the soft fill behind a selected control. */
+  --color-orange-wash: #FFEDE4;
+
+  /* Retired. Kept as an alias so older rules resolve to the accent instead
+     of to a colour that belongs to another product. */
+  --color-gold: #FF4901;
+
+  --color-blue: #4B5BCB;
   --color-maroon: #860018;
   --color-coral: #FF9E79;
 
+  /* Pill controls, as used on the Digital Leaders website: a pale periwinkle
+     capsule with navy type, turning solid orange with white type when it is
+     the one selected. */
+  --chip-bg: #E5E9FB;
+  --chip-bg-hover: #D6DDF8;
+  --chip-ink: #0F1374;
+  --chip-border: #CCD5F6;
+  --chip-bg-active: #FF4901;
+  --chip-ink-active: #FFFFFF;
+
+  /* The same capsule where it sits ON the blue banner, which needs a lighter
+     ground to hold its own against #1839E2. */
+  --chip-on-blue-bg: #C9D2F7;
+  --chip-on-blue-hover: #DCE2FB;
+
   /* Semantic Colors */
-  --color-text: #FFFFFF;
-  --color-text-secondary: #B8B8D4;
-  /* Lifted from #6B6C8F, which failed on the control band (2.58:1 there).
-     Muted still means quieter than secondary — not unreadable. */
-  --color-text-muted: #9EA1C6;
-  --color-background: #0F1374;
-  --color-background-elevated: #1D2154;
-  --color-border: #454C99;
+  --color-text: #14163A;
+  --color-text-secondary: #4A4E77;
+  --color-text-muted: #7B7FA3;
+  --color-background: #F4F5FA;
+  --color-background-elevated: #FFFFFF;
+  --color-border: #DDE0EC;
+  --color-border-strong: #C6CBDE;
 
-  --color-success: #4CAF50;
-  --color-warning: #FF9E79;
-  --color-error: #FF4901;
-  --color-info: #4B5BCB;
+  --color-success: #0E8A5F;
+  --color-warning: #B85C12;
+  --color-error: #C8300A;
+  --color-info: #1839E2;
 
-  /* Evolution (DL25 → DL26). Direction has to read without a legend, so this
-     is the one encoding that leaves the brand palette for the universal
-     red/green convention. Both are pulled toward the brand's depth rather
-     than signal-bright. */
+  /* Evolution (DL25 to DL26). Direction has to read without a legend, so
+     this is the one encoding that leaves the brand palette for the universal
+     red/green convention. */
   --color-rising: #0E8A5F;
   --color-falling: #C21E2F;
 
-  /* The same pair lifted for use as TEXT on the dark panel, where the map
-     colours measure 3.83:1 and 2.80:1 and are too weak to read. */
-  --color-rising-text: #26966F;
-  --color-falling-text: #D4626D;
+  /* The same pair as type on white. The map fills are already dark enough to
+     read on paper, so these barely move; they exist so the pairing stays
+     explicit if either fill is ever lightened. */
+  --color-rising-text: #0B7350;
+  --color-falling-text: #AE1B2A;
 
   /* ====================================================================
      TYPOGRAPHY - MONTSERRAT
@@ -132,13 +163,15 @@
 
   /* ====================================================================
      SHADOWS
+     Light theme: a shadow is how a surface lifts off paper, so they are
+     tinted with the brand navy rather than neutral black.
      ==================================================================== */
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px 0 rgba(15, 19, 116, 0.06);
+  --shadow-base: 0 1px 3px 0 rgba(15, 19, 116, 0.10), 0 1px 2px 0 rgba(15, 19, 116, 0.06);
+  --shadow-md: 0 4px 10px -2px rgba(15, 19, 116, 0.12), 0 2px 4px -1px rgba(15, 19, 116, 0.06);
+  --shadow-lg: 0 10px 24px -6px rgba(15, 19, 116, 0.16), 0 4px 8px -4px rgba(15, 19, 116, 0.08);
+  --shadow-xl: 0 20px 44px -10px rgba(15, 19, 116, 0.20), 0 8px 16px -8px rgba(15, 19, 116, 0.10);
 
   /* ====================================================================
      OPACITY
@@ -202,25 +235,31 @@
 
   /* ====================================================================
      DATA VISUALIZATION SCALES
+
+     Blue through violet, lightest at the bottom. Orange was tried at the
+     top and retired: next to red, it reads as a warning rather than as a
+     large number. Green is reserved for the Evolution measure, where it
+     means "rising", so it is kept out of the magnitude ramp.
+
+     Keep these in step with COUNTRY_RAMP in scales.js.
      ==================================================================== */
 
-  /* Sequential scale: Navy → Gold → Coral */
-  --scale-seq-0: #0F1374;
-  --scale-seq-25: #4B5BCB;
-  --scale-seq-50: #DBB67D;
-  --scale-seq-75: #FF9E79;
-  --scale-seq-100: #FF4901;
+  --scale-seq-0: #EAEEFC;
+  --scale-seq-25: #A7B3EE;
+  --scale-seq-50: #5566D2;
+  --scale-seq-75: #6B3CA8;
+  --scale-seq-100: #4C1D95;
 
-  /* Diverging scale: Maroon ← White → Gold */
-  --scale-div-neg: #860018;
-  --scale-div-zero: #FFFFFF;
-  --scale-div-pos: #DBB67D;
+  /* Diverging: maroon, through the page ground, to green */
+  --scale-div-neg: #C21E2F;
+  --scale-div-zero: #EDEFF6;
+  --scale-div-pos: #0E8A5F;
 
-  /* Categorical scale: 5 colors */
-  --scale-cat-1: #0F1374;
+  /* Categorical: 5 colors */
+  --scale-cat-1: #1839E2;
   --scale-cat-2: #4B5BCB;
-  --scale-cat-3: #DBB67D;
-  --scale-cat-4: #FF9E79;
+  --scale-cat-3: #FF9E79;
+  --scale-cat-4: #93B23C;
   --scale-cat-5: #FF4901;
 }
 
@@ -228,12 +267,13 @@
    D3 ELEMENT STYLES
    ======================================================================== */
 
-/* Graticule */
+/* Graticule. White lines vanish on a pale sea, so the grid is drawn in the
+   brand blue at very low opacity instead. */
 .graticule {
   fill: none;
-  stroke: #FFFFFF;
+  stroke: #1839E2;
   stroke-width: 0.5px;
-  stroke-opacity: 0.07;
+  stroke-opacity: 0.09;
 }
 
 /* Sphere (the ocean behind everything) */
@@ -258,7 +298,7 @@
 
 .country.is-unranked {
   fill: var(--color-land-unranked);
-  opacity: var(--opacity-80);
+  opacity: var(--opacity-90);
   cursor: default;
 }
 
@@ -266,7 +306,7 @@
    same neutral tone so the coloured dots are the only encoding on screen. */
 .country.is-basemap {
   fill: var(--color-land-unranked);
-  opacity: var(--opacity-80);
+  opacity: var(--opacity-90);
   cursor: default;
 }
 
@@ -276,75 +316,77 @@
 
 /* Ranked, but no figures for the metric currently on screen. Distinct from
    "not ranked" so the reader can tell "we have no number" from "they are not
-   in the ranking" — and, critically, so it never falls through to SVG's
-   black. Every country now carries population and GDP, so this state should
-   be rare; it stays as a guard. */
+   in the ranking", and so it never falls through to SVG's black. */
 .country.is-nodata {
-  fill: var(--color-text-muted);
-  opacity: var(--opacity-40);
+  fill: #E3E5EF;
+  opacity: var(--opacity-100);
 }
 
 .city-state.is-nodata .city-state-dot {
-  fill: var(--color-text-muted);
-  opacity: var(--opacity-40);
+  fill: #E3E5EF;
+  opacity: var(--opacity-100);
 }
 
+/* Hover and selection are drawn in the accent, because on paper a white
+   stroke no longer reads as emphasis. */
 .country.is-ranked:hover {
-  stroke: #FFFFFF;
+  stroke: var(--color-orange);
   stroke-width: 2px;
 }
 
 .country.active {
-  stroke: #FFFFFF;
+  stroke: var(--color-orange);
   stroke-width: 2.5px;
 }
 
-/* Institution dots — one colour per module, drawn in the institution view */
+/* Institution dots, one colour per ranking, drawn in the institution view */
 .institution-dot {
   stroke: #FFFFFF;
-  stroke-width: 1px;
+  stroke-width: 1.2px;
   vector-effect: non-scaling-stroke;
   cursor: pointer;
   transition: opacity var(--transition-fast);
 }
 
 .institution-dot:hover {
+  stroke: var(--color-navy);
   stroke-width: 2px;
 }
 
 .institution-dot.active {
+  stroke: var(--color-navy);
   stroke-width: 2.5px;
 }
 
-/* Next 50 — ranked 151-200 in the Global ranking, listed but not scored.
-   Drawn hollow in the module colour so it reads as the same ranking, one
-   tier down, rather than as a different kind of thing. */
+/* Next 50: ranks 151 to 200 in the Global ranking. Same family as Global,
+   one tier down, so it carries the lighter orange rather than a hollow ring. */
 .institution-dot.is-next50 {
-  stroke-width: 1.6px;
+  stroke: #FFFFFF;
+  stroke-width: 1.2px;
 }
 
-/* City-state markers — countries with no polygon at 110m (Singapore, Hong Kong) */
+/* City-state markers: countries with no polygon at 110m (Singapore, Hong Kong) */
 .city-state {
   cursor: pointer;
 }
 
 .city-state-halo {
   fill: none;
-  stroke: var(--color-navy-darker);
+  stroke: #FFFFFF;
   stroke-width: 2px;
   vector-effect: non-scaling-stroke;
 }
 
 .city-state-dot {
-  stroke: var(--color-text);
+  stroke: #FFFFFF;
   stroke-width: 1px;
   vector-effect: non-scaling-stroke;
   transition: fill var(--transition-base);
 }
 
-/* Filtered out entirely — matches how excluded countries are dimmed. */
+/* Filtered out entirely. Matches how excluded countries are dimmed. */
 .city-state.is-filtered-out {
-  opacity: var(--opacity-30);
+  opacity: var(--opacity-40);
 }
 
 .city-state.is-filtered-out .city-state-dot {
@@ -353,71 +395,49 @@
 
 .city-state:hover .city-state-halo,
 .city-state.active .city-state-halo {
-  stroke: var(--color-gold);
+  stroke: var(--color-orange);
   stroke-width: 3px;
 }
 
 /* Hub bubble.
    Size carries DL Points; the fill is deliberately uniform and translucent so
    the layer reads as an annotation on top of the choropleth rather than a
-   second colour encoding competing with it. */
+   second colour encoding competing with it. On paper the translucent white of
+   the dark theme was invisible, so the bubble is now a navy wash with a navy
+   edge. */
 .hub {
   cursor: pointer;
 }
 
 .hub-bubble {
-  fill: rgba(255, 255, 255, 0.22);
-  stroke: var(--color-text);
+  fill: rgba(15, 19, 116, 0.10);
+  stroke: var(--color-navy);
   stroke-width: 1.25px;
+  stroke-opacity: 0.55;
   vector-effect: non-scaling-stroke;
   transition: fill var(--transition-fast), stroke var(--transition-fast);
 }
 
 .hub:hover .hub-bubble {
-  fill: rgba(219, 182, 125, 0.45);
-  stroke: var(--color-gold);
+  fill: rgba(255, 73, 1, 0.22);
+  stroke: var(--color-orange);
+  stroke-opacity: 1;
 }
 
 .hub.active .hub-bubble {
-  fill: rgba(219, 182, 125, 0.55);
-  stroke: var(--color-gold);
+  fill: rgba(255, 73, 1, 0.30);
+  stroke: var(--color-orange);
+  stroke-opacity: 1;
   stroke-width: 2.5px;
 }
 
-/* Legend */
-.legend {
-  background-color: rgba(15, 19, 116, 0.9);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  font-size: var(--font-size-xs);
-  box-shadow: var(--shadow-lg);
-}
-
-.legend-title {
-  font-weight: var(--font-weight-bold);
-  color: var(--color-gold);
-  margin-bottom: var(--spacing-sm);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
-  color: var(--color-text-secondary);
-}
-
-.legend-swatch {
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-}
-
-/* SVG legend (drawn by index.js) */
+/* SVG legend and caption.
+   The legend and the coverage caption no longer live in the bottom-left
+   corner of the map; they are HTML, in the key strip directly under the
+   control band. These rules remain so any SVG fallback still renders in the
+   light palette rather than in SVG's default black. */
 .legend-heading {
-  fill: var(--color-gold);
+  fill: var(--color-text);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--letter-spacing-wide);
@@ -429,19 +449,17 @@
 }
 
 .legend-swatch-unranked {
-  fill: var(--color-navy-light);
-  opacity: var(--opacity-30);
+  fill: var(--color-land-unranked);
 }
 
 .legend-swatch-nodata {
-  fill: var(--color-text-muted);
-  opacity: var(--opacity-40);
+  fill: #E3E5EF;
 }
 
 /* Tooltip */
 .tooltip {
-  background-color: rgba(15, 19, 116, 0.95);
-  border: 1px solid var(--color-gold);
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--spacing-sm);
   font-size: var(--font-size-xs);
@@ -452,7 +470,7 @@
 
 .tooltip-title {
   font-weight: var(--font-weight-bold);
-  color: var(--color-gold);
+  color: var(--color-text);
   margin-bottom: var(--spacing-xs);
 }
 
@@ -471,7 +489,8 @@
 
 /* Filters narrow what the whole map is showing, so the caption says so. */
 .caption.is-filtered {
-  fill: var(--color-gold);
+  fill: var(--color-orange);
+  color: var(--color-orange);
 }
 
 /* ========================================================================
@@ -480,37 +499,43 @@
 
 button {
   font-family: var(--font-family);
-  transition: all var(--transition-base);
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast);
 }
 
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-button:active {
-  transform: translateY(0);
-}
+/* Deliberately no lift-and-shadow on hover. On a light editorial page the
+   controls are set type in a capsule, not raised objects, and a translate on
+   every button made the whole toolbar twitch as the pointer crossed it. */
 
 select,
 input {
   font-family: var(--font-family);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-strong);
   padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-background-elevated);
+  background-color: #FFFFFF;
   color: var(--color-text);
-  transition: border-color var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 select:hover,
 input:hover {
-  border-color: var(--color-gold);
+  border-color: var(--color-orange);
 }
 
 select:focus,
 input:focus {
   outline: none;
-  border-color: var(--color-blue);
-  box-shadow: 0 0 0 3px rgba(75, 91, 203, 0.1);
+  border-color: var(--color-dl-blue);
+  box-shadow: 0 0 0 3px rgba(24, 57, 226, 0.15);
+}
+
+/* A visible focus ring on every control, which the dark theme never had.
+   On paper there is no glow to fall back on. */
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-dl-blue);
+  outline-offset: 2px;
 }

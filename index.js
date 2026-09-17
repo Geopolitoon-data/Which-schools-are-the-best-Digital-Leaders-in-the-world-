@@ -184,18 +184,16 @@ async function init(container) {
   const g = gMargin.append('g').attr('class', 'zoom-layer');
 
   // Create layer groups (document order sets paint order).
-  // Everything geographic goes inside `g` so it zooms and pans together;
-  // the legend and caption hang off the static group so they stay put.
+  // Everything geographic goes inside `g` so it zooms and pans together.
   const layers = {
     background: g.append('g').attr('class', 'layer-background'),
     graticule: g.append('g').attr('class', 'layer-graticule'),
     countries: g.append('g').attr('class', 'layer-countries'),
     cityStates: g.append('g').attr('class', 'layer-city-states'),
+    rankLabels: g.append('g').attr('class', 'layer-rank-labels'),
     hubs: g.append('g').attr('class', 'layer-hubs'),
     institutions: g.append('g').attr('class', 'layer-institutions'),
-    interactive: g.append('g').attr('class', 'layer-interactive'),
-    legend: gMargin.append('g').attr('class', 'layer-legend'),
-    caption: gMargin.append('g').attr('class', 'layer-caption')
+    interactive: g.append('g').attr('class', 'layer-interactive')
   };
 
   // Set up projection
@@ -446,6 +444,10 @@ function render(context, state, data) {
     drawCityStates(layers.cityStates, context, data, STATE, colorScale, agg);
   }
 
+  // The leaders wear their position on the map, so "who is first" needs no
+  // trip to the key.
+  drawRankLabels(layers.rankLabels, context, data, STATE, agg);
+
   // Hubs belong to the country view; the institution view replaces them with
   // per-institution dots so the two encodings never compete on one map.
   const institutionView = STATE.view === 'institution';
@@ -466,9 +468,7 @@ function render(context, state, data) {
   // their on-screen size after any redraw while zoomed in.
   rescaleMarkers(context);
 
-  renderBanner(STATE, data, agg);
-  drawLegend(layers.legend, STATE, data, values, colorScale, height, agg);
-  drawCaption(layers.caption, STATE, data, width, height, agg);
+  renderKey(STATE, data, values, colorScale, agg);
   renderBreadcrumb(context, STATE);
   renderDetailPanel(context, STATE, data, agg);
 
@@ -600,6 +600,69 @@ function buildAggregates(data, state) {
 // ============================================================================
 // METRIC ACCESS
 // ============================================================================
+
+/**
+ * The best-placed institution in a set, for the ranking on screen.
+ * Returns null when nothing in the set is ranked there.
+ */
+function topInstitution(institutions, state) {
+  let best = null;
+  let bestRank = Infinity;
+
+  institutions.forEach(institution => {
+    const rank = scoredRank(institution, state.selectedEdition, state.selectedModule);
+    if (rank !== null && rank < bestRank) {
+      bestRank = rank;
+      best = institution;
+    }
+  });
+
+  return best ? { institution: best, rank: bestRank } : null;
+}
+
+/**
+ * What a figure is worth, relative to the rest of the map.
+ *
+ * "154 DL Points" says nothing on its own. It is only meaningful against
+ * something: the leader, the total, or the field. This returns the one line
+ * that supplies that, phrased for the measure actually on screen, and is used
+ * by both the hover card and the country panel so the two never contextualise
+ * the same number differently.
+ */
+function metricContext(value, state, data, agg, kind = 'country') {
+  if (value === null || value === undefined || Number.isNaN(value)) return '';
+
+  const pool = kind === 'hub'
+    ? data.hubs.filter(h => agg.byHub.has(h.name))
+        .map(h => hubPoints(h, state, agg))
+    : data.countries.filter(c => agg.byCountry.has(c.name))
+        .map(c => countryMetricValue(c, state, agg));
+
+  const values = pool.filter(v => v !== null && !Number.isNaN(v));
+  if (!values.length) return '';
+
+  const max = Math.max(...values);
+
+  if (state.colorMetric === 'delta') {
+    // A change is already relative; what it needs is the size of the field
+    // it moved within, not a share of a total that can be negative.
+    const movers = values.filter(v => v !== 0).length;
+    return `${movers} of ${values.length} moved between the editions`;
+  }
+
+  if (state.colorMetric === 'perCapita') {
+    const median = values.slice().sort((a, b) => a - b)[Math.floor(values.length / 2)];
+    return `the leader has ${scales.formatDataValue(max, state.colorMetric)}, `
+      + `the median ${scales.formatDataValue(median, state.colorMetric)}`;
+  }
+
+  const total = values.reduce((sum, v) => sum + v, 0);
+  const share = total > 0 ? (value / total) * 100 : 0;
+  const shareText = share >= 1 ? share.toFixed(0) : share.toFixed(1);
+
+  return `${shareText}% of the ${Math.round(total).toLocaleString()} DL Points on screen`
+    + ` · the leader has ${Math.round(max).toLocaleString()}`;
+}
 
 /**
  * Resolve the number a country should be coloured by, for the current
@@ -796,9 +859,11 @@ const COMPETITOR_RANK_WEIGHT = 0.6;      // remainder goes to distance
 // NEXT50_MODULES. Selecting any other ranking has no Next 50 to show.
 const NEXT50_MODULES = ['global'];
 
-// Orange, from the brand palette. Global's own dots are navy, so the two tiers
-// stay clearly apart on the one map.
-const NEXT50_COLOR = '#FF4901';
+// The Next 50 is the same orange as Global, lightened. Reading the two tiers
+// as one family is the point: these are ranks 151 to 200 of the same ranking,
+// not a different kind of thing. Salmon #FF9E79 is the brand's own light
+// orange, so the pairing stays inside the palette.
+const NEXT50_COLOR = '#FF9E79';
 
 /**
  * One colour per ranking. This map is the single source of truth — the map
@@ -810,9 +875,11 @@ const NEXT50_COLOR = '#FF4901';
  * unchanged.
  */
 const MODULE_COLORS = {
-  global: '#0F1374',      // navy
-  AI: '#EFB41C',          // mustard, as Power – AI & Data on the DL site
-  CS: '#B87308',          // ochre — a deeper shade of the Data and AI mustard,
+  global: '#FF4901',      // Emerging orange. Global is the headline ranking and
+                          // now carries the brand accent; the Next 50 is the
+                          // same orange lightened, one tier down.
+  AI: '#EFB41C',          // mustard, as Power / AI & Data on the DL site
+  CS: '#B87308',          // ochre, a deeper shade of the Data and AI mustard,
                           // since both come from the same Power module
   transform: '#93B23C',   // olive green, as Transform on the DL site
   create: '#9B1FD8'       // violet, as Create on the DL site
@@ -834,11 +901,13 @@ function update(context, patch) {
   syncNext50Button();
 }
 
-// The elevated surface the explainer panels sit on, from tokens.css.
-const PANEL_BACKGROUND = '#1D2154';
+// The elevated surface the explainer popovers sit on, from tokens.css.
+// White now, which flips every contrast check below: a brand colour used as
+// type on this ground has to be DARKENED, not lifted.
+const PANEL_BACKGROUND = '#FFFFFF';
 
 // The hover card's own ground, for the same contrast checks.
-const HOVER_BACKGROUND = '#080B30';
+const HOVER_BACKGROUND = '#FFFFFF';
 
 /** Relative luminance, for contrast checks. */
 function luminance(hex) {
@@ -854,64 +923,281 @@ function contrast(a, b) {
 }
 
 /**
- * Lighten a colour just enough to be readable as text on `background`,
- * preserving its hue. A brand colour chosen to work as a fill is often far
- * too dark to double as type on a dark surface.
+ * Move a colour just far enough to be readable as text on `background`,
+ * preserving its hue.
+ *
+ * Direction is decided by the background, not assumed. The dark theme only
+ * ever needed to LIGHTEN a brand colour; on paper the opposite is true, and
+ * lightening here would have walked every module colour toward white on a
+ * white panel. So: a light ground darkens the colour, a dark ground lifts it.
+ * Mustard #EFB41C measures 1.8:1 on white and has to come down to roughly
+ * #7A5A00 before it is type rather than decoration.
  */
 function readableOn(colour, background, target = 4.5) {
+  const towardBlack = luminance(background) > 0.5;
   let result = colour;
-  for (let step = 0; step <= 17 && contrast(result, background) < target; step += 1) {
+  for (let step = 0; step <= 19 && contrast(result, background) < target; step += 1) {
     const amount = step * 0.05;
     result = '#' + [1, 3, 5].map(i => {
       const value = parseInt(colour.substr(i, 2), 16);
-      return Math.round(value + (255 - value) * amount).toString(16).padStart(2, '0');
+      const moved = towardBlack
+        ? value * (1 - amount)
+        : value + (255 - value) * amount;
+      return Math.round(moved).toString(16).padStart(2, '0');
     }).join('').toUpperCase();
   }
   return result;
 }
 
+// ============================================================================
+// CONTROL EXPLAINERS
+//
+// Every control explains itself, in a popover anchored to the control itself.
+//
+// This replaces three separate dialogs: a centred modal for DL Points, a
+// floating panel for the rankings, and another for the Next 50. All three
+// opened somewhere other than where the reader had just clicked, so the
+// explanation and the thing being explained were never on screen together.
+// One popover, positioned under whichever control asked for it, fixes that,
+// and means a new control only has to add an entry below to be documented.
+// ============================================================================
+
 /**
- * The explainer for a ranking, shown when its filter is clicked.
- * Closes on its own button, on Escape, or when another ranking is picked.
+ * What each control does, in the reader's terms rather than the data's.
+ * `title` heads the popover; `body` is HTML.
+ */
+const CONTROL_EXPLAINERS = {
+  view: {
+    title: 'View',
+    body: `
+      <p><strong>Countries / Hubs</strong> colours every country by its score and
+      draws a bubble over each hub, sized by the weight of the institutions in
+      it. Use it to read the world.</p>
+      <p><strong>Institutions</strong> drops the colouring and plots every ranked
+      school as a single dot where it actually sits. Use it to find a school.</p>`
+  },
+
+  hubs: {
+    title: 'Show hubs',
+    body: `
+      <p>A hub is a city or city-region that concentrates ranked institutions:
+      Greater Boston, the Golden Triangle, Greater Paris, and twelve others.</p>
+      <p>The bubble is sized by the DL Points of its members, so the biggest
+      circles are the places where the ranking is densest. Turn it off to read
+      the country colouring on its own.</p>`
+  },
+
+  measure: {
+    title: 'Measure',
+    body: `
+      <p class="pop-lede">DL Points are a simple scoring mechanism that lets you
+      compare one country against another, and one institution against another,
+      on a single scale.</p>
+      <p>They are not a separate ranking or a sixth module. They turn ranking
+      positions into a number you can add up.</p>
+      <h3>How the score works</h3>
+      <p>Each ranking places 150 institutions. An institution&rsquo;s DL Points come
+      from where it sits on that 1 to 150 scale: the higher the position, the
+      higher the score.</p>
+      <table class="pop-table">
+        <tr><th>An institution ranked</th><th>scores</th></tr>
+        <tr><td>1st</td><td>150 points</td></tr>
+        <tr><td>50th</td><td>101 points</td></tr>
+        <tr><td>100th</td><td>51 points</td></tr>
+        <tr><td>150th</td><td>1 point</td></tr>
+      </table>
+      <p>A country&rsquo;s score is all of its institutions&rsquo; points added
+      together.</p>
+      <h3>The three measures</h3>
+      <p><strong>Overall strength</strong> is that total.
+      <strong>Talent density</strong> divides it by population, asking who does
+      most with what they have. <strong>Evolution</strong> compares the DL25 and
+      DL26 editions: green is rising, red is falling.</p>`
+  },
+
+  rankings: {
+    title: 'Rankings',
+    body: `
+      <p>Five ways to read the same set of institutions. <strong>Global</strong>
+      is the combined ranking; the other four are the areas of the AI and tech
+      economy it is built from.</p>
+      <p>Pick one and the whole map follows it: the colouring, the dots, the hub
+      sizes and every card. Click a ranking a second time to read what it
+      covers.</p>`
+  },
+
+  next50: {
+    title: 'The Next 50',
+    body: `
+      <p class="pop-lede">A spotlight on the institutions ranked
+      <strong>151st to 200th in the Global Ranking</strong>, completing the
+      <strong>Digital Leaders Global Top 200</strong>.</p>
+      <p>Turning this on adds the Next 50 to the Institution view in
+      <strong>light orange</strong>, alongside the Top 150 in full orange. The
+      Next 50 are also assessed across Data and AI, Computer Science, Digital
+      Transformation and Entrepreneurship, with some institutions ranking beyond
+      the published Top 150 in these areas. <em>However, the Next 50 feature only
+      displays them in the Global Ranking Institution view.</em></p>
+      <p class="commercial-cta">Want to access their DL Points or benchmark an
+      institution against its peers?
+      <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>`
+  },
+
+  types: {
+    title: 'Type',
+    body: `
+      <p>Narrows the map to one kind of institution.</p>
+      <p><strong>University (incl. Business School)</strong> covers comprehensive
+      universities and business schools.
+      <strong>Science &amp; Tech School</strong> covers engineering schools and
+      vocational technical or STEM institutions.</p>
+      <p>Leave both unticked to see everything. Every figure on screen, including
+      the country colouring, is recomputed from what survives the filter.</p>`
+  },
+
+  download: {
+    title: 'Download dataset',
+    body: `
+      <p>An Excel workbook of the published dataset, in four sheets:
+      <strong>Institutions</strong> with every ranking position in both
+      editions, <strong>Countries</strong> and <strong>Hubs</strong> with their
+      totals, and an <strong>About</strong> sheet explaining the fields.</p>
+      <p>It is the complete dataset, not what the filters have narrowed the map
+      to. DL Points are given for countries and hubs; per-institution points are
+      not published.</p>`
+  },
+
+  rank: {
+    title: 'Rank band',
+    body: `
+      <p>Limits the map to the top of the selected ranking: the top 50 or the top
+      100, rather than all 150 places.</p>
+      <p>It is the quickest way to see where the very best sit, and how much of a
+      country&rsquo;s score comes from its strongest few schools rather than from
+      depth.</p>`
+  }
+};
+
+/** Which explainer is open, so a second click on the same control closes it. */
+let openPopKey = null;
+
+/**
+ * Put the popover under `anchor`, clamped to the viewport.
+ *
+ * Fixed-position rather than absolute inside the toolbar, so it can overhang
+ * the control band and the map without the band needing to grow or scroll.
+ */
+function positionPop(pop, anchor) {
+  const box = anchor.getBoundingClientRect();
+  const margin = 12;
+
+  // Measure after the content is in, or the width is the previous panel's.
+  const width = pop.offsetWidth;
+
+  let left = box.left;
+  if (left + width > window.innerWidth - margin) {
+    left = window.innerWidth - width - margin;
+  }
+  pop.style.left = `${Math.max(margin, left)}px`;
+  pop.style.top = `${box.bottom + 8}px`;
+
+  // Cap the height rather than let a long panel run past the fold: these are
+  // read in place, not scrolled to.
+  pop.style.maxHeight = `${Math.max(180, window.innerHeight - box.bottom - 24)}px`;
+}
+
+/** Open the popover against a control. */
+function openPop(anchor, { key, title, body, accent }) {
+  const pop = document.getElementById('control-pop');
+  if (!pop || !anchor) return;
+
+  if (openPopKey === key && !pop.hasAttribute('hidden')) return closePop();
+
+  const heading = pop.querySelector('.pop-title');
+  heading.textContent = title;
+  heading.style.color = accent ? readableOn(accent, PANEL_BACKGROUND) : '';
+  pop.style.borderTopColor = accent || '#1839E2';
+  pop.querySelector('.pop-body').innerHTML = body;
+  pop.removeAttribute('hidden');
+
+  openPopKey = key;
+  positionPop(pop, anchor);
+}
+
+function closePop() {
+  const pop = document.getElementById('control-pop');
+  if (pop) pop.setAttribute('hidden', '');
+  openPopKey = null;
+}
+
+const isPopOpen = () => {
+  const pop = document.getElementById('control-pop');
+  return !!pop && !pop.hasAttribute('hidden');
+};
+
+/**
+ * Turn every `[data-explain]` inside `root` into an info affordance.
+ *
+ * Controls declare which explainer they carry in the markup, so adding a
+ * control to the band is a one-attribute job and nothing has to be registered
+ * in script.
+ */
+function wireExplainers(root = document) {
+  root.querySelectorAll('[data-explain]').forEach(button => {
+    if (button.dataset.explainWired === 'yes') return;
+    button.dataset.explainWired = 'yes';
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      explainControl(button, button.dataset.explain);
+    });
+  });
+}
+
+/** Open the standing explainer for a named control. */
+function explainControl(anchor, key) {
+  const entry = CONTROL_EXPLAINERS[key];
+  if (!entry) return;
+  openPop(anchor, { key, title: entry.title, body: entry.body });
+}
+
+/**
+ * The explainer for a ranking, opened against the ranking's own button.
+ *
+ * Title and top rule carry the ranking's own colour, so the explanation is
+ * visibly about the module just clicked. The title is darkened until it clears
+ * 4.5:1 on white; the rule takes the colour as-is.
  */
 function showModulePanel(module) {
-  const panel = document.getElementById('module-panel');
-  if (!panel) return;
-
+  const anchor = document.querySelector(`.module-button[data-module="${module}"]`);
   const description = MODULE_DESCRIPTIONS[module];
-  if (!description) return hideModulePanel();
+  if (!anchor || !description) return;
 
-  // Title and frame carry the ranking's own colour, so the explainer is
-  // visibly about the module you just clicked.
-  //
-  // The frame takes the colour as-is. The title cannot: Global's navy sits at
-  // 1.02:1 on this panel and Entrepreneurship's violet at 2.56:1 — both
-  // unreadable as text. Those are lightened until they clear 4.5:1, which
-  // keeps the hue while making the word legible.
-  const colour = MODULE_COLORS[module] || MODULE_COLORS.global;
-  const title = panel.querySelector('#module-panel-title');
-  title.textContent = MODULE_LABELS[module] || module;
-  title.style.color = readableOn(colour, PANEL_BACKGROUND);
-  panel.style.borderColor = colour;
-  panel.querySelector('#module-panel-body').textContent = description;
-  panel.removeAttribute('hidden');
+  openPop(anchor, {
+    key: `module:${module}`,
+    title: MODULE_LABELS[module] || module,
+    body: `<p>${escapeHtml(description)}</p>`,
+    accent: MODULE_COLORS[module] || MODULE_COLORS.global
+  });
 }
 
 function hideModulePanel() {
-  const panel = document.getElementById('module-panel');
-  if (panel) panel.setAttribute('hidden', '');
+  closePop();
 }
 
 function showNext50Panel() {
-  hideModulePanel();
-  const panel = document.getElementById('next50-panel');
-  if (panel) panel.removeAttribute('hidden');
+  const entry = CONTROL_EXPLAINERS.next50;
+  openPop(document.getElementById('next50-toggle'), {
+    key: 'next50',
+    title: entry.title,
+    body: entry.body,
+    accent: NEXT50_COLOR
+  });
 }
 
 function hideNext50Panel() {
-  const panel = document.getElementById('next50-panel');
-  if (panel) panel.setAttribute('hidden', '');
+  closePop();
 }
+
 
 /**
  * The Next 50 button reflects two things at once: whether the tier is on, and
@@ -952,13 +1238,13 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
   context.data.modules.forEach(module => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'module-button';
+    button.className = 'chip module-button';
     button.dataset.module = module;
     button.textContent = MODULE_LABELS[module] || module;
     button.setAttribute('aria-pressed', String(module === STATE.selectedModule));
 
-    // Clicking a ranking both selects it and explains what it covers —
-    // clicking the one already selected just re-opens the explanation.
+    // Clicking a ranking both selects it and explains what it covers.
+    // Clicking the one already selected just re-opens the explanation.
     button.addEventListener('click', () => {
       if (STATE.selectedModule !== module) {
         update(context, { selectedModule: module });
@@ -968,6 +1254,16 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
 
     mount.appendChild(button);
   });
+
+  // The Next 50 extends the Global ranking to 200 places, so it belongs beside
+  // Global and nowhere else. It is declared in the markup, outside this mount,
+  // because this function clears the mount on every rebuild; moving the node
+  // here keeps the listener wired in the bootstrap intact.
+  const next50 = document.getElementById('next50-toggle');
+  const global = mount.querySelector('.module-button[data-module="global"]');
+  if (next50 && global) {
+    global.insertAdjacentElement('afterend', next50);
+  }
 
   console.log(`[Map] Module selector built with ${context.data.modules.length} modules`);
 }
@@ -1040,7 +1336,7 @@ function buildFilters(context, mountSelector = '#filters') {
 
   mount.innerHTML = `
     <div class="filter-group">
-      <button class="filter-trigger" type="button" data-menu="types">
+      <button class="chip filter-trigger" type="button" data-menu="types">
         Type <span class="filter-badge" data-badge="types"></span>
       </button>
       <div class="filter-menu" data-for="types" hidden>
@@ -1051,13 +1347,21 @@ function buildFilters(context, mountSelector = '#filters') {
           </label>`).join('')}
       </div>
     </div>
+    <button class="info-button" type="button" data-explain="types"
+            aria-label="What the Type filter does">i</button>
 
-    <select id="rank-filter" class="metric-selector">
+    <select id="rank-filter" class="select-control">
       ${RANK_OPTIONS.map(o => `<option value="${o.id}">${o.label}</option>`).join('')}
     </select>
+    <button class="info-button" type="button" data-explain="rank"
+            aria-label="What the rank band does">i</button>
 
-    <button id="clear-filters" class="help-button" type="button" hidden>Clear filters</button>
+    <button id="clear-filters" class="chip is-quiet" type="button" hidden>Clear filters</button>
   `;
+
+  // Each filter explains itself, against itself. Wired here rather than in the
+  // bootstrap because this markup is rebuilt from the data.
+  wireExplainers(mount);
 
   // Dropdown open/close
   mount.querySelectorAll('.filter-trigger').forEach(trigger => {
@@ -1098,6 +1402,205 @@ function buildFilters(context, mountSelector = '#filters') {
   });
 
   syncControls();
+}
+
+// ============================================================================
+// DATASET EXPORT
+//
+// Builds the workbook the Download button hands over. Written to xlsx.js,
+// which is a small ZIP-of-XML writer rather than a library, so the page stays
+// self-contained and the standalone build keeps working offline.
+// ============================================================================
+
+/**
+ * What goes in and what stays out.
+ *
+ * IN: every published ranking position, for both editions, plus the country
+ * and hub totals the interface already puts on screen.
+ *
+ * OUT: DL Points per institution. They are simply 151 minus the rank, so they
+ * are not a secret, but publishing them as a column hands over the
+ * module-by-module scoring breakdown that the institution card is built to
+ * withhold and that the commercial offer rests on. Ranks are exported because
+ * the interface already shows every one of them; points per institution are
+ * not, because it never does.
+ */
+function buildExportSheets(data, state) {
+  const modules = data.modules;
+  const editions = data.editions;
+  const edition = state.selectedEdition;
+
+  const rankOf = (institution, ed, module) => {
+    const rank = institution.ranks?.[ed]?.[module];
+    return (rank === null || rank === undefined) ? null : rank;
+  };
+
+  // ---------------------------------------------------------------- about
+  const about = {
+    name: 'About',
+    header: ['Field', 'Value'],
+    rows: [
+      ['Dataset', 'Digital Leaders 2026, AI & Tech Careers Edition'],
+      ['Published by', 'Emerging'],
+      ['Exported', new Date().toISOString().slice(0, 10)],
+      ['Edition on screen when exported', edition],
+      ['Editions included', editions.join(', ')],
+      ['Institutions', data.institutions.length],
+      ['Countries', data.countries.length],
+      ['Hubs', data.hubs.length],
+      ['Rankings', modules.map(m => MODULE_LABELS[m] || m).join(', ')],
+      [],
+      ['What a rank means', 'Each ranking places 150 institutions. 1 is the best position.'],
+      ['The Next 50', 'Institutions ranked 151st to 200th in the Global ranking. '
+        + 'Shown in the Global ranking only.'],
+      ['DL Points', 'A country or hub total: 151 minus the rank, summed over its '
+        + 'ranked institutions. Per-institution DL Points are not published.'],
+      ['Scope of this file', 'The complete published dataset. It is not narrowed by '
+        + 'the filters that were set on the map.']
+    ]
+  };
+
+  // --------------------------------------------------------- institutions
+  const institutionHeader = ['Institution', 'Country', 'Region', 'Hub', 'Type'];
+  editions.forEach(ed => {
+    modules.forEach(module => {
+      institutionHeader.push(`${MODULE_LABELS[module] || module} rank (${ed})`);
+    });
+  });
+  institutionHeader.push('Global tier (' + edition + ')', 'Latitude', 'Longitude');
+
+  const institutionRows = data.institutions
+    .slice()
+    .sort((a, b) => {
+      // Best Global rank first, then everything unranked in Global by name,
+      // so the file opens on the head of the ranking rather than on whatever
+      // order the pipeline happened to emit.
+      const ra = rankOf(a, edition, 'global');
+      const rb = rankOf(b, edition, 'global');
+      if (ra === null && rb === null) return a.name.localeCompare(b.name);
+      if (ra === null) return 1;
+      if (rb === null) return -1;
+      return ra - rb;
+    })
+    .map(institution => {
+      const row = [
+        institution.name,
+        institution.country,
+        formatRegion(institution.region),
+        institution.hub || '',
+        typeLabel(institution.type) || ''
+      ];
+      editions.forEach(ed => {
+        modules.forEach(module => row.push(rankOf(institution, ed, module)));
+      });
+      row.push(
+        institution.tier?.[edition]?.global === 'next50' ? 'Next 50' :
+          (rankOf(institution, edition, 'global') !== null ? 'Top 150' : ''),
+        institution.latitude ?? null,
+        institution.longitude ?? null
+      );
+      return row;
+    });
+
+  // ------------------------------------------------------------ countries
+  // Totals are recomputed here from the ranks rather than read off the
+  // aggregates, so the file does not change depending on what was filtered
+  // on screen at the moment the button was pressed.
+  const countryTotals = new Map();
+  data.countries.forEach(c => countryTotals.set(c.name, {
+    points: Object.fromEntries(editions.map(ed => [ed, 0])),
+    ranked: Object.fromEntries(modules.map(m => [m, 0])),
+    institutions: 0
+  }));
+
+  data.institutions.forEach(institution => {
+    const totals = countryTotals.get(institution.country);
+    if (!totals || institution.next50Only) return;
+    totals.institutions += 1;
+
+    modules.forEach(module => {
+      if (scoredRank(institution, edition, module) !== null) totals.ranked[module] += 1;
+    });
+
+    editions.forEach(ed => {
+      const rank = scoredRank(institution, ed, state.selectedModule);
+      if (rank !== null) totals.points[ed] += 151 - rank;
+    });
+  });
+
+  const countryHeader = ['Country', 'Region', 'Population', 'GDP per capita (USD)',
+    'Institutions'];
+  modules.forEach(m => countryHeader.push(`Ranked in ${MODULE_LABELS[m] || m}`));
+  editions.forEach(ed => countryHeader.push(`DL Points, ${MODULE_LABELS[state.selectedModule]} (${ed})`));
+  countryHeader.push('Change');
+
+  const countryRows = data.countries
+    .map(country => {
+      const totals = countryTotals.get(country.name);
+      const row = [
+        country.name,
+        formatRegion(country.region),
+        country.population ?? null,
+        country.gdpPerCapita ? Math.round(country.gdpPerCapita) : null,
+        totals.institutions
+      ];
+      modules.forEach(m => row.push(totals.ranked[m]));
+      editions.forEach(ed => row.push(totals.points[ed]));
+      const first = totals.points[editions[0]] || 0;
+      const last = totals.points[editions[editions.length - 1]] || 0;
+      row.push(last - first);
+      return row;
+    })
+    .sort((a, b) => (b[b.length - 2] || 0) - (a[a.length - 2] || 0));
+
+  // ----------------------------------------------------------------- hubs
+  const hubTotals = new Map();
+  data.hubs.forEach(h => hubTotals.set(h.name, { institutions: 0, points: 0 }));
+  data.institutions.forEach(institution => {
+    if (!institution.hub || institution.next50Only) return;
+    const totals = hubTotals.get(institution.hub);
+    if (!totals) return;
+    totals.institutions += 1;
+    const rank = scoredRank(institution, edition, state.selectedModule);
+    if (rank !== null) totals.points += 151 - rank;
+  });
+
+  const hubRows = data.hubs
+    .map(hub => [
+      hub.name,
+      hub.country,
+      hubTotals.get(hub.name).institutions,
+      hubTotals.get(hub.name).points,
+      hub.latitude ?? null,
+      hub.longitude ?? null
+    ])
+    .sort((a, b) => b[3] - a[3]);
+
+  return [
+    about,
+    { name: 'Institutions', header: institutionHeader, rows: institutionRows },
+    { name: 'Countries', header: countryHeader, rows: countryRows },
+    {
+      name: 'Hubs',
+      header: ['Hub', 'Country', 'Institutions',
+        `DL Points, ${MODULE_LABELS[state.selectedModule]} (${edition})`,
+        'Latitude', 'Longitude'],
+      rows: hubRows
+    }
+  ];
+}
+
+/** Build the workbook and hand it to the browser. */
+function exportDataset(context) {
+  if (!window.DLXlsx) {
+    console.error('[Export] xlsx.js did not load');
+    return;
+  }
+  const sheets = buildExportSheets(context.data, STATE);
+  window.DLXlsx.download(sheets,
+    `digital-leaders-${STATE.selectedEdition.toLowerCase()}-dataset.xlsx`);
+  console.log('[Export] workbook built:',
+    sheets.map(s => `${s.name} ${s.rows.length}`).join(', '));
 }
 
 // ============================================================================
@@ -1232,52 +1735,6 @@ function buildSearch(context, inputSelector = '#search-input', resultsSelector =
   });
 }
 
-/**
- * The scope band: how much of the ranking is on screen. Previously the
- * coverage figures lived in a small caption in the corner and the band held a
- * measure description nobody read.
- */
-/**
- * The blue banner: what the measure means, the scale it runs on, and how much
- * of the ranking is on screen — all in one line, so nothing needs hunting for.
- *
- * The scale is computed from the countries currently mapped, so a bare figure
- * like Canada's 704 always has a range to be read against, and the range
- * follows whichever ranking is selected.
- */
-function renderBanner(state, data, agg) {
-  const banner = document.getElementById('scope-banner');
-  if (!banner) return;
-
-  const metric = metricMeta(state.colorMetric);
-
-  const values = data.countries
-    .filter(c => agg.byCountry.has(c.name))
-    .map(c => countryMetricValue(c, state, agg))
-    .filter(v => v !== null && !Number.isNaN(v))
-    .sort((a, b) => a - b);
-
-  const format = (v) => scales.formatDataValue(v, state.colorMetric);
-  const scale = values.length
-    ? `<span class="banner-scale"><strong>${escapeHtml(format(values[0]))}</strong> to
-        <strong>${escapeHtml(format(values[values.length - 1]))}</strong>
-        ${escapeHtml(metric.unit)}</span>`
-    : '';
-
-  const institutions = agg.scored.length;
-  const total = data.institutions.filter(i => !i.next50Only).length;
-  const hubs = data.hubs.filter(h => agg.byHub.has(h.name)).length;
-
-  banner.innerHTML = `
-    <span class="banner-measure">${escapeHtml(metric.description)}</span>
-    ${scale ? `<span class="banner-sep">·</span>${scale}` : ''}
-    <span class="banner-sep">·</span>
-    <span class="banner-scope"><strong>${institutions.toLocaleString()}</strong>${
-      agg.active ? ` of ${total.toLocaleString()}` : ''} institutions ·
-      <strong>${agg.byCountry.size}</strong> countries ·
-      <strong>${hubs}</strong> hubs</span>`;
-}
-
 function syncControls() {
   document.querySelectorAll('.module-button').forEach(button => {
     button.setAttribute(
@@ -1398,28 +1855,30 @@ function hoverFigures(entity, kind, state, data, agg) {
   // number IS, not which ranking it came from.
   const headline = {
     dlPoints: {
-      figure: value === null ? '—' : Math.round(value).toLocaleString(),
+      figure: value === null ? '' : Math.round(value).toLocaleString(),
       label: 'DL Points'
     },
     perCapita: {
-      figure: value === null ? '—' : value.toFixed(1),
+      figure: value === null ? '' : value.toFixed(1),
       label: 'DL Points per million people'
     },
     delta: {
       // Unsigned: red or green already says which way, and a large signed
       // number reads as a verdict this measure should not be delivering.
-      figure: value === null ? '—' : Math.abs(Math.round(value)).toLocaleString(),
+      figure: value === null ? '' : Math.abs(Math.round(value)).toLocaleString(),
       label: value === null ? 'DL Points, DL25 → DL26'
         : (value > 0 ? 'DL Points gained since DL25'
           : value < 0 ? 'DL Points lost since DL25' : 'No change since DL25')
     }
   }[state.colorMetric] || {
-    figure: value === null ? '—' : Math.round(value).toLocaleString(),
+    figure: value === null ? '' : Math.round(value).toLocaleString(),
     label: 'DL Points'
   };
 
   const direction = state.colorMetric === 'delta'
     ? (value > 0 ? ' is-up' : value < 0 ? ' is-down' : '') : '';
+
+  const context = metricContext(value, state, data, agg, kind);
 
   return `
     <div class="hover-figures">
@@ -1428,12 +1887,13 @@ function hoverFigures(entity, kind, state, data, agg) {
         <span class="hover-points-label">${escapeHtml(headline.label)}</span>
       </div>
       <div class="hover-figure">
-        <span class="hover-points-value">${standing ? '#' + standing.rank : '—'}</span>
+        <span class="hover-points-value">${standing ? '#' + standing.rank : ''}</span>
         <span class="hover-points-label">${standing
           ? `of ${standing.of} ${peers}`
           : 'not ranked here'}</span>
       </div>
-    </div>`;
+    </div>
+    ${context ? `<p class="hover-context">${escapeHtml(context)}</p>` : ''}`;
 }
 
 
@@ -1558,6 +2018,75 @@ function drawCountries(selection, context, data, state, colorScale, agg) {
         country, 'country', formatRegion(country.region), totals, state, data, agg));
     })
     .on('mouseleave', hideHoverCard);
+}
+
+/** How many leaders get a badge on the map. */
+const RANKED_LABEL_COUNT = 5;
+
+/**
+ * Put the leaders' positions on the map itself.
+ *
+ * Colour alone makes you consult the key and then compare swatches by eye,
+ * which is exactly the work a reader should not have to do to answer "who is
+ * first". The top five carry their rank as a numbered badge, so the podium is
+ * legible in one look and the ramp is left to do what it is good at, which is
+ * showing the shape of the field behind them.
+ *
+ * Five, not ten: beyond that the badges start to crowd Europe, where the
+ * countries are small and close together.
+ *
+ * The badge is drawn inside the zoom layer so it travels with its country,
+ * and rescaled by rescaleMarkers() so it does not grow as you zoom in.
+ */
+function drawRankLabels(selection, context, data, state, agg) {
+  selection.selectAll('*').remove();
+
+  // Only the choropleth has a ranking to annotate. In the institution view
+  // the dots are the data and a country rank would be answering a question
+  // nobody asked.
+  if (state.view === 'institution') return;
+
+  const path = d3.geoPath(context.projection);
+  const byAtlasName = new Map(
+    data.world.features.map(f => [f.properties.name, f])
+  );
+
+  const ranked = data.countries
+    .filter(c => agg.byCountry.has(c.name) && hasMetricValue(c, state, agg))
+    .map(c => ({ country: c, value: countryMetricValue(c, state, agg) }))
+    .filter(row => row.value !== null && !Number.isNaN(row.value))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, RANKED_LABEL_COUNT);
+
+  ranked.forEach((row, index) => {
+    // A country's label sits at its projected centroid. City-states have no
+    // polygon at this resolution, so they fall back to their own coordinates.
+    const feature = byAtlasName.get(toAtlasName(row.country.name));
+    let point = null;
+
+    if (feature) {
+      point = path.centroid(feature);
+    } else if (row.country.longitude != null && row.country.latitude != null) {
+      point = context.projection([row.country.longitude, row.country.latitude]);
+    }
+
+    if (!point || !Number.isFinite(point[0]) || !Number.isFinite(point[1])) return;
+
+    const group = selection.append('g')
+      .attr('class', 'rank-label')
+      .attr('data-xy', `${point[0]},${point[1]}`)
+      .attr('transform', `translate(${point[0]}, ${point[1]})`);
+
+    group.append('circle')
+      .attr('class', 'rank-label-disc')
+      .attr('r', 11);
+
+    group.append('text')
+      .attr('class', 'rank-label-text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '0.36em')
+      .text(index + 1);
+  });
 }
 
 /**
@@ -1823,6 +2352,16 @@ function rescaleMarkers(context) {
   context.g.selectAll('.city-state-dot').attr('r', 4 / k);
   context.g.selectAll('.institution-dot')
     .attr('r', institutionRadius(INSTITUTION_DOT_RADIUS, k));
+
+  // The rank badges live in the zoom layer so they follow their country, but
+  // they are chrome, not geography: they must stay the same size on screen.
+  // Scaling the whole group is one transform instead of two attributes, and
+  // keeps the disc and its number in step.
+  context.g.selectAll('.rank-label')
+    .attr('transform', function () {
+      const [x, y] = (this.getAttribute('data-xy') || '0,0').split(',').map(Number);
+      return `translate(${x}, ${y}) scale(${1 / k})`;
+    });
 }
 
 // ============================================================================
@@ -1941,125 +2480,98 @@ function renderBreadcrumb(context, state) {
   mount.classList.toggle('visible', crumbs.length > 1);
 }
 
-function drawLegend(selection, state, data, values, colorScale, height, agg) {
-  selection.selectAll('*').remove();
+/**
+ * THE KEY STRIP.
+ *
+ * This used to be two SVG groups pinned to the bottom-left corner of the map:
+ * a gradient legend and a coverage caption. Nobody read either. The bottom-left
+ * corner of a map is where the eye arrives last, and on a page this tall it was
+ * often below the fold entirely.
+ *
+ * Both are now HTML, in a strip directly under the control band at the top
+ * left, which is where a reader looks to find out how to read what is in front
+ * of them. The content is unchanged; only its address is different.
+ *
+ * It is HTML rather than SVG on purpose. Moving the SVG groups to the top of
+ * the map would have collided with the breadcrumb, which already lives there,
+ * and would have put the key inside the zoom transform's coordinate space for
+ * no gain.
+ */
+function renderKey(state, data, values, colorScale, agg) {
+  const mount = document.getElementById('map-key');
+  if (!mount) return;
+
+  const scopeHtml =
+    `<p class="key-scope${agg.active ? ' is-filtered' : ''}">${scopeLine(state, data, agg)}</p>`;
 
   // The institution view has no choropleth to explain; the key that matters
   // is which ranking the dots represent.
   if (state.view === 'institution') {
-    // Sits lower than the country legend because it is a two-line key rather
-    // than a gradient bar with ticks — anchored so its baseline clears the
-    // caption by about the same margin the country legend does.
-    selection.attr('transform', `translate(24, ${height - 82})`);
-
-    selection.append('text')
-      .attr('class', 'legend-heading')
-      .attr('y', -10)
-      .text('Institutions ranked in');
-
     const showingNext50 = state.showNext50
       && NEXT50_MODULES.includes(state.selectedModule);
 
-    const key = (y, fill, label) => {
-      const row = selection.append('g').attr('transform', `translate(0, ${y})`);
-      row.append('circle')
-        .attr('cx', 6).attr('cy', 6).attr('r', 6)
-        .attr('fill', fill)
-        .attr('stroke', '#FFFFFF')
-        .attr('stroke-width', 1);
-      row.append('text')
-        .attr('class', 'legend-tick')
-        .attr('x', 20).attr('y', 10)
-        .text(label);
-    };
+    const dot = (colour, label) => `
+      <span class="key-item">
+        <span class="key-dot" style="background:${colour}"></span>${escapeHtml(label)}
+      </span>`;
 
-    key(2, MODULE_COLORS[state.selectedModule],
-        MODULE_LABELS[state.selectedModule]
-          + (showingNext50 ? ' · top 150' : ''));
-
-    if (showingNext50) {
-      key(22, NEXT50_COLOR, 'Next 50 · ranks 151–200');
-    }
-
+    mount.innerHTML = `
+      <div class="key-row">
+        <span class="key-heading">Institutions ranked in</span>
+        <span class="key-items">
+          ${dot(MODULE_COLORS[state.selectedModule],
+                MODULE_LABELS[state.selectedModule] + (showingNext50 ? ' · top 150' : ''))}
+          ${showingNext50 ? dot(NEXT50_COLOR, 'Next 50 · ranks 151 to 200') : ''}
+        </span>
+      </div>
+      ${scopeHtml}`;
     return;
   }
 
-  if (!values.length) return;
-
-  const barWidth = 180;
-  const barHeight = 10;
-  // Leaves room for both key rows and the caption below.
-  selection.attr('transform', `translate(24, ${height - 116})`);
+  if (!values.length) {
+    mount.innerHTML = scopeHtml;
+    return;
+  }
 
   const { lo, hi, clamped } = metricBounds(state.colorMetric, values);
-  const bounds = [lo, hi];
 
-  // Sample the scale into a gradient so the legend can't drift from the map.
-  const gradient = selection.append('defs')
-    .append('linearGradient')
-    .attr('id', 'legend-gradient')
-    .attr('x1', '0%')
-    .attr('x2', '100%');
-
+  // Sample the scale into a CSS gradient so the bar can't drift from the map.
   const steps = 16;
-  d3.range(steps + 1).forEach(i => {
+  const stops = d3.range(steps + 1).map(i => {
     const t = i / steps;
-    gradient.append('stop')
-      .attr('offset', `${t * 100}%`)
-      .attr('stop-color', colorScale(bounds[0] + t * (bounds[1] - bounds[0])));
-  });
+    return `${colorScale(lo + t * (hi - lo))} ${(t * 100).toFixed(0)}%`;
+  }).join(', ');
 
-  selection.append('text')
-    .attr('class', 'legend-heading')
-    .attr('y', -10)
-    .text(`${MODULE_LABELS[state.selectedModule]} · ${metricMeta(state.colorMetric).legend}`);
-
-  selection.append('rect')
-    .attr('width', barWidth)
-    .attr('height', barHeight)
-    .attr('rx', 2)
-    .attr('fill', 'url(#legend-gradient)');
-
-  // A leading ≤ / ≥ tells the reader the ends of the ramp are saturated
+  // A leading <= or >= tells the reader the ends of the ramp are saturated
   // rather than being the true extremes of the data.
-  const lowLabel = (clamped ? '≤ ' : '') + scales.formatDataValue(bounds[0], state.colorMetric);
-  const highLabel = (clamped ? '≥ ' : '') + scales.formatDataValue(bounds[1], state.colorMetric);
-
-  selection.append('text')
-    .attr('class', 'legend-tick')
-    .attr('y', barHeight + 14)
-    .text(lowLabel);
-
-  selection.append('text')
-    .attr('class', 'legend-tick')
-    .attr('x', barWidth)
-    .attr('text-anchor', 'end')
-    .attr('y', barHeight + 14)
-    .text(highLabel);
-
-  const keyRow = (y, swatchClass, label) => {
-    const row = selection.append('g').attr('transform', `translate(0, ${y})`);
-    row.append('rect')
-      .attr('class', swatchClass)
-      .attr('width', 10)
-      .attr('height', 10)
-      .attr('rx', 2);
-    row.append('text')
-      .attr('class', 'legend-tick')
-      .attr('x', 16)
-      .attr('y', 9)
-      .text(label);
-  };
-
-  keyRow(barHeight + 26, 'legend-swatch-unranked', 'Not ranked');
+  const lowLabel = (clamped ? '≤ ' : '') + scales.formatDataValue(lo, state.colorMetric);
+  const highLabel = (clamped ? '≥ ' : '') + scales.formatDataValue(hi, state.colorMetric);
 
   // Only advertise a "no figures" key when some ranked country actually
   // lacks a value for the metric on screen.
   const missing = data.countries
     .filter(c => agg.byCountry.has(c.name) && !hasMetricValue(c, state, agg)).length;
-  if (missing > 0) {
-    keyRow(barHeight + 44, 'legend-swatch-nodata', `No figures available (${missing})`);
-  }
+
+  mount.innerHTML = `
+    <div class="key-row">
+      <span class="key-heading">${escapeHtml(MODULE_LABELS[state.selectedModule])} ·
+        ${escapeHtml(metricMeta(state.colorMetric).legend)}</span>
+      <span class="key-scale">
+        <span class="key-tick">${escapeHtml(lowLabel)}</span>
+        <span class="key-ramp" style="background:linear-gradient(90deg, ${stops})"></span>
+        <span class="key-tick">${escapeHtml(highLabel)}</span>
+      </span>
+      <span class="key-items">
+        <span class="key-item">
+          <span class="key-swatch key-swatch-unranked"></span>Not ranked
+        </span>
+        ${missing > 0 ? `
+        <span class="key-item">
+          <span class="key-swatch key-swatch-nodata"></span>No figures available (${missing})
+        </span>` : ''}
+      </span>
+    </div>
+    ${scopeHtml}`;
 }
 
 // ============================================================================
@@ -2135,7 +2647,7 @@ function renderDetailPanel(context, state, data, agg) {
     return `
       <tr${metric.id === state.colorMetric ? ' class="is-current"' : ''}>
         <td>${escapeHtml(metric.label)}</td>
-        <td class="value">${known ? escapeHtml(scales.formatDataValue(value, metric.id)) : '—'}</td>
+        <td class="value">${known ? escapeHtml(scales.formatDataValue(value, metric.id)) : ''}</td>
         <td class="rank">${position ? `#${position.rank}<span class="of"> of ${position.of}</span>` : ''}</td>
       </tr>`;
   }).join('');
@@ -2169,6 +2681,20 @@ function renderDetailPanel(context, state, data, agg) {
     country.gdpPerCapita ? `$${Math.round(country.gdpPerCapita).toLocaleString()} GDP per capita` : null
   ].filter(Boolean).join(' · ');
 
+  // The country's best school, named. A score is abstract; the institution
+  // behind it is the thing a reader recognises, and it is the first question
+  // anyone asks of a country on this map.
+  const best = topInstitution(institutions, state);
+  const leadHtml = best ? `
+    <div class="panel-lead">
+      <span class="panel-lead-label">Top ranked in ${escapeHtml(moduleLabel)}</span>
+      <span class="panel-lead-name">${escapeHtml(best.institution.name)}</span>
+      <span class="panel-lead-rank">#${best.rank} in the world</span>
+    </div>` : '';
+
+  const headline = countryMetricValue(country, state, agg);
+  const contextLine = metricContext(headline, state, data, agg, 'country');
+
   panel.innerHTML = `
     <div class="panel-head">
       <div>
@@ -2180,8 +2706,11 @@ function renderDetailPanel(context, state, data, agg) {
 
     ${enrichment ? `<p class="panel-enrichment">${escapeHtml(enrichment)}</p>` : ''}
 
+    ${leadHtml}
+
     <h3 class="panel-section">${escapeHtml(moduleLabel)} · how it measures up</h3>
     <table class="measure-table">${measureRows}</table>
+    ${contextLine ? `<p class="panel-context">${escapeHtml(contextLine)}</p>` : ''}
 
     ${countrySections(country, state, data, agg)}
 
@@ -2232,7 +2761,7 @@ function institutionSection(institutions, state) {
     const rank = rankIn(institution);
     return `
       <li class="institution${rank === null ? ' is-unranked' : ''}">
-        <span class="institution-rank">${rank === null ? '—' : rank}</span>
+        <span class="institution-rank">${rank === null ? '' : rank}</span>
         <span class="institution-body">
           <span class="institution-name">${escapeHtml(institution.name)}</span>
           <span class="institution-type">${escapeHtml(typeLabel(institution.type) || '')}</span>
@@ -2520,7 +3049,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
           </p>
           <p>
             Each ranking places 150 institutions, and the score is calculated
-            from where an institution sits on that 1&ndash;150 scale — the higher the
+            from where an institution sits on that 1&ndash;150 scale: the higher the
             position, the higher the score. Adding those together gives a single
             number you can set against any other institution, or against a
             country&rsquo;s total.
@@ -2541,7 +3070,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <summary>How these are chosen</summary>
         <p>
           Competitors are institutions of the same kind
-          — <strong>${escapeHtml(typeLabel(institution.type))}</strong> —
+         : <strong>${escapeHtml(typeLabel(institution.type))}</strong> 
           within <strong>${escapeHtml(group.label)}</strong>. An institution is
           compared inside its own region, except in India, Japan and Israel,
           which each form a group of their own.
@@ -2549,14 +3078,14 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <p>
           Within that group, a competitor is close on <strong>both</strong>
           counts: near in the ${escapeHtml(MODULE_LABELS[module])} ranking, and
-          near geographically. Each gets two closeness scores between 0 and 1 —
+          near geographically. Each gets two closeness scores between 0 and 1 
         </p>
         <p class="method-formula">
           rank closeness = 1 ÷ (1 + places apart ÷ ${RANK_SCALE})<br>
           distance closeness = 1 ÷ (1 + km apart ÷ ${DISTANCE_SCALE})
         </p>
         <p>
-          — which are combined as
+         : which are combined as
           <strong>${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
           ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>,
           and the five highest are
@@ -2637,7 +3166,7 @@ function renderHubPanel(panel, context, state, data, hub, agg) {
     <table class="measure-table">
       <tr class="is-current">
         <td>${escapeHtml(MODULE_LABELS[state.selectedModule])} DL Points</td>
-        <td class="value">${points === null ? '—' : Math.round(points).toLocaleString()}</td>
+        <td class="value">${points === null ? '' : Math.round(points).toLocaleString()}</td>
       </tr>
       <tr>
         <td>Institutions</td>
@@ -2663,28 +3192,45 @@ function renderHubPanel(panel, context, state, data, hub, agg) {
     });
 }
 
-function drawCaption(selection, state, data, width, height, agg) {
-  selection.selectAll('*').remove();
-  selection.attr('transform', `translate(24, ${height - 28})`);
+/**
+ * What the reader is looking at: the measure in plain words, then how much of
+ * the ranking is on screen.
+ *
+ * This is what used to be the blue scope band under the controls plus the
+ * caption in the bottom-left corner of the map. Both said something the reader
+ * needed and neither was anywhere near the thing it described, so they are one
+ * line now, in the key strip.
+ *
+ * Returns HTML, not text: the figures are set in bold and the measure name is
+ * a distinct colour.
+ *
+ * The institution count is of the scored set, which excludes the rows the Next
+ * 50 brought in, so the total reads exactly as it did before the tier existed.
+ * With the tier on, the institution view is showing the fifty and says so.
+ */
+function scopeLine(state, data, agg) {
+  const metric = metricMeta(state.colorMetric);
 
-  // The caption counts what is actually on screen. In the country view that is
-  // the scored set, which excludes the rows the Next 50 brought in — so the
-  // total reads exactly as it did before the tier existed. With the tier on,
-  // the institution view is showing the fifty and says so.
   const showingNext50 = state.view === 'institution' && state.showNext50
     && NEXT50_MODULES.includes(state.selectedModule);
 
   const institutions = agg.scored.length;
   const total = data.institutions.filter(i => !i.next50Only).length;
-  const countries = agg.byCountry.size;
-  const scope = (agg.active
-    ? `${institutions} of ${total} institutions · ${countries} countries · filtered`
-    : `${institutions} institutions · ${countries} countries · ${state.selectedEdition}`)
-    + (showingNext50 ? ' · Next 50 shown' : '');
+  const hubs = data.hubs.filter(h => agg.byHub.has(h.name)).length;
 
-  selection.append('text')
-    .attr('class', `caption${agg.active ? ' is-filtered' : ''}`)
-    .text(scope);
+  const coverage = [
+    `<strong>${institutions.toLocaleString()}</strong>${
+      agg.active ? ` of ${total.toLocaleString()}` : ''} institutions`,
+    `<strong>${agg.byCountry.size}</strong> countries`,
+    `<strong>${hubs}</strong> hubs`,
+    escapeHtml(state.selectedEdition)
+  ].join(' &middot; ')
+    + (agg.active ? ' &middot; filtered' : '')
+    + (showingNext50 ? ' &middot; Next 50 shown' : '');
+
+  return `<span class="key-measure">${escapeHtml(metric.description)}</span>
+    <span class="key-sep">&middot;</span>
+    <span class="key-coverage">${coverage}</span>`;
 }
 
 // ============================================================================
@@ -2705,6 +3251,14 @@ window.DigitalLeadersMap = {
   hideModulePanel,
   showNext50Panel,
   hideNext50Panel,
+  explainControl,
+  wireExplainers,
+  exportDataset,
+  buildExportSheets,
+  closePop,
+  isPopOpen,
+  openPop,
+  CONTROL_EXPLAINERS,
   syncNext50Button,
   zoomToCountry,
   zoomToPoint,

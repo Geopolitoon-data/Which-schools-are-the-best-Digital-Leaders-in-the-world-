@@ -180,6 +180,15 @@
 /**
  * DESIGN TOKENS & CSS VARIABLES
  * Emerging brand palette + typography + spacing + scales
+ *
+ * EDITORIAL LIGHT. The page is paper: light ground, ink type, hairline rules.
+ * Two things stay exactly as they were, because they are the brand:
+ *   1. the Digital Leaders blue banner (--color-dl-blue, #1839E2)
+ *   2. the accent, which is Emerging orange (--color-orange, #FF4901)
+ *
+ * Gold (#DBB67D) has been retired from this interface. It is the GEURS
+ * colour and does not belong to Digital Leaders. --color-gold is kept as an
+ * alias so no rule breaks, but it now resolves to the orange accent.
  */
 
 :root {
@@ -190,70 +199,90 @@
   /* Primary Colors */
   --color-navy: #0F1374;
 
-  /* Digital Leaders blue, as used on the website. Header and the measure
-     banner sit on it. */
+  /* Digital Leaders blue, as used on the website. The header band and the
+     intro band sit on it. Do not change this value. */
   --color-dl-blue: #1839E2;
 
-  /* The same blue lifted for use as TEXT on a dark surface. At full strength
-     it measures 2.47:1 on the hover card and cannot be read; this clears
-     4.5:1 while staying recognisably the brand blue. Borders and fills keep
-     the true colour above. */
-  --color-dl-blue-text: #5D74EB;
+  /* On a light ground the true blue is readable as type at 7.4:1, so the
+     lifted variant the dark theme needed now simply resolves to the brand
+     blue itself. */
+  --color-dl-blue-text: #1839E2;
 
-  /* The map canvas (sea). Sits in the Emerging navy family above, so the page
-     is grounded in the brand colour while the brighter Digital Leaders blue
-     stays an accent in the header.
-     Deliberately LIGHTER than the ramp's lowest stop: a canvas level with navy
-     in brightness makes low-scoring countries disappear (a mid-tone like
-     #1E2569 measures 1.12:1 against navy — effectively invisible). At #323A8C
-     the gap is 1.55:1. */
-  --color-navy-dark: #323A8C;
+  /* The map canvas (sea). Pale enough to read as paper, cool enough to still
+     say "water", and clearly separated from the unranked land above it. */
+  --color-navy-dark: #EAEDF7;
 
-  /* Chrome — toolbar and side panel. Kept below the canvas so the map reads
-     as the lit surface, but no darker than that: at #14184A the control band
-     was so dark that its own labels sat at 3.31:1 and read as invisible. */
-  --color-navy-darker: #242B66;
+  /* Chrome: the control band and the side panel. White, so the controls read
+     as page furniture and the map is the only coloured surface. */
+  --color-navy-darker: #FFFFFF;
 
-  /* Land with no ranking. It must be LIGHTER than the canvas: darkening it
-     instead walks it straight into the navy ramp stop, indistinguishable from
-     a low-scoring country. Lighter separates it from both the sea and the
-     ranked ramp, and matches the usual convention of land over water. */
-  --color-land-unranked: #6E74AE;
+  /* Land with no ranking. Sits BETWEEN the sea and the lightest ramp stop:
+     darker than the water so the coastline reads without a stroke, lighter
+     than any scored country so it never passes for a low score. */
+  --color-land-unranked: #D2D7E6;
 
-  --color-navy-light: #3D3E7A;
+  /* One step down again, for the "not ranked" swatch and dimmed land. */
+  --color-navy-light: #BFC5DA;
 
-  --color-gold: #DBB67D;
-  --color-blue: #4B5BCB;
+  /* The accent. Emerging orange, used for the selected state, the active
+     ranking, the Global institution dots and the top of the country ramp. */
   --color-orange: #FF4901;
+
+  /* The same orange, lightened. This is the Next 50 tier: visibly the same
+     family as Global, one step down. */
+  --color-orange-soft: #FF9E79;
+
+  /* A tint of the accent, for the soft fill behind a selected control. */
+  --color-orange-wash: #FFEDE4;
+
+  /* Retired. Kept as an alias so older rules resolve to the accent instead
+     of to a colour that belongs to another product. */
+  --color-gold: #FF4901;
+
+  --color-blue: #4B5BCB;
   --color-maroon: #860018;
   --color-coral: #FF9E79;
 
+  /* Pill controls, as used on the Digital Leaders website: a pale periwinkle
+     capsule with navy type, turning solid orange with white type when it is
+     the one selected. */
+  --chip-bg: #E5E9FB;
+  --chip-bg-hover: #D6DDF8;
+  --chip-ink: #0F1374;
+  --chip-border: #CCD5F6;
+  --chip-bg-active: #FF4901;
+  --chip-ink-active: #FFFFFF;
+
+  /* The same capsule where it sits ON the blue banner, which needs a lighter
+     ground to hold its own against #1839E2. */
+  --chip-on-blue-bg: #C9D2F7;
+  --chip-on-blue-hover: #DCE2FB;
+
   /* Semantic Colors */
-  --color-text: #FFFFFF;
-  --color-text-secondary: #B8B8D4;
-  /* Lifted from #6B6C8F, which failed on the control band (2.58:1 there).
-     Muted still means quieter than secondary — not unreadable. */
-  --color-text-muted: #9EA1C6;
-  --color-background: #0F1374;
-  --color-background-elevated: #1D2154;
-  --color-border: #454C99;
+  --color-text: #14163A;
+  --color-text-secondary: #4A4E77;
+  --color-text-muted: #7B7FA3;
+  --color-background: #F4F5FA;
+  --color-background-elevated: #FFFFFF;
+  --color-border: #DDE0EC;
+  --color-border-strong: #C6CBDE;
 
-  --color-success: #4CAF50;
-  --color-warning: #FF9E79;
-  --color-error: #FF4901;
-  --color-info: #4B5BCB;
+  --color-success: #0E8A5F;
+  --color-warning: #B85C12;
+  --color-error: #C8300A;
+  --color-info: #1839E2;
 
-  /* Evolution (DL25 → DL26). Direction has to read without a legend, so this
-     is the one encoding that leaves the brand palette for the universal
-     red/green convention. Both are pulled toward the brand's depth rather
-     than signal-bright. */
+  /* Evolution (DL25 to DL26). Direction has to read without a legend, so
+     this is the one encoding that leaves the brand palette for the universal
+     red/green convention. */
   --color-rising: #0E8A5F;
   --color-falling: #C21E2F;
 
-  /* The same pair lifted for use as TEXT on the dark panel, where the map
-     colours measure 3.83:1 and 2.80:1 and are too weak to read. */
-  --color-rising-text: #26966F;
-  --color-falling-text: #D4626D;
+  /* The same pair as type on white. The map fills are already dark enough to
+     read on paper, so these barely move; they exist so the pairing stays
+     explicit if either fill is ever lightened. */
+  --color-rising-text: #0B7350;
+  --color-falling-text: #AE1B2A;
 
   /* ====================================================================
      TYPOGRAPHY - MONTSERRAT
@@ -311,13 +340,15 @@
 
   /* ====================================================================
      SHADOWS
+     Light theme: a shadow is how a surface lifts off paper, so they are
+     tinted with the brand navy rather than neutral black.
      ==================================================================== */
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px 0 rgba(15, 19, 116, 0.06);
+  --shadow-base: 0 1px 3px 0 rgba(15, 19, 116, 0.10), 0 1px 2px 0 rgba(15, 19, 116, 0.06);
+  --shadow-md: 0 4px 10px -2px rgba(15, 19, 116, 0.12), 0 2px 4px -1px rgba(15, 19, 116, 0.06);
+  --shadow-lg: 0 10px 24px -6px rgba(15, 19, 116, 0.16), 0 4px 8px -4px rgba(15, 19, 116, 0.08);
+  --shadow-xl: 0 20px 44px -10px rgba(15, 19, 116, 0.20), 0 8px 16px -8px rgba(15, 19, 116, 0.10);
 
   /* ====================================================================
      OPACITY
@@ -381,25 +412,28 @@
 
   /* ====================================================================
      DATA VISUALIZATION SCALES
+
+     On paper the ramp runs the other way round from the dark theme: the
+     lightest stop is the lowest value and the accent is the peak, so the
+     busiest countries are the ones that burn through the page.
      ==================================================================== */
 
-  /* Sequential scale: Navy → Gold → Coral */
-  --scale-seq-0: #0F1374;
-  --scale-seq-25: #4B5BCB;
-  --scale-seq-50: #DBB67D;
+  --scale-seq-0: #DCE3FA;
+  --scale-seq-25: #9AA7EB;
+  --scale-seq-50: #4B5BCB;
   --scale-seq-75: #FF9E79;
   --scale-seq-100: #FF4901;
 
-  /* Diverging scale: Maroon ← White → Gold */
-  --scale-div-neg: #860018;
-  --scale-div-zero: #FFFFFF;
-  --scale-div-pos: #DBB67D;
+  /* Diverging: maroon, through the page ground, to green */
+  --scale-div-neg: #C21E2F;
+  --scale-div-zero: #EDEFF6;
+  --scale-div-pos: #0E8A5F;
 
-  /* Categorical scale: 5 colors */
-  --scale-cat-1: #0F1374;
+  /* Categorical: 5 colors */
+  --scale-cat-1: #1839E2;
   --scale-cat-2: #4B5BCB;
-  --scale-cat-3: #DBB67D;
-  --scale-cat-4: #FF9E79;
+  --scale-cat-3: #FF9E79;
+  --scale-cat-4: #93B23C;
   --scale-cat-5: #FF4901;
 }
 
@@ -407,12 +441,13 @@
    D3 ELEMENT STYLES
    ======================================================================== */
 
-/* Graticule */
+/* Graticule. White lines vanish on a pale sea, so the grid is drawn in the
+   brand blue at very low opacity instead. */
 .graticule {
   fill: none;
-  stroke: #FFFFFF;
+  stroke: #1839E2;
   stroke-width: 0.5px;
-  stroke-opacity: 0.07;
+  stroke-opacity: 0.09;
 }
 
 /* Sphere (the ocean behind everything) */
@@ -437,7 +472,7 @@
 
 .country.is-unranked {
   fill: var(--color-land-unranked);
-  opacity: var(--opacity-80);
+  opacity: var(--opacity-90);
   cursor: default;
 }
 
@@ -445,7 +480,7 @@
    same neutral tone so the coloured dots are the only encoding on screen. */
 .country.is-basemap {
   fill: var(--color-land-unranked);
-  opacity: var(--opacity-80);
+  opacity: var(--opacity-90);
   cursor: default;
 }
 
@@ -455,75 +490,77 @@
 
 /* Ranked, but no figures for the metric currently on screen. Distinct from
    "not ranked" so the reader can tell "we have no number" from "they are not
-   in the ranking" — and, critically, so it never falls through to SVG's
-   black. Every country now carries population and GDP, so this state should
-   be rare; it stays as a guard. */
+   in the ranking", and so it never falls through to SVG's black. */
 .country.is-nodata {
-  fill: var(--color-text-muted);
-  opacity: var(--opacity-40);
+  fill: #E3E5EF;
+  opacity: var(--opacity-100);
 }
 
 .city-state.is-nodata .city-state-dot {
-  fill: var(--color-text-muted);
-  opacity: var(--opacity-40);
+  fill: #E3E5EF;
+  opacity: var(--opacity-100);
 }
 
+/* Hover and selection are drawn in the accent, because on paper a white
+   stroke no longer reads as emphasis. */
 .country.is-ranked:hover {
-  stroke: #FFFFFF;
+  stroke: var(--color-orange);
   stroke-width: 2px;
 }
 
 .country.active {
-  stroke: #FFFFFF;
+  stroke: var(--color-orange);
   stroke-width: 2.5px;
 }
 
-/* Institution dots — one colour per module, drawn in the institution view */
+/* Institution dots, one colour per ranking, drawn in the institution view */
 .institution-dot {
   stroke: #FFFFFF;
-  stroke-width: 1px;
+  stroke-width: 1.2px;
   vector-effect: non-scaling-stroke;
   cursor: pointer;
   transition: opacity var(--transition-fast);
 }
 
 .institution-dot:hover {
+  stroke: var(--color-navy);
   stroke-width: 2px;
 }
 
 .institution-dot.active {
+  stroke: var(--color-navy);
   stroke-width: 2.5px;
 }
 
-/* Next 50 — ranked 151-200 in the Global ranking, listed but not scored.
-   Drawn hollow in the module colour so it reads as the same ranking, one
-   tier down, rather than as a different kind of thing. */
+/* Next 50: ranks 151 to 200 in the Global ranking. Same family as Global,
+   one tier down, so it carries the lighter orange rather than a hollow ring. */
 .institution-dot.is-next50 {
-  stroke-width: 1.6px;
+  stroke: #FFFFFF;
+  stroke-width: 1.2px;
 }
 
-/* City-state markers — countries with no polygon at 110m (Singapore, Hong Kong) */
+/* City-state markers: countries with no polygon at 110m (Singapore, Hong Kong) */
 .city-state {
   cursor: pointer;
 }
 
 .city-state-halo {
   fill: none;
-  stroke: var(--color-navy-darker);
+  stroke: #FFFFFF;
   stroke-width: 2px;
   vector-effect: non-scaling-stroke;
 }
 
 .city-state-dot {
-  stroke: var(--color-text);
+  stroke: #FFFFFF;
   stroke-width: 1px;
   vector-effect: non-scaling-stroke;
   transition: fill var(--transition-base);
 }
 
-/* Filtered out entirely — matches how excluded countries are dimmed. */
+/* Filtered out entirely. Matches how excluded countries are dimmed. */
 .city-state.is-filtered-out {
-  opacity: var(--opacity-30);
+  opacity: var(--opacity-40);
 }
 
 .city-state.is-filtered-out .city-state-dot {
@@ -532,71 +569,49 @@
 
 .city-state:hover .city-state-halo,
 .city-state.active .city-state-halo {
-  stroke: var(--color-gold);
+  stroke: var(--color-orange);
   stroke-width: 3px;
 }
 
 /* Hub bubble.
    Size carries DL Points; the fill is deliberately uniform and translucent so
    the layer reads as an annotation on top of the choropleth rather than a
-   second colour encoding competing with it. */
+   second colour encoding competing with it. On paper the translucent white of
+   the dark theme was invisible, so the bubble is now a navy wash with a navy
+   edge. */
 .hub {
   cursor: pointer;
 }
 
 .hub-bubble {
-  fill: rgba(255, 255, 255, 0.22);
-  stroke: var(--color-text);
+  fill: rgba(15, 19, 116, 0.10);
+  stroke: var(--color-navy);
   stroke-width: 1.25px;
+  stroke-opacity: 0.55;
   vector-effect: non-scaling-stroke;
   transition: fill var(--transition-fast), stroke var(--transition-fast);
 }
 
 .hub:hover .hub-bubble {
-  fill: rgba(219, 182, 125, 0.45);
-  stroke: var(--color-gold);
+  fill: rgba(255, 73, 1, 0.22);
+  stroke: var(--color-orange);
+  stroke-opacity: 1;
 }
 
 .hub.active .hub-bubble {
-  fill: rgba(219, 182, 125, 0.55);
-  stroke: var(--color-gold);
+  fill: rgba(255, 73, 1, 0.30);
+  stroke: var(--color-orange);
+  stroke-opacity: 1;
   stroke-width: 2.5px;
 }
 
-/* Legend */
-.legend {
-  background-color: rgba(15, 19, 116, 0.9);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  font-size: var(--font-size-xs);
-  box-shadow: var(--shadow-lg);
-}
-
-.legend-title {
-  font-weight: var(--font-weight-bold);
-  color: var(--color-gold);
-  margin-bottom: var(--spacing-sm);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
-  color: var(--color-text-secondary);
-}
-
-.legend-swatch {
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-}
-
-/* SVG legend (drawn by index.js) */
+/* SVG legend and caption.
+   The legend and the coverage caption no longer live in the bottom-left
+   corner of the map; they are HTML, in the key strip directly under the
+   control band. These rules remain so any SVG fallback still renders in the
+   light palette rather than in SVG's default black. */
 .legend-heading {
-  fill: var(--color-gold);
+  fill: var(--color-text);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   letter-spacing: var(--letter-spacing-wide);
@@ -608,19 +623,17 @@
 }
 
 .legend-swatch-unranked {
-  fill: var(--color-navy-light);
-  opacity: var(--opacity-30);
+  fill: var(--color-land-unranked);
 }
 
 .legend-swatch-nodata {
-  fill: var(--color-text-muted);
-  opacity: var(--opacity-40);
+  fill: #E3E5EF;
 }
 
 /* Tooltip */
 .tooltip {
-  background-color: rgba(15, 19, 116, 0.95);
-  border: 1px solid var(--color-gold);
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--spacing-sm);
   font-size: var(--font-size-xs);
@@ -631,7 +644,7 @@
 
 .tooltip-title {
   font-weight: var(--font-weight-bold);
-  color: var(--color-gold);
+  color: var(--color-text);
   margin-bottom: var(--spacing-xs);
 }
 
@@ -650,7 +663,8 @@
 
 /* Filters narrow what the whole map is showing, so the caption says so. */
 .caption.is-filtered {
-  fill: var(--color-gold);
+  fill: var(--color-orange);
+  color: var(--color-orange);
 }
 
 /* ========================================================================
@@ -659,40 +673,47 @@
 
 button {
   font-family: var(--font-family);
-  transition: all var(--transition-base);
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              color var(--transition-fast);
 }
 
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-button:active {
-  transform: translateY(0);
-}
+/* Deliberately no lift-and-shadow on hover. On a light editorial page the
+   controls are set type in a capsule, not raised objects, and a translate on
+   every button made the whole toolbar twitch as the pointer crossed it. */
 
 select,
 input {
   font-family: var(--font-family);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-strong);
   padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--color-background-elevated);
+  background-color: #FFFFFF;
   color: var(--color-text);
-  transition: border-color var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 select:hover,
 input:hover {
-  border-color: var(--color-gold);
+  border-color: var(--color-orange);
 }
 
 select:focus,
 input:focus {
   outline: none;
-  border-color: var(--color-blue);
-  box-shadow: 0 0 0 3px rgba(75, 91, 203, 0.1);
+  border-color: var(--color-dl-blue);
+  box-shadow: 0 0 0 3px rgba(24, 57, 226, 0.15);
 }
+
+/* A visible focus ring on every control, which the dark theme never had.
+   On paper there is no glow to fall back on. */
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-dl-blue);
+  outline-offset: 2px;
+}
+
 </style>
 
 <style>
@@ -703,11 +724,19 @@ input:focus {
       box-sizing: border-box;
     }
 
+    /* The pill controls set an explicit `display`, which outranks the user
+       agent's `[hidden] { display: none }` on specificity. Without this, the
+       Clear filters chip and any hidden panel stay on screen. */
+    [hidden] {
+      display: none !important;
+    }
+
     body {
       font-family: var(--font-family);
-      background-color: var(--color-navy);
+      background-color: var(--color-background);
       color: var(--color-text);
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     #app {
@@ -720,11 +749,11 @@ input:focus {
     /* Header */
     header {
       background-color: var(--color-dl-blue);
-      border-bottom: 1px solid var(--color-text-secondary);
       padding: var(--spacing-md);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: var(--spacing-md);
       z-index: var(--z-header);
     }
 
@@ -770,7 +799,7 @@ input:focus {
       background-color: #FFFFFF;
       padding: 7px 12px;
       border-radius: var(--radius-md);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 1px 3px rgba(9, 12, 60, 0.30);
     }
 
     .dl-logo-plate.is-missing {
@@ -788,13 +817,20 @@ input:focus {
        It lives inside #map-container rather than being fixed to the viewport:
        fixed positioning put it on top of the detail panel, hiding card text
        behind it. Anchored to the map, it moves aside as the panel opens. */
+    /* The supplied mark is reversed out for dark backgrounds, so on a light
+       map it needs a ground of its own. A navy plate keeps the file as
+       delivered rather than recolouring the artwork. */
     .emerging-logo {
       position: absolute;
       right: var(--spacing-md);
       bottom: var(--spacing-md);
       height: 24px;
       width: auto;
-      opacity: 0.9;
+      padding: 6px 10px;
+      background-color: var(--color-navy);
+      border-radius: var(--radius-sm);
+      box-sizing: content-box;
+      opacity: 0.92;
       pointer-events: none;
       z-index: var(--z-header);
     }
@@ -811,23 +847,34 @@ input:focus {
     .intro {
       display: flex;
       align-items: center;
-      min-height: 34px;
-      padding: 0 var(--spacing-md);
+      justify-content: space-between;
+      gap: var(--spacing-md);
+      min-height: 44px;
+      padding: var(--spacing-sm) var(--spacing-md);
       background-color: var(--color-dl-blue);
-      color: rgba(255, 255, 255, 0.92);
+      border-bottom: 3px solid var(--color-orange);
+      color: rgba(255, 255, 255, 0.94);
       font-size: clamp(10px, 0.86vw, 14px);
       line-height: var(--line-height-normal);
+    }
+
+    /* The sentence holds one line and truncates; the guide button never
+       shrinks, because it is the only instruction on the page. */
+    .intro-text {
+      min-width: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    #guide-open {
+      flex: none;
+    }
+
     @media (max-width: 1200px) {
-      .intro {
+      .intro-text {
         white-space: normal;
         font-size: var(--font-size-xs);
-        padding-top: var(--spacing-sm);
-        padding-bottom: var(--spacing-sm);
       }
     }
 
@@ -836,47 +883,32 @@ input:focus {
       display: inline-flex;
       gap: 2px;
       padding: 2px;
-      background-color: rgba(15, 19, 116, 0.55);
-      border: 1px solid var(--color-border);
+      background-color: var(--chip-bg);
+      border: 1px solid var(--chip-border);
       border-radius: var(--radius-full);
     }
 
     .view-button {
       background: none;
       border: none;
-      color: var(--color-text-secondary);
+      color: var(--chip-ink);
       padding: 5px var(--spacing-md);
       border-radius: var(--radius-full);
       cursor: pointer;
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-sm);
       font-weight: var(--font-weight-semibold);
       white-space: nowrap;
-      transition: background-color var(--transition-base), color var(--transition-base);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
     }
 
     .view-button:hover {
-      color: var(--color-text);
+      background-color: var(--chip-bg-hover);
     }
 
-    .view-button.is-active {
-      background-color: var(--color-orange);
-      color: #FFFFFF;
-    }
-
-    .reset-zoom {
-      background-color: transparent;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-secondary);
-      padding: var(--spacing-sm) var(--spacing-md);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
-    }
-
-    .reset-zoom:hover {
-      border-color: var(--color-gold);
-      color: var(--color-gold);
+    .view-button.is-active,
+    .view-button.is-active:hover {
+      background-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
     }
 
     /* Hover card — countries and hubs share it */
@@ -888,7 +920,7 @@ input:focus {
       min-width: 232px;
       max-width: 300px;
       padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
-      background-color: rgba(8, 11, 48, 0.97);
+      background-color: #FFFFFF;
       border: 1px solid var(--color-dl-blue);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-lg);
@@ -905,13 +937,13 @@ input:focus {
       flex-direction: column;
       gap: 1px;
       padding-bottom: var(--spacing-sm);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid var(--color-border);
     }
 
     .hover-title {
       font-size: var(--font-size-sm);
       font-weight: var(--font-weight-bold);
-      color: #FFFFFF;
+      color: var(--color-text);
     }
 
     .hover-sub {
@@ -959,8 +991,8 @@ input:focus {
     .hover-block {
       margin-top: var(--spacing-sm);
       padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background-color: var(--color-background);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
     }
 
@@ -995,7 +1027,7 @@ input:focus {
       border-collapse: collapse;
       margin-top: var(--spacing-md);
       padding-top: var(--spacing-sm);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid var(--color-border);
     }
 
     .hover-table caption {
@@ -1020,7 +1052,7 @@ input:focus {
     }
 
     .hover-table tr.is-active td {
-      color: #FFFFFF;
+      color: var(--color-text);
       font-weight: var(--font-weight-semibold);
     }
 
@@ -1034,7 +1066,7 @@ input:focus {
     .hover-rank {
       font-size: var(--font-size-lg);
       font-weight: var(--font-weight-extrabold);
-      color: #FFFFFF;
+      color: var(--color-text);
       font-variant-numeric: tabular-nums;
     }
 
@@ -1042,7 +1074,7 @@ input:focus {
     .hover-cta {
       margin-top: var(--spacing-sm);
       padding-top: var(--spacing-sm);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid var(--color-border);
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: 0.04em;
@@ -1059,36 +1091,9 @@ input:focus {
     }
 
     /* Module explainer popup */
-    .module-panel {
-      position: absolute;
-      top: 128px;
-      left: var(--spacing-md);
-      z-index: var(--z-popover);
-      max-width: 460px;
-      padding: var(--spacing-md) var(--spacing-lg);
-      background-color: var(--color-background-elevated);
-      border: 1px solid var(--color-orange);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-    }
 
-    .module-panel[hidden] {
-      display: none;
-    }
 
-    .module-panel h2 {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-orange);
-      margin-bottom: var(--spacing-sm);
-    }
 
-    .module-panel p {
-      font-size: var(--font-size-sm);
-      line-height: var(--line-height-normal);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-md);
-    }
 
     /* Search */
     .search {
@@ -1138,7 +1143,7 @@ input:focus {
     }
 
     .search-result:hover {
-      background-color: var(--color-navy);
+      background-color: var(--color-background);
       transform: none;
       box-shadow: none;
     }
@@ -1171,34 +1176,15 @@ input:focus {
       position: relative;
     }
 
-    .filter-trigger {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      background-color: transparent;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-secondary);
-      padding: var(--spacing-xs) var(--spacing-md);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      white-space: nowrap;
-    }
 
-    .filter-trigger:hover {
-      border-color: var(--color-gold);
-      color: var(--color-gold);
-      transform: none;
-      box-shadow: none;
-    }
 
     .filter-badge {
       display: none;
       min-width: 18px;
       padding: 0 5px;
       border-radius: var(--radius-full);
-      background-color: var(--color-gold);
-      color: var(--color-navy);
+      background-color: var(--color-orange);
+      color: #FFFFFF;
       font-size: 10px;
       font-weight: var(--font-weight-bold);
       line-height: 16px;
@@ -1240,12 +1226,12 @@ input:focus {
     }
 
     .filter-option:hover {
-      background-color: var(--color-navy);
+      background-color: var(--color-background);
       color: var(--color-text);
     }
 
     .filter-option input {
-      accent-color: var(--color-gold);
+      accent-color: var(--color-orange);
       margin-top: 2px;
       padding: 0;
       flex: 0 0 auto;
@@ -1262,7 +1248,7 @@ input:focus {
     }
 
     .toggle input {
-      accent-color: var(--color-gold);
+      accent-color: var(--color-orange);
       cursor: pointer;
       padding: 0;
     }
@@ -1276,9 +1262,10 @@ input:focus {
       align-items: center;
       gap: var(--spacing-xs);
       padding: var(--spacing-xs) var(--spacing-sm);
-      background-color: rgba(5, 5, 21, 0.75);
+      background-color: rgba(255, 255, 255, 0.94);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
       z-index: var(--z-dropdown);
     }
 
@@ -1328,7 +1315,7 @@ input:focus {
       text-align: left;
       background: none;
       border: none;
-      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      border-bottom: 1px solid var(--color-border);
       padding: var(--spacing-sm) 0;
       cursor: pointer;
       border-radius: 0;
@@ -1370,7 +1357,7 @@ input:focus {
     .zoom-controls {
       position: absolute;
       right: var(--spacing-md);
-      top: var(--spacing-md);
+      top: 60px;
       display: flex;
       flex-direction: column;
       gap: 1px;
@@ -1383,8 +1370,8 @@ input:focus {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgba(8, 11, 48, 0.88);
-      border: 1px solid var(--color-border);
+      background-color: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--color-border-strong);
       color: var(--color-text-secondary);
       font-size: var(--font-size-md);
       line-height: 1;
@@ -1412,8 +1399,8 @@ input:focus {
       display: flex;
       flex-direction: column;
       gap: var(--spacing-sm);
-      padding: var(--spacing-sm) var(--spacing-md);
-      background-color: var(--color-navy-darker);
+      padding: var(--spacing-md);
+      background-color: #FFFFFF;
       border-bottom: 1px solid var(--color-border);
     }
 
@@ -1439,229 +1426,47 @@ input:focus {
       font-weight: var(--font-weight-bold);
       letter-spacing: var(--letter-spacing-wider);
       text-transform: uppercase;
-      color: var(--color-text-secondary);
+      color: var(--color-text-muted);
       white-space: nowrap;
     }
 
-    .metric-selector {
-      font-size: var(--font-size-sm);
-      padding: var(--spacing-xs) var(--spacing-sm);
-    }
 
-    .help-button {
-      background: none;
-      border: none;
-      border-bottom: 1px dotted var(--color-text-secondary);
-      color: var(--color-text-secondary);
-      font-size: var(--font-size-xs);
-      cursor: pointer;
-      padding: 0 0 1px 0;
-      border-radius: 0;
-    }
 
-    .help-button:hover {
-      color: var(--color-gold);
-      border-bottom-color: var(--color-gold);
-      transform: none;
-      box-shadow: none;
-    }
 
     /* Scope of what is on screen. This band used to hold the measure
        description, which nobody read; the coverage figures were meanwhile
        buried in a caption in the bottom-left corner. They have swapped, and
        the measure now explains itself in a popup. */
-    .scope-banner {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      min-height: 34px;
-      padding: 0 var(--spacing-md);
-      background-color: var(--color-dl-blue);
-      font-size: var(--font-size-sm);
-      color: #FFFFFF;
-      line-height: var(--line-height-normal);
-    }
 
-    .scope-banner strong {
-      font-weight: var(--font-weight-bold);
-      font-variant-numeric: tabular-nums;
-    }
 
-    .scope-banner .banner-sep {
-      opacity: 0.4;
-    }
 
-    .scope-banner .banner-measure {
-      color: #FFFFFF;
-    }
 
-    .scope-banner .banner-scale,
-    .scope-banner .banner-scope {
-      font-size: var(--font-size-xs);
-      color: rgba(255, 255, 255, 0.82);
-    }
 
     /* What the selected measure is, and the scale it runs on. This line was
        briefly removed in favour of the coverage banner above; both are needed
        — the banner says how much is on screen, this says how to read it. */
-    .metric-description {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: var(--spacing-sm);
-      min-height: 30px;
-      padding: 4px var(--spacing-md);
-      background-color: var(--color-navy-darker);
-      border-bottom: 1px solid var(--color-border);
-      font-size: var(--font-size-xs);
-      color: var(--color-text-secondary);
-      line-height: var(--line-height-normal);
-    }
 
-    .metric-description .measure-name {
-      font-weight: var(--font-weight-bold);
-      color: var(--color-dl-blue-text);
-    }
 
-    .metric-description .measure-scale {
-      color: var(--color-text-muted);
-      font-variant-numeric: tabular-nums;
-    }
 
-    .metric-description .measure-scale strong {
-      color: var(--color-text-secondary);
-      font-weight: var(--font-weight-semibold);
-    }
 
     /* Small round info affordance, next to a control */
-    .info-button {
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      border-radius: 50%;
-      border: 1px solid var(--color-text-muted);
-      background: none;
-      color: var(--color-text-secondary);
-      font-size: 11px;
-      font-style: italic;
-      font-weight: var(--font-weight-bold);
-      line-height: 1;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
 
-    .info-button:hover {
-      border-color: var(--color-dl-blue-text);
-      color: var(--color-dl-blue-text);
-    }
 
-    .is-measure-panel {
-      border-color: var(--color-dl-blue);
-      max-width: 480px;
-    }
 
-    .is-measure-panel h2 {
-      color: var(--color-dl-blue-text);
-    }
 
-    .measure-scale-caption {
-      font-size: var(--font-size-xs) !important;
-      color: var(--color-text-muted) !important;
-      margin-bottom: var(--spacing-xs) !important;
-    }
 
     /* DL Points explainer */
-    .help-panel {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(520px, calc(100vw - 2 * var(--spacing-xl)));
-      max-height: calc(100vh - 2 * var(--spacing-xl));
-      overflow-y: auto;
-      background-color: var(--color-background-elevated);
-      border: 1px solid var(--color-gold);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-xl);
-      padding: var(--spacing-lg);
-      z-index: var(--z-modal);
-    }
 
-    .help-panel[hidden] {
-      display: none;
-    }
 
-    .help-panel h2 {
-      font-size: var(--font-size-lg);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-gold);
-      margin-bottom: var(--spacing-md);
-    }
 
-    .help-panel p {
-      font-size: var(--font-size-sm);
-      line-height: var(--line-height-relaxed);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--spacing-md);
-    }
 
-    .help-panel strong {
-      color: var(--color-text);
-      font-weight: var(--font-weight-semibold);
-    }
 
-    .help-panel h3 {
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-text);
-      margin: var(--spacing-lg) 0 var(--spacing-sm);
-    }
 
-    .help-lede {
-      font-size: var(--font-size-base) !important;
-      color: var(--color-text) !important;
-    }
 
-    .help-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: var(--spacing-md);
-      font-size: var(--font-size-sm);
-    }
 
-    .help-table th {
-      text-align: left;
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
-      text-transform: uppercase;
-      letter-spacing: var(--letter-spacing-wide);
-      color: var(--color-text-muted);
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border-bottom: 1px solid var(--color-border);
-    }
 
-    .help-table td {
-      padding: var(--spacing-xs) var(--spacing-sm);
-      color: var(--color-text-secondary);
-      border-bottom: 1px solid rgba(61, 62, 122, 0.4);
-    }
 
-    .help-table td:last-child {
-      color: var(--color-gold);
-      font-weight: var(--font-weight-semibold);
-      white-space: nowrap;
-    }
 
-    .help-close {
-      background-color: var(--color-blue);
-      border: none;
-      color: white;
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
-    }
 
     .module-selector {
       display: flex;
@@ -1669,34 +1474,9 @@ input:focus {
       flex-wrap: wrap;
     }
 
-    .module-button {
-      background-color: transparent;
-      border: 1px solid var(--color-border);
-      color: var(--color-text-secondary);
-      padding: var(--spacing-xs) var(--spacing-md);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-medium);
-      white-space: nowrap;
-    }
 
-    .module-button:hover {
-      border-color: var(--color-gold);
-      color: var(--color-gold);
-    }
 
-    .module-button[aria-pressed="true"] {
-      background-color: var(--color-gold);
-      border-color: var(--color-gold);
-      color: var(--color-navy);
-      font-weight: var(--font-weight-semibold);
-    }
 
-    .module-button[aria-pressed="true"]:hover {
-      transform: none;
-      box-shadow: none;
-    }
 
     /* Main content */
     main {
@@ -1819,7 +1599,7 @@ input:focus {
 
     .measure-table td {
       padding: var(--spacing-xs) 0;
-      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      border-bottom: 1px solid var(--color-border);
       color: var(--color-text-secondary);
     }
 
@@ -1861,7 +1641,7 @@ input:focus {
       display: flex;
       gap: var(--spacing-sm);
       padding: var(--spacing-sm) 0;
-      border-bottom: 1px solid rgba(61, 62, 122, 0.35);
+      border-bottom: 1px solid var(--color-border);
     }
 
     .institution-rank {
@@ -1918,7 +1698,7 @@ input:focus {
 
     .bar-track {
       height: 6px;
-      background-color: rgba(61, 62, 122, 0.5);
+      background-color: var(--color-background);
       border-radius: var(--radius-full);
       overflow: hidden;
     }
@@ -1985,7 +1765,7 @@ input:focus {
     .total-points {
       margin-top: var(--spacing-md);
       padding: var(--spacing-md);
-      background-color: rgba(24, 57, 226, 0.14);
+      background-color: #EEF1FE;
       border: 1px solid var(--color-dl-blue);
       border-radius: var(--radius-md);
     }
@@ -2023,7 +1803,7 @@ input:focus {
       display: block;
       font-size: var(--font-size-2xl);
       font-weight: var(--font-weight-extrabold);
-      color: #FFFFFF;
+      color: var(--color-text);
       font-variant-numeric: tabular-nums;
       line-height: 1.1;
       margin-top: 2px;
@@ -2039,7 +1819,7 @@ input:focus {
     .commercial-cta {
       margin-top: var(--spacing-md);
       padding-top: var(--spacing-sm);
-      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      border-top: 1px solid var(--color-border);
       font-size: var(--font-size-xs);
       line-height: var(--line-height-normal);
       color: var(--color-text-secondary);
@@ -2062,7 +1842,7 @@ input:focus {
 
     .ranking-table th {
       padding-bottom: var(--spacing-xs);
-      border-bottom: 1px solid rgba(61, 62, 122, 0.6);
+      border-bottom: 1px solid var(--color-border-strong);
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: 0.09em;
@@ -2132,63 +1912,24 @@ input:focus {
        on, so the control looks like what it does. */
     /* The Next 50 is a headline feature, so it reads as one even when off:
        filled rather than outlined, and in its own orange. */
-    .tier-button {
-      background-color: rgba(255, 73, 1, 0.18);
-      border: 1.5px solid var(--color-orange);
-      color: #FF8A54;
-      padding: 4px var(--spacing-md);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-bold);
-      white-space: nowrap;
-      transition: background-color var(--transition-fast), color var(--transition-fast);
-    }
 
-    .tier-button:hover {
-      background-color: rgba(255, 73, 1, 0.34);
-      color: #FFFFFF;
-    }
 
-    .tier-button.is-on {
-      border-color: var(--color-orange);
-      background-color: var(--color-orange);
-      color: #FFFFFF;
-    }
 
     /* Quieter in the country view, where the tier has no effect — but still
        plainly legible; it was previously faded almost out of existence. */
-    .tier-button.is-inactive {
-      opacity: 0.8;
-    }
 
-    .is-next50-panel {
-      border-color: var(--color-orange);
-    }
 
-    .is-next50-panel h2 {
-      color: var(--color-orange);
-      letter-spacing: 0.06em;
-    }
 
-    .next50-lede {
-      font-size: var(--font-size-base) !important;
-      color: var(--color-text) !important;
-    }
 
-    .module-panel em {
-      font-style: italic;
-      color: var(--color-text);
-    }
 
     /* Next 50 — ranked 151-200 in Global, listed but not scored */
     .tier-badge {
       display: inline-block;
       padding: 1px 6px;
       border-radius: var(--radius-full);
-      background-color: rgba(255, 73, 1, 0.22);
+      background-color: var(--color-orange-wash);
       border: 1px solid var(--color-orange);
-      color: var(--color-text-secondary);
+      color: #A8330A;
       font-size: 9px;
       letter-spacing: 0.04em;
       white-space: nowrap;
@@ -2287,27 +2028,510 @@ input:focus {
     }
 
     ::-webkit-scrollbar-track {
-      background: var(--color-navy);
+      background-color: var(--color-background);
     }
 
     ::-webkit-scrollbar-thumb {
-      background: var(--color-text-secondary);
-      border-radius: 4px;
+      background-color: var(--color-border-strong);
+      border-radius: var(--radius-full);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: var(--color-gold);
+      background-color: var(--color-text-muted);
     }
+    /* ==================================================================
+       PILL CONTROLS
+
+       One capsule, used for every call to action on the page, matching the
+       Digital Leaders website: a pale periwinkle capsule with navy type,
+       turning solid orange with white type when it is the one selected.
+       Montserrat semibold throughout, which is the site's own face.
+
+       Everything that was a bordered ghost button in the dark theme is now
+       one of these: the rankings, the Next 50, the filter triggers, Reset
+       view and the user guide. There is exactly one button idiom on screen.
+       ================================================================== */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 16px;
+      border: 1px solid var(--chip-border);
+      border-radius: var(--radius-full);
+      background-color: var(--chip-bg);
+      color: var(--chip-ink);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.15;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip:hover {
+      background-color: var(--chip-bg-hover);
+      border-color: var(--chip-bg-hover);
+    }
+
+    /* Selected. aria-pressed is the source of truth for the rankings and the
+       Next 50, so the selected look is driven off the attribute the control
+       already sets rather than a second class that could drift from it. */
+    .chip[aria-pressed="true"],
+    .chip.is-on,
+    .chip.is-active {
+      background-color: var(--chip-bg-active);
+      border-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
+    }
+
+    .chip[aria-pressed="true"]:hover,
+    .chip.is-on:hover {
+      background-color: #E63F00;
+      border-color: #E63F00;
+    }
+
+    /* On the blue band, where the pale capsule needs to be lighter still to
+       hold against #1839E2. */
+    .chip-on-blue {
+      background-color: var(--chip-on-blue-bg);
+      border-color: transparent;
+      color: var(--color-navy);
+    }
+
+    .chip-on-blue:hover {
+      background-color: var(--chip-on-blue-hover);
+      border-color: transparent;
+    }
+
+    /* A secondary action: the same capsule, drawn back to an outline. */
+    .chip.is-quiet {
+      background-color: transparent;
+      border-color: var(--color-border-strong);
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .chip.is-quiet:hover {
+      background-color: var(--color-background);
+      border-color: var(--color-text-muted);
+      color: var(--color-text);
+    }
+
+    /* The rankings and the Next 50 sit on one line and read as one group, so
+       they share the capsule and differ only in what they mean. */
+    .module-selector {
+      display: flex;
+      gap: var(--spacing-xs);
+      flex-wrap: wrap;
+    }
+
+    /* The Next 50 extends Global to 200 places, so it stands beside Global
+       wearing the tier's own light orange rather than the periwinkle of a
+       ranking it is not. */
+    .tier-button {
+      background-color: var(--color-orange-wash);
+      border-color: var(--color-orange-soft);
+      color: #A8330A;
+      font-weight: var(--font-weight-bold);
+      letter-spacing: 0.02em;
+    }
+
+    .tier-button:hover {
+      background-color: #FFE0D2;
+      border-color: var(--color-orange-soft);
+    }
+
+    /* Quieter in the country view, where the tier has no effect, but still
+       plainly legible. */
+    .tier-button.is-inactive {
+      opacity: 0.75;
+    }
+
+    /* The separator inside the Next 50 label, matching the one in the title. */
+    .chip-rule {
+      opacity: 0.45;
+      font-weight: var(--font-weight-regular);
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .select-control {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      padding: 6px var(--spacing-sm);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--chip-border);
+      background-color: var(--chip-bg);
+      color: var(--chip-ink);
+      cursor: pointer;
+    }
+
+    /* ==================================================================
+       INFO AFFORDANCE
+
+       Every control carries one, and it opens that control's explainer in
+       place. Small, quiet, and always in the same position: immediately to
+       the right of the thing it explains.
+       ================================================================== */
+    .info-button {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid var(--chip-border);
+      background-color: var(--chip-bg);
+      color: var(--chip-ink);
+      font-family: var(--font-family);
+      font-size: 11px;
+      font-weight: var(--font-weight-bold);
+      font-style: italic;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .info-button:hover {
+      background-color: var(--chip-bg-active);
+      border-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
+    }
+
+    /* The same mark, set inline in a sentence in the guide. */
+    .info-button.is-inline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      font-size: 11px;
+      vertical-align: -4px;
+      cursor: default;
+    }
+
+    /* ==================================================================
+       THE KEY STRIP
+
+       How to read the map, directly under the controls at the top left.
+       This is where the SVG legend and the coverage caption went: they used
+       to sit in the bottom-left corner of the map, which is the last place a
+       reader looks and, on a short window, below the fold.
+       ================================================================== */
+    .map-key {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: var(--spacing-sm) var(--spacing-md) 10px;
+      background-color: #FFFFFF;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .key-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+      min-height: 22px;
+    }
+
+    .key-heading {
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--letter-spacing-wider);
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+
+    .key-scale {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    /* The bar is sampled from the same scale function that fills the
+       countries, so the key cannot drift from the map. */
+    .key-ramp {
+      display: block;
+      width: 190px;
+      height: 10px;
+      border-radius: var(--radius-xs);
+      border: 1px solid rgba(15, 19, 116, 0.12);
+    }
+
+    .key-tick {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .key-items {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+    }
+
+    .key-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    .key-swatch {
+      width: 11px;
+      height: 11px;
+      border-radius: var(--radius-xs);
+      border: 1px solid rgba(15, 19, 116, 0.12);
+    }
+
+    .key-swatch-unranked { background-color: var(--color-land-unranked); }
+    .key-swatch-nodata   { background-color: #E3E5EF; }
+
+    .key-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(15, 19, 116, 0.25);
+    }
+
+    .key-scope {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      line-height: var(--line-height-normal);
+    }
+
+    .key-scope strong {
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .key-measure {
+      color: var(--color-text-secondary);
+    }
+
+    .key-sep {
+      opacity: 0.45;
+      padding: 0 2px;
+    }
+
+    /* A filter is narrowing everything on screen, so the line says so in the
+       accent rather than quietly. */
+    .key-scope.is-filtered .key-coverage strong {
+      color: var(--color-orange);
+    }
+
+    /* ==================================================================
+       CONTROL POPOVER
+
+       One panel, opened against whichever control asked for it. Fixed
+       position, so it can overhang the control band and the map.
+       ================================================================== */
+    .control-pop {
+      position: fixed;
+      width: min(420px, calc(100vw - 24px));
+      overflow-y: auto;
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-top: 3px solid var(--color-dl-blue);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      padding: var(--spacing-md);
+      z-index: var(--z-popover);
+    }
+
+    .control-pop[hidden] {
+      display: none;
+    }
+
+    .pop-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .pop-title {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      line-height: var(--line-height-tight);
+    }
+
+    .pop-close {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-lg);
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 var(--spacing-xs);
+    }
+
+    .pop-close:hover {
+      color: var(--color-orange);
+    }
+
+    .pop-body p {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .pop-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .pop-body strong {
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .pop-body em {
+      font-style: italic;
+      color: var(--color-text);
+    }
+
+    .pop-body h3 {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      margin: var(--spacing-md) 0 var(--spacing-xs);
+    }
+
+    .pop-lede {
+      font-size: var(--font-size-base) !important;
+      color: var(--color-text) !important;
+    }
+
+    .pop-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+    }
+
+    .pop-table th {
+      text-align: left;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wide);
+      color: var(--color-text-muted);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .pop-table td {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--color-border);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pop-table td:last-child {
+      color: var(--color-orange);
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+    }
+
+    /* ==================================================================
+       USER GUIDE
+       ================================================================== */
+    .guide-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(560px, calc(100vw - 2 * var(--spacing-xl)));
+      max-height: calc(100vh - 2 * var(--spacing-xl));
+      overflow-y: auto;
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-top: 4px solid var(--color-orange);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      padding: var(--spacing-lg);
+      z-index: var(--z-modal);
+    }
+
+    .guide-panel[hidden] {
+      display: none;
+    }
+
+    .guide-panel .pop-title {
+      font-size: var(--font-size-xl);
+    }
+
+    .guide-list {
+      margin: 0 0 var(--spacing-sm);
+      padding-left: var(--spacing-md);
+    }
+
+    .guide-list li {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .guide-list li strong {
+      color: var(--color-text);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    /* ==================================================================
+       RESET VIEW
+
+       On the map, top right, above the zoom stack. It used to sit in the
+       header, three bands away from the thing it resets.
+       ================================================================== */
+    .map-reset {
+      position: absolute;
+      right: var(--spacing-md);
+      top: var(--spacing-md);
+      z-index: var(--z-header);
+      background-color: rgba(255, 255, 255, 0.94);
+      border-color: var(--color-border-strong);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .map-reset:hover {
+      background-color: var(--chip-bg-active);
+      border-color: var(--chip-bg-active);
+      color: var(--chip-ink-active);
+    }
+
+    /* The search field, on the blue band */
+    #search-input {
+      border-color: transparent;
+    }
+
   
 </style>
 
 <div id="app">
-    <!-- Header -->
+
+    <!-- The Digital Leaders band. Blue #1839E2, unchanged: it is the one
+         surface on the page that carries the brand colour, and everything
+         below it is paper. -->
     <header>
       <div class="title-block">
         <span class="dl-logo-plate">
-          <!-- dl-logo:start -->
-<svg id="dl-logo" class="dl-logo" role="img" aria-label="Digital Leaders — Higher Education for AI &amp; Tech Careers" id="Calque_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 507.5 83.4"><defs><style>#dl-logo .dllogo-1{fill:none;}#dl-logo .dllogo-2,.dllogo-3,.dllogo-4,.dllogo-5{fill:#04f;}#dl-logo .dllogo-2,.dllogo-6{letter-spacing:-.05em;}#dl-logo .dllogo-3{letter-spacing:-.05em;}#dl-logo .dllogo-4{letter-spacing:-.05em;}#dl-logo .dllogo-7{font-family:Lexend-Light, Lexend;font-size:19px;font-weight:300;}#dl-logo .dllogo-7,.dllogo-8,.dllogo-6{fill:#000b59;}#dl-logo .dllogo-9{clip-path:url(#clippath-1);}#dl-logo .dllogo-10{font-family:Lexend-Medium, Lexend;font-size:66px;font-weight:500;}#dl-logo .dllogo-11{letter-spacing:-.12em;}#dl-logo .dllogo-12{letter-spacing:-.02em;}#dl-logo .dllogo-13{letter-spacing:-.02em;}#dl-logo .dllogo-14{letter-spacing:-.03em;}#dl-logo .dllogo-15{letter-spacing:-.04em;}#dl-logo .dllogo-16{letter-spacing:-.04em;}#dl-logo .dllogo-17{letter-spacing:0em;}#dl-logo .dllogo-18{clip-path:url(#clippath);}#dl-logo .dllogo-8{letter-spacing:-.06em;}</style><clipPath id="clippath"><path class="dllogo-1" d="M479.97,12.04c-.82,3.59-4.7,13.55-21.98,18.44-7.71,2.19-13.98,2.54-27.23-.85,3.23.98,5.94,3.12,7.68,5.93,9.77,1.66,19.58,1.18,31.53-1.6,20.85-4.84,31.92-27.82,31.92-27.82l-21.92,5.89Z"/></clipPath><clipPath id="clippath-1"><rect class="dllogo-1" x="425.76" y="1.14" width="81.13" height="40.38"/></clipPath></defs><g id="Layer_1"><g class="dllogo-18"><g class="dllogo-9"><image width="170" height="85" transform="translate(425.32 .75) scale(.48)" xlink:href="data:image/png;base64,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"/></g></g><path class="dllogo-5" d="M430.76,29.63c-1.25-.38-2.58-.59-3.96-.59-7.55,0-13.68,6.12-13.68,13.68s6.12,13.68,13.68,13.68,13.68-6.12,13.68-13.68c0-2.63-.75-5.08-2.04-7.16-1.73-2.81-4.45-4.95-7.68-5.93Z"/><text class="dllogo-10" transform="translate(0 56.1)"><tspan class="dllogo-2" x="0" y="0">digi</tspan><tspan class="dllogo-4" x="112.13" y="0">t</tspan><tspan class="dllogo-3" x="134.44" y="0">al</tspan><tspan class="dllogo-8" x="188.56" y="0">l</tspan><tspan class="dllogo-6" x="202.68" y="0">eaders</tspan></text><text class="dllogo-7" transform="translate(98.97 78.89)"><tspan class="dllogo-13" x="0" y="0">Higher </tspan><tspan class="dllogo-14" x="62.26" y="0">E</tspan><tspan class="dllogo-17" x="73.13" y="0">d</tspan><tspan class="dllogo-12" x="84.81" y="0">ucation </tspan><tspan class="dllogo-15" x="154.07" y="0">f</tspan><tspan class="dllogo-13" x="160.45" y="0">or AI &amp; </tspan><tspan class="dllogo-11" x="226.55" y="0">T</tspan><tspan class="dllogo-13" x="234.59" y="0">ech Ca</tspan><tspan class="dllogo-16" x="293.64" y="0">r</tspan><tspan class="dllogo-13" x="299.89" y="0">eers</tspan></text></g></svg>
+<!-- dl-logo:start -->
+<svg id="dl-logo" class="dl-logo" role="img" aria-label="Digital Leaders: Higher Education for AI &amp; Tech Careers" id="Calque_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 507.5 83.4"><defs><style>#dl-logo .dllogo-1{fill:none;}#dl-logo .dllogo-2,.dllogo-3,.dllogo-4,.dllogo-5{fill:#04f;}#dl-logo .dllogo-2,.dllogo-6{letter-spacing:-.05em;}#dl-logo .dllogo-3{letter-spacing:-.05em;}#dl-logo .dllogo-4{letter-spacing:-.05em;}#dl-logo .dllogo-7{font-family:Lexend-Light, Lexend;font-size:19px;font-weight:300;}#dl-logo .dllogo-7,.dllogo-8,.dllogo-6{fill:#000b59;}#dl-logo .dllogo-9{clip-path:url(#clippath-1);}#dl-logo .dllogo-10{font-family:Lexend-Medium, Lexend;font-size:66px;font-weight:500;}#dl-logo .dllogo-11{letter-spacing:-.12em;}#dl-logo .dllogo-12{letter-spacing:-.02em;}#dl-logo .dllogo-13{letter-spacing:-.02em;}#dl-logo .dllogo-14{letter-spacing:-.03em;}#dl-logo .dllogo-15{letter-spacing:-.04em;}#dl-logo .dllogo-16{letter-spacing:-.04em;}#dl-logo .dllogo-17{letter-spacing:0em;}#dl-logo .dllogo-18{clip-path:url(#clippath);}#dl-logo .dllogo-8{letter-spacing:-.06em;}</style><clipPath id="clippath"><path class="dllogo-1" d="M479.97,12.04c-.82,3.59-4.7,13.55-21.98,18.44-7.71,2.19-13.98,2.54-27.23-.85,3.23.98,5.94,3.12,7.68,5.93,9.77,1.66,19.58,1.18,31.53-1.6,20.85-4.84,31.92-27.82,31.92-27.82l-21.92,5.89Z"/></clipPath><clipPath id="clippath-1"><rect class="dllogo-1" x="425.76" y="1.14" width="81.13" height="40.38"/></clipPath></defs><g id="Layer_1"><g class="dllogo-18"><g class="dllogo-9"><image width="170" height="85" transform="translate(425.32 .75) scale(.48)" xlink:href="data:image/png;base64,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"/></g></g><path class="dllogo-5" d="M430.76,29.63c-1.25-.38-2.58-.59-3.96-.59-7.55,0-13.68,6.12-13.68,13.68s6.12,13.68,13.68,13.68,13.68-6.12,13.68-13.68c0-2.63-.75-5.08-2.04-7.16-1.73-2.81-4.45-4.95-7.68-5.93Z"/><text class="dllogo-10" transform="translate(0 56.1)"><tspan class="dllogo-2" x="0" y="0">digi</tspan><tspan class="dllogo-4" x="112.13" y="0">t</tspan><tspan class="dllogo-3" x="134.44" y="0">al</tspan><tspan class="dllogo-8" x="188.56" y="0">l</tspan><tspan class="dllogo-6" x="202.68" y="0">eaders</tspan></text><text class="dllogo-7" transform="translate(98.97 78.89)"><tspan class="dllogo-13" x="0" y="0">Higher </tspan><tspan class="dllogo-14" x="62.26" y="0">E</tspan><tspan class="dllogo-17" x="73.13" y="0">d</tspan><tspan class="dllogo-12" x="84.81" y="0">ucation </tspan><tspan class="dllogo-15" x="154.07" y="0">f</tspan><tspan class="dllogo-13" x="160.45" y="0">or AI &amp; </tspan><tspan class="dllogo-11" x="226.55" y="0">T</tspan><tspan class="dllogo-13" x="234.59" y="0">ech Ca</tspan><tspan class="dllogo-16" x="293.64" y="0">r</tspan><tspan class="dllogo-13" x="299.89" y="0">eers</tspan></text></g></svg>
         <!-- dl-logo:end -->
         </span>
         <h1>Digital Leaders 2026 <span class="title-rule">|</span> AI &amp; Tech Careers Edition</h1>
@@ -2315,22 +2539,29 @@ input:focus {
 
       <div class="controls">
         <div class="search">
-          <input id="search-input" type="search" placeholder="Search countries, hubs, institutions…"
+          <input id="search-input" type="search" placeholder="Search countries, hubs, institutions&hellip;"
                  autocomplete="off" aria-label="Search">
           <div id="search-results" class="search-results"></div>
         </div>
-        <button id="reset-zoom" class="reset-zoom" title="Return to the whole-world view">Reset view</button>
       </div>
     </header>
 
-    <!-- What the ranking measures -->
-    <p class="intro">
-      A global ranking of universities and schools based on graduate career outcomes
-      across four key areas of the AI &amp; tech economy — showing the Top 150
-      institutions in each ranking.
-    </p>
+    <!-- What the ranking measures, with the user guide at its right-hand end.
+         The guide sits here rather than in the control band because this is
+         the sentence a first-time reader finishes before wondering what to do
+         next. -->
+    <div class="intro">
+      <p class="intro-text">
+        A global ranking of universities and schools based on graduate career outcomes
+        across four key areas of the AI &amp; tech economy, showing the Top 150
+        institutions in each ranking.
+      </p>
+      <button id="guide-open" class="chip chip-on-blue" type="button" aria-expanded="false">
+        How to use this map
+      </button>
+    </div>
 
-    <!-- Ranking + measure selectors -->
+    <!-- Controls. Two rows, each control carrying its own explainer. -->
     <div class="toolbar">
       <div class="toolbar-row">
         <div class="toolbar-group">
@@ -2339,6 +2570,8 @@ input:focus {
             <button type="button" class="view-button is-active" data-view="country">Countries / Hubs</button>
             <button type="button" class="view-button" data-view="institution">Institutions</button>
           </div>
+          <button class="info-button" type="button" data-explain="view"
+                  aria-label="What the two views show">i</button>
         </div>
 
         <div class="toolbar-group">
@@ -2346,114 +2579,89 @@ input:focus {
             <input type="checkbox" id="hub-toggle" checked>
             <span>Show hubs</span>
           </label>
+          <button class="info-button" type="button" data-explain="hubs"
+                  aria-label="What a hub is">i</button>
         </div>
 
         <div class="toolbar-group">
           <label class="toolbar-label" for="metric-selector">Measure</label>
-          <select id="metric-selector" class="metric-selector"></select>
-          <button id="dl-points-help" class="help-button" type="button" aria-expanded="false">
-            What are DL Points?
-          </button>
+          <select id="metric-selector" class="select-control"></select>
+          <button class="info-button" type="button" data-explain="measure"
+                  aria-label="What DL Points are">i</button>
         </div>
       </div>
 
       <div class="toolbar-row">
         <div class="toolbar-group">
           <span class="toolbar-label">Rankings</span>
+          <!-- The Next 50 button is declared here and moved next to Global by
+               buildModuleSelector(), which rebuilds that list from the data. -->
           <div id="module-selector" class="module-selector"></div>
+          <button type="button" id="next50-toggle" class="chip tier-button"
+                  aria-pressed="false">NEW 50 <span class="chip-rule">|</span> 151&ndash;200</button>
+          <button class="info-button" type="button" data-explain="rankings"
+                  aria-label="What the rankings are">i</button>
         </div>
 
         <div class="toolbar-group">
-          <button type="button" id="next50-toggle" class="tier-button"
-                  aria-pressed="false">Next 50</button>
-        </div>
-
-        <div class="toolbar-group">
+          <span class="toolbar-label">Filter</span>
           <div id="filters" class="filters"></div>
         </div>
       </div>
     </div>
 
-    <p id="scope-banner" class="scope-banner"></p>
+    <!-- The key. It used to be two SVG groups in the bottom-left corner of the
+         map, which is the last place a reader looks. It is now the first thing
+         under the controls. -->
+    <div id="map-key" class="map-key"></div>
 
-    <!-- DL Points explainer -->
-    <div id="dl-points-panel" class="help-panel" role="dialog" aria-labelledby="dl-points-title" hidden>
-      <h2 id="dl-points-title">What are DL Points?</h2>
-
-      <p class="help-lede">
-        DL Points are a simple scoring mechanism that lets you compare one
-        country against another, and one institution against another, on a
-        single scale.
-      </p>
-
-      <p>
-        They are not a separate ranking or a sixth module. They are a way of
-        turning ranking positions into a number you can add up and compare.
-      </p>
-
-      <h3>How the score works</h3>
-
-      <p>
-        Each ranking places 150 institutions. An institution&rsquo;s DL Points come
-        from where it sits on that 1&ndash;150 scale: the higher the position, the
-        higher the score.
-      </p>
-
-      <table class="help-table">
-        <tr><th>An institution ranked…</th><th>…scores</th></tr>
-        <tr><td>1st</td><td>150 points</td></tr>
-        <tr><td>50th</td><td>101 points</td></tr>
-        <tr><td>100th</td><td>51 points</td></tr>
-        <tr><td>150th</td><td>1 point</td></tr>
-      </table>
-
-      <p>
-        A country&rsquo;s score is all of its institutions&rsquo; points added together.
-      </p>
-
-      <h3>And the other measures?</h3>
-
-      <p>
-        Talent density divides this total by a country&rsquo;s population, asking who
-        does most with what they have. Evolution compares the DL25 and DL26
-        editions.
-      </p>
-
-      <button id="dl-points-close" class="help-close" type="button">Close</button>
+    <!-- One popover, anchored to whichever control asked for it. Filled by
+         openPop() in index.js. -->
+    <div id="control-pop" class="control-pop" role="dialog" aria-live="polite" hidden>
+      <div class="pop-head">
+        <h2 class="pop-title"></h2>
+        <button class="pop-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <div class="pop-body"></div>
     </div>
 
-    <!-- Module explainer — filled from MODULE_DESCRIPTIONS when a ranking is picked -->
-    <div id="module-panel" class="module-panel" role="dialog" aria-labelledby="module-panel-title" hidden>
-      <h2 id="module-panel-title"></h2>
-      <p id="module-panel-body"></p>
-      <button id="module-panel-close" class="help-close" type="button">Close</button>
-    </div>
+    <!-- User guide -->
+    <div id="guide-panel" class="guide-panel" role="dialog"
+         aria-labelledby="guide-title" hidden>
+      <div class="pop-head">
+        <h2 id="guide-title" class="pop-title">How to use this map</h2>
+        <button id="guide-close" class="pop-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <div class="pop-body">
+        <p class="pop-lede">
+          One global ranking and four specialist ones, mapped across 41 countries
+          and 15 hubs. Pick a ranking, choose how to measure it, then click any
+          country, hub or institution to open its card.
+        </p>
 
-    <!-- Next 50 explainer -->
-    <div id="next50-panel" class="module-panel is-next50-panel" role="dialog"
-         aria-labelledby="next50-panel-title" hidden>
-      <h2 id="next50-panel-title">THE NEXT 50</h2>
+        <h3>What each control does</h3>
+        <ul class="guide-list">
+          <li><strong>View</strong> switches between the world coloured by score,
+          and every ranked institution plotted as a dot.</li>
+          <li><strong>Rankings</strong> moves the whole map to Global or to one of
+          the four areas. <strong>Next 50</strong> extends Global to 200 places.</li>
+          <li><strong>Measure</strong> reads the map three ways: overall strength,
+          talent density against population, or <strong>evolution</strong> between
+          the DL25 and DL26 editions.</li>
+          <li><strong>Show hubs</strong> draws each city cluster as a bubble sized
+          by the weight of the institutions in it, so you can see where the
+          ranking concentrates.</li>
+          <li><strong>Filter</strong> narrows to a type of institution or to the
+          top of the ranking. Every figure on screen follows.</li>
+        </ul>
 
-      <p class="next50-lede">
-        A spotlight on the institutions ranked <strong>151st to 200th in the Global
-        Ranking</strong>, completing the <strong>Digital Leaders Global Top 200</strong>.
-      </p>
-
-      <p>
-        Turning this on adds the Next 50 to the Institution view in
-        <strong>orange</strong>, alongside the Top 150. The Next 50 are also assessed
-        across Data &amp; AI, Computer Science, Digital Transformation and
-        Entrepreneurship, with some institutions ranking beyond the published Top 150
-        in these areas. <em>However, the Next 50 feature only displays them in the
-        Global Ranking Institution view.</em>
-      </p>
-
-      <p class="commercial-cta">
-        Want to access their DL Points or benchmark an institution against its peers?
-        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
-      </p>
-
-      <button id="next50-panel-close" class="help-close" type="button">Close</button>
+        <h3>Finding your way</h3>
+        <p>Click a country to drill into it, then a hub inside it. Search flies
+        straight to any country, hub or school. <strong>Reset view</strong>, at the
+        top right of the map, returns to the whole world.</p>
+        <p>Every control has an <span class="info-button is-inline">i</span> beside
+        it that explains it in place.</p>
+      </div>
     </div>
 
     <!-- Main content -->
@@ -2461,6 +2669,8 @@ input:focus {
       <!-- Map container -->
       <div id="map-container">
         <nav id="breadcrumb" aria-label="Drill-down"></nav>
+        <button id="reset-zoom" class="chip map-reset" type="button"
+                title="Return to the whole-world view">Reset view</button>
         <div class="zoom-controls" role="group" aria-label="Zoom">
           <button type="button" id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
           <button type="button" id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
@@ -2504,13 +2714,20 @@ const scales = (() => {
 
   // ------------------------------------------------------------------------
   // Country fills use the Emerging palette and nothing else:
-  //   navy #0F1374 · periwinkle #4B5BCB · orange #FF4901
-  //   salmon #FF9E79 · gold #DBB67D · maroon #860018
+  //   pale periwinkle #DCE3FA · periwinkle #4B5BCB · navy #0F1374
+  //   orange #FF4901 · salmon #FF9E79 · maroon #860018
   //
-  // The ramp climbs navy → periwinkle → orange → salmon, so intensity rises
-  // with the value and the busiest countries read as the most luminous.
+  // The ramp is INVERTED relative to the dark theme, and it has to be. On a
+  // dark canvas the lowest value was the darkest navy, because dark meant
+  // "recedes into the ground". On paper that reads backwards: the eye takes
+  // the darkest patch for the biggest number. So the ramp now climbs
+  // pale periwinkle, periwinkle, navy, orange: the lightest stop is the
+  // smallest score, and the accent is the peak.
+  //
+  // Gold is gone from the ramp. It is the GEURS colour; Digital Leaders
+  // accents in orange.
   // ------------------------------------------------------------------------
-  const COUNTRY_RAMP = ['#0F1374', '#4B5BCB', '#FF4901', '#FF9E79'];
+  const COUNTRY_RAMP = ['#DCE3FA', '#8D9BE8', '#3D4CB8', '#FF4901'];
 
   const dlPointsSequential = (maxValue) => {
     return d3.scaleLinear()
@@ -2544,29 +2761,30 @@ const scales = (() => {
     const absMax = Math.max(Math.abs(range[0]), Math.abs(range[1])) || 1;
     return d3.scaleDiverging()
       .domain([-absMax, 0, absMax])
-      .range(['#C21E2F', '#F2F0F4', '#0E8A5F'])
+      .range(['#C21E2F', '#EDEFF6', '#0E8A5F'])
       .clamp(true);
   };
 
-  // Per-capita strength: the same ramp, minus the darkest stop, so small
-  // high-density countries stay legible instead of sinking into the ground.
+  // Per-capita strength: the same ramp, minus the palest stop, so small
+  // high-density countries do not wash out into the sea.
   const perCapitaStrength = (maxValue) => {
     return d3.scaleLinear()
       .domain([0, maxValue * 0.5, maxValue])
-      .range(['#4B5BCB', '#FF4901', '#FF9E79'])
+      .range(['#BCC7F2', '#4B5BCB', '#FF4901'])
       .clamp(true);
   };
 
   // One colour per ranking, matching MODULE_COLORS in index.js. Keep the two
-  // in step: green is Digital Transformation, mauve is Entrepreneurship.
+  // in step: Global is orange, green is Digital Transformation, violet is
+  // Entrepreneurship.
   const moduleColor = d3.scaleOrdinal()
     .domain(['global', 'AI', 'CS', 'transform', 'create'])
-    .range(['#0F1374', '#EFB41C', '#B87308', '#93B23C', '#9B1FD8']);
+    .range(['#FF4901', '#EFB41C', '#B87308', '#93B23C', '#9B1FD8']);
 
   // Categorical: 5 Emerging brand colors
   const categorical = d3.scaleOrdinal()
     .domain(['AI', 'CS', 'Transform', 'Create', 'Global'])
-    .range(['#4B5BCB', '#FF4901', '#DBB67D', '#FF9E79', '#0F1374']);
+    .range(['#4B5BCB', '#FF4901', '#FF9E79', '#93B23C', '#0F1374']);
 
   // ========================================================================
   // SIZE SCALES
@@ -2607,9 +2825,9 @@ const scales = (() => {
       dlPoints: dlPointsScale(maxValue),
       perCapita: perCapitaStrength(maxValue),
       delta: editionDelta(range || [-50, 50]),
-      top50Count: d3.scaleLinear().domain([0, 5]).range(['#0F1374', '#FF9E79']),
-      breadth: d3.scaleLinear().domain([0, 5]).range(['#0F1374', '#DBB67D']),
-      concentration: d3.scaleLinear().domain([0, 100]).range(['#0F1374', '#FF4901'])
+      top50Count: d3.scaleLinear().domain([0, 5]).range(['#DCE3FA', '#FF4901']),
+      breadth: d3.scaleLinear().domain([0, 5]).range(['#DCE3FA', '#4B5BCB']),
+      concentration: d3.scaleLinear().domain([0, 100]).range(['#DCE3FA', '#FF4901'])
     };
     return scaleMap[metric] || dlPointsSequential(maxValue);
   };
@@ -2625,7 +2843,7 @@ const scales = (() => {
 
   // Format data value for display
   const formatDataValue = (value, metric) => {
-    if (value === null || value === undefined) return '—';
+    if (value === null || value === undefined) return 'n/a';
 
     const formatters = {
       dlPoints: (v) => Math.round(v).toLocaleString(),
@@ -2858,8 +3076,7 @@ async function init(container) {
   const g = gMargin.append('g').attr('class', 'zoom-layer');
 
   // Create layer groups (document order sets paint order).
-  // Everything geographic goes inside `g` so it zooms and pans together;
-  // the legend and caption hang off the static group so they stay put.
+  // Everything geographic goes inside `g` so it zooms and pans together.
   const layers = {
     background: g.append('g').attr('class', 'layer-background'),
     graticule: g.append('g').attr('class', 'layer-graticule'),
@@ -2867,9 +3084,7 @@ async function init(container) {
     cityStates: g.append('g').attr('class', 'layer-city-states'),
     hubs: g.append('g').attr('class', 'layer-hubs'),
     institutions: g.append('g').attr('class', 'layer-institutions'),
-    interactive: g.append('g').attr('class', 'layer-interactive'),
-    legend: gMargin.append('g').attr('class', 'layer-legend'),
-    caption: gMargin.append('g').attr('class', 'layer-caption')
+    interactive: g.append('g').attr('class', 'layer-interactive')
   };
 
   // Set up projection
@@ -3140,9 +3355,7 @@ function render(context, state, data) {
   // their on-screen size after any redraw while zoomed in.
   rescaleMarkers(context);
 
-  renderBanner(STATE, data, agg);
-  drawLegend(layers.legend, STATE, data, values, colorScale, height, agg);
-  drawCaption(layers.caption, STATE, data, width, height, agg);
+  renderKey(STATE, data, values, colorScale, agg);
   renderBreadcrumb(context, STATE);
   renderDetailPanel(context, STATE, data, agg);
 
@@ -3470,9 +3683,11 @@ const COMPETITOR_RANK_WEIGHT = 0.6;      // remainder goes to distance
 // NEXT50_MODULES. Selecting any other ranking has no Next 50 to show.
 const NEXT50_MODULES = ['global'];
 
-// Orange, from the brand palette. Global's own dots are navy, so the two tiers
-// stay clearly apart on the one map.
-const NEXT50_COLOR = '#FF4901';
+// The Next 50 is the same orange as Global, lightened. Reading the two tiers
+// as one family is the point: these are ranks 151 to 200 of the same ranking,
+// not a different kind of thing. Salmon #FF9E79 is the brand's own light
+// orange, so the pairing stays inside the palette.
+const NEXT50_COLOR = '#FF9E79';
 
 /**
  * One colour per ranking. This map is the single source of truth — the map
@@ -3484,9 +3699,11 @@ const NEXT50_COLOR = '#FF4901';
  * unchanged.
  */
 const MODULE_COLORS = {
-  global: '#0F1374',      // navy
-  AI: '#EFB41C',          // mustard, as Power – AI & Data on the DL site
-  CS: '#B87308',          // ochre — a deeper shade of the Data and AI mustard,
+  global: '#FF4901',      // Emerging orange. Global is the headline ranking and
+                          // now carries the brand accent; the Next 50 is the
+                          // same orange lightened, one tier down.
+  AI: '#EFB41C',          // mustard, as Power / AI & Data on the DL site
+  CS: '#B87308',          // ochre, a deeper shade of the Data and AI mustard,
                           // since both come from the same Power module
   transform: '#93B23C',   // olive green, as Transform on the DL site
   create: '#9B1FD8'       // violet, as Create on the DL site
@@ -3508,11 +3725,13 @@ function update(context, patch) {
   syncNext50Button();
 }
 
-// The elevated surface the explainer panels sit on, from tokens.css.
-const PANEL_BACKGROUND = '#1D2154';
+// The elevated surface the explainer popovers sit on, from tokens.css.
+// White now, which flips every contrast check below: a brand colour used as
+// type on this ground has to be DARKENED, not lifted.
+const PANEL_BACKGROUND = '#FFFFFF';
 
 // The hover card's own ground, for the same contrast checks.
-const HOVER_BACKGROUND = '#080B30';
+const HOVER_BACKGROUND = '#FFFFFF';
 
 /** Relative luminance, for contrast checks. */
 function luminance(hex) {
@@ -3528,64 +3747,269 @@ function contrast(a, b) {
 }
 
 /**
- * Lighten a colour just enough to be readable as text on `background`,
- * preserving its hue. A brand colour chosen to work as a fill is often far
- * too dark to double as type on a dark surface.
+ * Move a colour just far enough to be readable as text on `background`,
+ * preserving its hue.
+ *
+ * Direction is decided by the background, not assumed. The dark theme only
+ * ever needed to LIGHTEN a brand colour; on paper the opposite is true, and
+ * lightening here would have walked every module colour toward white on a
+ * white panel. So: a light ground darkens the colour, a dark ground lifts it.
+ * Mustard #EFB41C measures 1.8:1 on white and has to come down to roughly
+ * #7A5A00 before it is type rather than decoration.
  */
 function readableOn(colour, background, target = 4.5) {
+  const towardBlack = luminance(background) > 0.5;
   let result = colour;
-  for (let step = 0; step <= 17 && contrast(result, background) < target; step += 1) {
+  for (let step = 0; step <= 19 && contrast(result, background) < target; step += 1) {
     const amount = step * 0.05;
     result = '#' + [1, 3, 5].map(i => {
       const value = parseInt(colour.substr(i, 2), 16);
-      return Math.round(value + (255 - value) * amount).toString(16).padStart(2, '0');
+      const moved = towardBlack
+        ? value * (1 - amount)
+        : value + (255 - value) * amount;
+      return Math.round(moved).toString(16).padStart(2, '0');
     }).join('').toUpperCase();
   }
   return result;
 }
 
+// ============================================================================
+// CONTROL EXPLAINERS
+//
+// Every control explains itself, in a popover anchored to the control itself.
+//
+// This replaces three separate dialogs: a centred modal for DL Points, a
+// floating panel for the rankings, and another for the Next 50. All three
+// opened somewhere other than where the reader had just clicked, so the
+// explanation and the thing being explained were never on screen together.
+// One popover, positioned under whichever control asked for it, fixes that,
+// and means a new control only has to add an entry below to be documented.
+// ============================================================================
+
 /**
- * The explainer for a ranking, shown when its filter is clicked.
- * Closes on its own button, on Escape, or when another ranking is picked.
+ * What each control does, in the reader's terms rather than the data's.
+ * `title` heads the popover; `body` is HTML.
+ */
+const CONTROL_EXPLAINERS = {
+  view: {
+    title: 'View',
+    body: `
+      <p><strong>Countries / Hubs</strong> colours every country by its score and
+      draws a bubble over each hub, sized by the weight of the institutions in
+      it. Use it to read the world.</p>
+      <p><strong>Institutions</strong> drops the colouring and plots every ranked
+      school as a single dot where it actually sits. Use it to find a school.</p>`
+  },
+
+  hubs: {
+    title: 'Show hubs',
+    body: `
+      <p>A hub is a city or city-region that concentrates ranked institutions:
+      Greater Boston, the Golden Triangle, Greater Paris, and twelve others.</p>
+      <p>The bubble is sized by the DL Points of its members, so the biggest
+      circles are the places where the ranking is densest. Turn it off to read
+      the country colouring on its own.</p>`
+  },
+
+  measure: {
+    title: 'Measure',
+    body: `
+      <p class="pop-lede">DL Points are a simple scoring mechanism that lets you
+      compare one country against another, and one institution against another,
+      on a single scale.</p>
+      <p>They are not a separate ranking or a sixth module. They turn ranking
+      positions into a number you can add up.</p>
+      <h3>How the score works</h3>
+      <p>Each ranking places 150 institutions. An institution&rsquo;s DL Points come
+      from where it sits on that 1 to 150 scale: the higher the position, the
+      higher the score.</p>
+      <table class="pop-table">
+        <tr><th>An institution ranked</th><th>scores</th></tr>
+        <tr><td>1st</td><td>150 points</td></tr>
+        <tr><td>50th</td><td>101 points</td></tr>
+        <tr><td>100th</td><td>51 points</td></tr>
+        <tr><td>150th</td><td>1 point</td></tr>
+      </table>
+      <p>A country&rsquo;s score is all of its institutions&rsquo; points added
+      together.</p>
+      <h3>The three measures</h3>
+      <p><strong>Overall strength</strong> is that total.
+      <strong>Talent density</strong> divides it by population, asking who does
+      most with what they have. <strong>Evolution</strong> compares the DL25 and
+      DL26 editions: green is rising, red is falling.</p>`
+  },
+
+  rankings: {
+    title: 'Rankings',
+    body: `
+      <p>Five ways to read the same set of institutions. <strong>Global</strong>
+      is the combined ranking; the other four are the areas of the AI and tech
+      economy it is built from.</p>
+      <p>Pick one and the whole map follows it: the colouring, the dots, the hub
+      sizes and every card. Click a ranking a second time to read what it
+      covers.</p>`
+  },
+
+  next50: {
+    title: 'The Next 50',
+    body: `
+      <p class="pop-lede">A spotlight on the institutions ranked
+      <strong>151st to 200th in the Global Ranking</strong>, completing the
+      <strong>Digital Leaders Global Top 200</strong>.</p>
+      <p>Turning this on adds the Next 50 to the Institution view in
+      <strong>light orange</strong>, alongside the Top 150 in full orange. The
+      Next 50 are also assessed across Data and AI, Computer Science, Digital
+      Transformation and Entrepreneurship, with some institutions ranking beyond
+      the published Top 150 in these areas. <em>However, the Next 50 feature only
+      displays them in the Global Ranking Institution view.</em></p>
+      <p class="commercial-cta">Want to access their DL Points or benchmark an
+      institution against its peers?
+      <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>`
+  },
+
+  types: {
+    title: 'Type',
+    body: `
+      <p>Narrows the map to one kind of institution.</p>
+      <p><strong>University (incl. Business School)</strong> covers comprehensive
+      universities and business schools.
+      <strong>Science &amp; Tech School</strong> covers engineering schools and
+      vocational technical or STEM institutions.</p>
+      <p>Leave both unticked to see everything. Every figure on screen, including
+      the country colouring, is recomputed from what survives the filter.</p>`
+  },
+
+  rank: {
+    title: 'Rank band',
+    body: `
+      <p>Limits the map to the top of the selected ranking: the top 50 or the top
+      100, rather than all 150 places.</p>
+      <p>It is the quickest way to see where the very best sit, and how much of a
+      country&rsquo;s score comes from its strongest few schools rather than from
+      depth.</p>`
+  }
+};
+
+/** Which explainer is open, so a second click on the same control closes it. */
+let openPopKey = null;
+
+/**
+ * Put the popover under `anchor`, clamped to the viewport.
+ *
+ * Fixed-position rather than absolute inside the toolbar, so it can overhang
+ * the control band and the map without the band needing to grow or scroll.
+ */
+function positionPop(pop, anchor) {
+  const box = anchor.getBoundingClientRect();
+  const margin = 12;
+
+  // Measure after the content is in, or the width is the previous panel's.
+  const width = pop.offsetWidth;
+
+  let left = box.left;
+  if (left + width > window.innerWidth - margin) {
+    left = window.innerWidth - width - margin;
+  }
+  pop.style.left = `${Math.max(margin, left)}px`;
+  pop.style.top = `${box.bottom + 8}px`;
+
+  // Cap the height rather than let a long panel run past the fold: these are
+  // read in place, not scrolled to.
+  pop.style.maxHeight = `${Math.max(180, window.innerHeight - box.bottom - 24)}px`;
+}
+
+/** Open the popover against a control. */
+function openPop(anchor, { key, title, body, accent }) {
+  const pop = document.getElementById('control-pop');
+  if (!pop || !anchor) return;
+
+  if (openPopKey === key && !pop.hasAttribute('hidden')) return closePop();
+
+  const heading = pop.querySelector('.pop-title');
+  heading.textContent = title;
+  heading.style.color = accent ? readableOn(accent, PANEL_BACKGROUND) : '';
+  pop.style.borderTopColor = accent || '#1839E2';
+  pop.querySelector('.pop-body').innerHTML = body;
+  pop.removeAttribute('hidden');
+
+  openPopKey = key;
+  positionPop(pop, anchor);
+}
+
+function closePop() {
+  const pop = document.getElementById('control-pop');
+  if (pop) pop.setAttribute('hidden', '');
+  openPopKey = null;
+}
+
+const isPopOpen = () => {
+  const pop = document.getElementById('control-pop');
+  return !!pop && !pop.hasAttribute('hidden');
+};
+
+/**
+ * Turn every `[data-explain]` inside `root` into an info affordance.
+ *
+ * Controls declare which explainer they carry in the markup, so adding a
+ * control to the band is a one-attribute job and nothing has to be registered
+ * in script.
+ */
+function wireExplainers(root = document) {
+  root.querySelectorAll('[data-explain]').forEach(button => {
+    if (button.dataset.explainWired === 'yes') return;
+    button.dataset.explainWired = 'yes';
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      explainControl(button, button.dataset.explain);
+    });
+  });
+}
+
+/** Open the standing explainer for a named control. */
+function explainControl(anchor, key) {
+  const entry = CONTROL_EXPLAINERS[key];
+  if (!entry) return;
+  openPop(anchor, { key, title: entry.title, body: entry.body });
+}
+
+/**
+ * The explainer for a ranking, opened against the ranking's own button.
+ *
+ * Title and top rule carry the ranking's own colour, so the explanation is
+ * visibly about the module just clicked. The title is darkened until it clears
+ * 4.5:1 on white; the rule takes the colour as-is.
  */
 function showModulePanel(module) {
-  const panel = document.getElementById('module-panel');
-  if (!panel) return;
-
+  const anchor = document.querySelector(`.module-button[data-module="${module}"]`);
   const description = MODULE_DESCRIPTIONS[module];
-  if (!description) return hideModulePanel();
+  if (!anchor || !description) return;
 
-  // Title and frame carry the ranking's own colour, so the explainer is
-  // visibly about the module you just clicked.
-  //
-  // The frame takes the colour as-is. The title cannot: Global's navy sits at
-  // 1.02:1 on this panel and Entrepreneurship's violet at 2.56:1 — both
-  // unreadable as text. Those are lightened until they clear 4.5:1, which
-  // keeps the hue while making the word legible.
-  const colour = MODULE_COLORS[module] || MODULE_COLORS.global;
-  const title = panel.querySelector('#module-panel-title');
-  title.textContent = MODULE_LABELS[module] || module;
-  title.style.color = readableOn(colour, PANEL_BACKGROUND);
-  panel.style.borderColor = colour;
-  panel.querySelector('#module-panel-body').textContent = description;
-  panel.removeAttribute('hidden');
+  openPop(anchor, {
+    key: `module:${module}`,
+    title: MODULE_LABELS[module] || module,
+    body: `<p>${escapeHtml(description)}</p>`,
+    accent: MODULE_COLORS[module] || MODULE_COLORS.global
+  });
 }
 
 function hideModulePanel() {
-  const panel = document.getElementById('module-panel');
-  if (panel) panel.setAttribute('hidden', '');
+  closePop();
 }
 
 function showNext50Panel() {
-  hideModulePanel();
-  const panel = document.getElementById('next50-panel');
-  if (panel) panel.removeAttribute('hidden');
+  const entry = CONTROL_EXPLAINERS.next50;
+  openPop(document.getElementById('next50-toggle'), {
+    key: 'next50',
+    title: entry.title,
+    body: entry.body,
+    accent: NEXT50_COLOR
+  });
 }
 
 function hideNext50Panel() {
-  const panel = document.getElementById('next50-panel');
-  if (panel) panel.setAttribute('hidden', '');
+  closePop();
 }
+
 
 /**
  * The Next 50 button reflects two things at once: whether the tier is on, and
@@ -3626,13 +4050,13 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
   context.data.modules.forEach(module => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'module-button';
+    button.className = 'chip module-button';
     button.dataset.module = module;
     button.textContent = MODULE_LABELS[module] || module;
     button.setAttribute('aria-pressed', String(module === STATE.selectedModule));
 
-    // Clicking a ranking both selects it and explains what it covers —
-    // clicking the one already selected just re-opens the explanation.
+    // Clicking a ranking both selects it and explains what it covers.
+    // Clicking the one already selected just re-opens the explanation.
     button.addEventListener('click', () => {
       if (STATE.selectedModule !== module) {
         update(context, { selectedModule: module });
@@ -3642,6 +4066,16 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
 
     mount.appendChild(button);
   });
+
+  // The Next 50 extends the Global ranking to 200 places, so it belongs beside
+  // Global and nowhere else. It is declared in the markup, outside this mount,
+  // because this function clears the mount on every rebuild; moving the node
+  // here keeps the listener wired in the bootstrap intact.
+  const next50 = document.getElementById('next50-toggle');
+  const global = mount.querySelector('.module-button[data-module="global"]');
+  if (next50 && global) {
+    global.insertAdjacentElement('afterend', next50);
+  }
 
   console.log(`[Map] Module selector built with ${context.data.modules.length} modules`);
 }
@@ -3714,7 +4148,7 @@ function buildFilters(context, mountSelector = '#filters') {
 
   mount.innerHTML = `
     <div class="filter-group">
-      <button class="filter-trigger" type="button" data-menu="types">
+      <button class="chip filter-trigger" type="button" data-menu="types">
         Type <span class="filter-badge" data-badge="types"></span>
       </button>
       <div class="filter-menu" data-for="types" hidden>
@@ -3725,13 +4159,21 @@ function buildFilters(context, mountSelector = '#filters') {
           </label>`).join('')}
       </div>
     </div>
+    <button class="info-button" type="button" data-explain="types"
+            aria-label="What the Type filter does">i</button>
 
-    <select id="rank-filter" class="metric-selector">
+    <select id="rank-filter" class="select-control">
       ${RANK_OPTIONS.map(o => `<option value="${o.id}">${o.label}</option>`).join('')}
     </select>
+    <button class="info-button" type="button" data-explain="rank"
+            aria-label="What the rank band does">i</button>
 
-    <button id="clear-filters" class="help-button" type="button" hidden>Clear filters</button>
+    <button id="clear-filters" class="chip is-quiet" type="button" hidden>Clear filters</button>
   `;
+
+  // Each filter explains itself, against itself. Wired here rather than in the
+  // bootstrap because this markup is rebuilt from the data.
+  wireExplainers(mount);
 
   // Dropdown open/close
   mount.querySelectorAll('.filter-trigger').forEach(trigger => {
@@ -3906,52 +4348,6 @@ function buildSearch(context, inputSelector = '#search-input', resultsSelector =
   });
 }
 
-/**
- * The scope band: how much of the ranking is on screen. Previously the
- * coverage figures lived in a small caption in the corner and the band held a
- * measure description nobody read.
- */
-/**
- * The blue banner: what the measure means, the scale it runs on, and how much
- * of the ranking is on screen — all in one line, so nothing needs hunting for.
- *
- * The scale is computed from the countries currently mapped, so a bare figure
- * like Canada's 704 always has a range to be read against, and the range
- * follows whichever ranking is selected.
- */
-function renderBanner(state, data, agg) {
-  const banner = document.getElementById('scope-banner');
-  if (!banner) return;
-
-  const metric = metricMeta(state.colorMetric);
-
-  const values = data.countries
-    .filter(c => agg.byCountry.has(c.name))
-    .map(c => countryMetricValue(c, state, agg))
-    .filter(v => v !== null && !Number.isNaN(v))
-    .sort((a, b) => a - b);
-
-  const format = (v) => scales.formatDataValue(v, state.colorMetric);
-  const scale = values.length
-    ? `<span class="banner-scale"><strong>${escapeHtml(format(values[0]))}</strong> to
-        <strong>${escapeHtml(format(values[values.length - 1]))}</strong>
-        ${escapeHtml(metric.unit)}</span>`
-    : '';
-
-  const institutions = agg.scored.length;
-  const total = data.institutions.filter(i => !i.next50Only).length;
-  const hubs = data.hubs.filter(h => agg.byHub.has(h.name)).length;
-
-  banner.innerHTML = `
-    <span class="banner-measure">${escapeHtml(metric.description)}</span>
-    ${scale ? `<span class="banner-sep">·</span>${scale}` : ''}
-    <span class="banner-sep">·</span>
-    <span class="banner-scope"><strong>${institutions.toLocaleString()}</strong>${
-      agg.active ? ` of ${total.toLocaleString()}` : ''} institutions ·
-      <strong>${agg.byCountry.size}</strong> countries ·
-      <strong>${hubs}</strong> hubs</span>`;
-}
-
 function syncControls() {
   document.querySelectorAll('.module-button').forEach(button => {
     button.setAttribute(
@@ -4072,23 +4468,23 @@ function hoverFigures(entity, kind, state, data, agg) {
   // number IS, not which ranking it came from.
   const headline = {
     dlPoints: {
-      figure: value === null ? '—' : Math.round(value).toLocaleString(),
+      figure: value === null ? '' : Math.round(value).toLocaleString(),
       label: 'DL Points'
     },
     perCapita: {
-      figure: value === null ? '—' : value.toFixed(1),
+      figure: value === null ? '' : value.toFixed(1),
       label: 'DL Points per million people'
     },
     delta: {
       // Unsigned: red or green already says which way, and a large signed
       // number reads as a verdict this measure should not be delivering.
-      figure: value === null ? '—' : Math.abs(Math.round(value)).toLocaleString(),
+      figure: value === null ? '' : Math.abs(Math.round(value)).toLocaleString(),
       label: value === null ? 'DL Points, DL25 → DL26'
         : (value > 0 ? 'DL Points gained since DL25'
           : value < 0 ? 'DL Points lost since DL25' : 'No change since DL25')
     }
   }[state.colorMetric] || {
-    figure: value === null ? '—' : Math.round(value).toLocaleString(),
+    figure: value === null ? '' : Math.round(value).toLocaleString(),
     label: 'DL Points'
   };
 
@@ -4102,7 +4498,7 @@ function hoverFigures(entity, kind, state, data, agg) {
         <span class="hover-points-label">${escapeHtml(headline.label)}</span>
       </div>
       <div class="hover-figure">
-        <span class="hover-points-value">${standing ? '#' + standing.rank : '—'}</span>
+        <span class="hover-points-value">${standing ? '#' + standing.rank : ''}</span>
         <span class="hover-points-label">${standing
           ? `of ${standing.of} ${peers}`
           : 'not ranked here'}</span>
@@ -4615,125 +5011,98 @@ function renderBreadcrumb(context, state) {
   mount.classList.toggle('visible', crumbs.length > 1);
 }
 
-function drawLegend(selection, state, data, values, colorScale, height, agg) {
-  selection.selectAll('*').remove();
+/**
+ * THE KEY STRIP.
+ *
+ * This used to be two SVG groups pinned to the bottom-left corner of the map:
+ * a gradient legend and a coverage caption. Nobody read either. The bottom-left
+ * corner of a map is where the eye arrives last, and on a page this tall it was
+ * often below the fold entirely.
+ *
+ * Both are now HTML, in a strip directly under the control band at the top
+ * left, which is where a reader looks to find out how to read what is in front
+ * of them. The content is unchanged; only its address is different.
+ *
+ * It is HTML rather than SVG on purpose. Moving the SVG groups to the top of
+ * the map would have collided with the breadcrumb, which already lives there,
+ * and would have put the key inside the zoom transform's coordinate space for
+ * no gain.
+ */
+function renderKey(state, data, values, colorScale, agg) {
+  const mount = document.getElementById('map-key');
+  if (!mount) return;
+
+  const scopeHtml =
+    `<p class="key-scope${agg.active ? ' is-filtered' : ''}">${scopeLine(state, data, agg)}</p>`;
 
   // The institution view has no choropleth to explain; the key that matters
   // is which ranking the dots represent.
   if (state.view === 'institution') {
-    // Sits lower than the country legend because it is a two-line key rather
-    // than a gradient bar with ticks — anchored so its baseline clears the
-    // caption by about the same margin the country legend does.
-    selection.attr('transform', `translate(24, ${height - 82})`);
-
-    selection.append('text')
-      .attr('class', 'legend-heading')
-      .attr('y', -10)
-      .text('Institutions ranked in');
-
     const showingNext50 = state.showNext50
       && NEXT50_MODULES.includes(state.selectedModule);
 
-    const key = (y, fill, label) => {
-      const row = selection.append('g').attr('transform', `translate(0, ${y})`);
-      row.append('circle')
-        .attr('cx', 6).attr('cy', 6).attr('r', 6)
-        .attr('fill', fill)
-        .attr('stroke', '#FFFFFF')
-        .attr('stroke-width', 1);
-      row.append('text')
-        .attr('class', 'legend-tick')
-        .attr('x', 20).attr('y', 10)
-        .text(label);
-    };
+    const dot = (colour, label) => `
+      <span class="key-item">
+        <span class="key-dot" style="background:${colour}"></span>${escapeHtml(label)}
+      </span>`;
 
-    key(2, MODULE_COLORS[state.selectedModule],
-        MODULE_LABELS[state.selectedModule]
-          + (showingNext50 ? ' · top 150' : ''));
-
-    if (showingNext50) {
-      key(22, NEXT50_COLOR, 'Next 50 · ranks 151–200');
-    }
-
+    mount.innerHTML = `
+      <div class="key-row">
+        <span class="key-heading">Institutions ranked in</span>
+        <span class="key-items">
+          ${dot(MODULE_COLORS[state.selectedModule],
+                MODULE_LABELS[state.selectedModule] + (showingNext50 ? ' · top 150' : ''))}
+          ${showingNext50 ? dot(NEXT50_COLOR, 'Next 50 · ranks 151 to 200') : ''}
+        </span>
+      </div>
+      ${scopeHtml}`;
     return;
   }
 
-  if (!values.length) return;
-
-  const barWidth = 180;
-  const barHeight = 10;
-  // Leaves room for both key rows and the caption below.
-  selection.attr('transform', `translate(24, ${height - 116})`);
+  if (!values.length) {
+    mount.innerHTML = scopeHtml;
+    return;
+  }
 
   const { lo, hi, clamped } = metricBounds(state.colorMetric, values);
-  const bounds = [lo, hi];
 
-  // Sample the scale into a gradient so the legend can't drift from the map.
-  const gradient = selection.append('defs')
-    .append('linearGradient')
-    .attr('id', 'legend-gradient')
-    .attr('x1', '0%')
-    .attr('x2', '100%');
-
+  // Sample the scale into a CSS gradient so the bar can't drift from the map.
   const steps = 16;
-  d3.range(steps + 1).forEach(i => {
+  const stops = d3.range(steps + 1).map(i => {
     const t = i / steps;
-    gradient.append('stop')
-      .attr('offset', `${t * 100}%`)
-      .attr('stop-color', colorScale(bounds[0] + t * (bounds[1] - bounds[0])));
-  });
+    return `${colorScale(lo + t * (hi - lo))} ${(t * 100).toFixed(0)}%`;
+  }).join(', ');
 
-  selection.append('text')
-    .attr('class', 'legend-heading')
-    .attr('y', -10)
-    .text(`${MODULE_LABELS[state.selectedModule]} · ${metricMeta(state.colorMetric).legend}`);
-
-  selection.append('rect')
-    .attr('width', barWidth)
-    .attr('height', barHeight)
-    .attr('rx', 2)
-    .attr('fill', 'url(#legend-gradient)');
-
-  // A leading ≤ / ≥ tells the reader the ends of the ramp are saturated
+  // A leading <= or >= tells the reader the ends of the ramp are saturated
   // rather than being the true extremes of the data.
-  const lowLabel = (clamped ? '≤ ' : '') + scales.formatDataValue(bounds[0], state.colorMetric);
-  const highLabel = (clamped ? '≥ ' : '') + scales.formatDataValue(bounds[1], state.colorMetric);
-
-  selection.append('text')
-    .attr('class', 'legend-tick')
-    .attr('y', barHeight + 14)
-    .text(lowLabel);
-
-  selection.append('text')
-    .attr('class', 'legend-tick')
-    .attr('x', barWidth)
-    .attr('text-anchor', 'end')
-    .attr('y', barHeight + 14)
-    .text(highLabel);
-
-  const keyRow = (y, swatchClass, label) => {
-    const row = selection.append('g').attr('transform', `translate(0, ${y})`);
-    row.append('rect')
-      .attr('class', swatchClass)
-      .attr('width', 10)
-      .attr('height', 10)
-      .attr('rx', 2);
-    row.append('text')
-      .attr('class', 'legend-tick')
-      .attr('x', 16)
-      .attr('y', 9)
-      .text(label);
-  };
-
-  keyRow(barHeight + 26, 'legend-swatch-unranked', 'Not ranked');
+  const lowLabel = (clamped ? '≤ ' : '') + scales.formatDataValue(lo, state.colorMetric);
+  const highLabel = (clamped ? '≥ ' : '') + scales.formatDataValue(hi, state.colorMetric);
 
   // Only advertise a "no figures" key when some ranked country actually
   // lacks a value for the metric on screen.
   const missing = data.countries
     .filter(c => agg.byCountry.has(c.name) && !hasMetricValue(c, state, agg)).length;
-  if (missing > 0) {
-    keyRow(barHeight + 44, 'legend-swatch-nodata', `No figures available (${missing})`);
-  }
+
+  mount.innerHTML = `
+    <div class="key-row">
+      <span class="key-heading">${escapeHtml(MODULE_LABELS[state.selectedModule])} ·
+        ${escapeHtml(metricMeta(state.colorMetric).legend)}</span>
+      <span class="key-scale">
+        <span class="key-tick">${escapeHtml(lowLabel)}</span>
+        <span class="key-ramp" style="background:linear-gradient(90deg, ${stops})"></span>
+        <span class="key-tick">${escapeHtml(highLabel)}</span>
+      </span>
+      <span class="key-items">
+        <span class="key-item">
+          <span class="key-swatch key-swatch-unranked"></span>Not ranked
+        </span>
+        ${missing > 0 ? `
+        <span class="key-item">
+          <span class="key-swatch key-swatch-nodata"></span>No figures available (${missing})
+        </span>` : ''}
+      </span>
+    </div>
+    ${scopeHtml}`;
 }
 
 // ============================================================================
@@ -4809,7 +5178,7 @@ function renderDetailPanel(context, state, data, agg) {
     return `
       <tr${metric.id === state.colorMetric ? ' class="is-current"' : ''}>
         <td>${escapeHtml(metric.label)}</td>
-        <td class="value">${known ? escapeHtml(scales.formatDataValue(value, metric.id)) : '—'}</td>
+        <td class="value">${known ? escapeHtml(scales.formatDataValue(value, metric.id)) : ''}</td>
         <td class="rank">${position ? `#${position.rank}<span class="of"> of ${position.of}</span>` : ''}</td>
       </tr>`;
   }).join('');
@@ -4906,7 +5275,7 @@ function institutionSection(institutions, state) {
     const rank = rankIn(institution);
     return `
       <li class="institution${rank === null ? ' is-unranked' : ''}">
-        <span class="institution-rank">${rank === null ? '—' : rank}</span>
+        <span class="institution-rank">${rank === null ? '' : rank}</span>
         <span class="institution-body">
           <span class="institution-name">${escapeHtml(institution.name)}</span>
           <span class="institution-type">${escapeHtml(typeLabel(institution.type) || '')}</span>
@@ -5194,7 +5563,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
           </p>
           <p>
             Each ranking places 150 institutions, and the score is calculated
-            from where an institution sits on that 1&ndash;150 scale — the higher the
+            from where an institution sits on that 1&ndash;150 scale: the higher the
             position, the higher the score. Adding those together gives a single
             number you can set against any other institution, or against a
             country&rsquo;s total.
@@ -5215,7 +5584,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <summary>How these are chosen</summary>
         <p>
           Competitors are institutions of the same kind
-          — <strong>${escapeHtml(typeLabel(institution.type))}</strong> —
+         : <strong>${escapeHtml(typeLabel(institution.type))}</strong> 
           within <strong>${escapeHtml(group.label)}</strong>. An institution is
           compared inside its own region, except in India, Japan and Israel,
           which each form a group of their own.
@@ -5223,14 +5592,14 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <p>
           Within that group, a competitor is close on <strong>both</strong>
           counts: near in the ${escapeHtml(MODULE_LABELS[module])} ranking, and
-          near geographically. Each gets two closeness scores between 0 and 1 —
+          near geographically. Each gets two closeness scores between 0 and 1 
         </p>
         <p class="method-formula">
           rank closeness = 1 ÷ (1 + places apart ÷ ${RANK_SCALE})<br>
           distance closeness = 1 ÷ (1 + km apart ÷ ${DISTANCE_SCALE})
         </p>
         <p>
-          — which are combined as
+         : which are combined as
           <strong>${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
           ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>,
           and the five highest are
@@ -5311,7 +5680,7 @@ function renderHubPanel(panel, context, state, data, hub, agg) {
     <table class="measure-table">
       <tr class="is-current">
         <td>${escapeHtml(MODULE_LABELS[state.selectedModule])} DL Points</td>
-        <td class="value">${points === null ? '—' : Math.round(points).toLocaleString()}</td>
+        <td class="value">${points === null ? '' : Math.round(points).toLocaleString()}</td>
       </tr>
       <tr>
         <td>Institutions</td>
@@ -5337,28 +5706,45 @@ function renderHubPanel(panel, context, state, data, hub, agg) {
     });
 }
 
-function drawCaption(selection, state, data, width, height, agg) {
-  selection.selectAll('*').remove();
-  selection.attr('transform', `translate(24, ${height - 28})`);
+/**
+ * What the reader is looking at: the measure in plain words, then how much of
+ * the ranking is on screen.
+ *
+ * This is what used to be the blue scope band under the controls plus the
+ * caption in the bottom-left corner of the map. Both said something the reader
+ * needed and neither was anywhere near the thing it described, so they are one
+ * line now, in the key strip.
+ *
+ * Returns HTML, not text: the figures are set in bold and the measure name is
+ * a distinct colour.
+ *
+ * The institution count is of the scored set, which excludes the rows the Next
+ * 50 brought in, so the total reads exactly as it did before the tier existed.
+ * With the tier on, the institution view is showing the fifty and says so.
+ */
+function scopeLine(state, data, agg) {
+  const metric = metricMeta(state.colorMetric);
 
-  // The caption counts what is actually on screen. In the country view that is
-  // the scored set, which excludes the rows the Next 50 brought in — so the
-  // total reads exactly as it did before the tier existed. With the tier on,
-  // the institution view is showing the fifty and says so.
   const showingNext50 = state.view === 'institution' && state.showNext50
     && NEXT50_MODULES.includes(state.selectedModule);
 
   const institutions = agg.scored.length;
   const total = data.institutions.filter(i => !i.next50Only).length;
-  const countries = agg.byCountry.size;
-  const scope = (agg.active
-    ? `${institutions} of ${total} institutions · ${countries} countries · filtered`
-    : `${institutions} institutions · ${countries} countries · ${state.selectedEdition}`)
-    + (showingNext50 ? ' · Next 50 shown' : '');
+  const hubs = data.hubs.filter(h => agg.byHub.has(h.name)).length;
 
-  selection.append('text')
-    .attr('class', `caption${agg.active ? ' is-filtered' : ''}`)
-    .text(scope);
+  const coverage = [
+    `<strong>${institutions.toLocaleString()}</strong>${
+      agg.active ? ` of ${total.toLocaleString()}` : ''} institutions`,
+    `<strong>${agg.byCountry.size}</strong> countries`,
+    `<strong>${hubs}</strong> hubs`,
+    escapeHtml(state.selectedEdition)
+  ].join(' &middot; ')
+    + (agg.active ? ' &middot; filtered' : '')
+    + (showingNext50 ? ' &middot; Next 50 shown' : '');
+
+  return `<span class="key-measure">${escapeHtml(metric.description)}</span>
+    <span class="key-sep">&middot;</span>
+    <span class="key-coverage">${coverage}</span>`;
 }
 
 // ============================================================================
@@ -5379,6 +5765,12 @@ window.DigitalLeadersMap = {
   hideModulePanel,
   showNext50Panel,
   hideNext50Panel,
+  explainControl,
+  wireExplainers,
+  closePop,
+  isPopOpen,
+  openPop,
+  CONTROL_EXPLAINERS,
   syncNext50Button,
   zoomToCountry,
   zoomToPoint,
@@ -5416,50 +5808,69 @@ console.log('[Map] Module loaded. Call window.DigitalLeadersMap.init(container) 
         window.DigitalLeadersMap.buildFilters(context);
         window.DigitalLeadersMap.buildSearch(context);
 
-        // DL Points explainer
-        const helpPanel = document.getElementById('dl-points-panel');
-        const helpButton = document.getElementById('dl-points-help');
+        // Every control explains itself, in a popover anchored to it.
+        // The filter controls wire their own, because their markup is rebuilt
+        // from the data; these are the ones declared in this page.
+        const map = window.DigitalLeadersMap;
+        map.wireExplainers(document);
 
-        const setHelpOpen = (open) => {
-          helpPanel.toggleAttribute('hidden', !open);
-          helpButton.setAttribute('aria-expanded', String(open));
+        const pop = document.getElementById('control-pop');
+        pop.querySelector('.pop-close')
+          .addEventListener('click', () => map.closePop());
+
+        // A click inside the popover must not reach the document handler that
+        // closes it, or picking up a link inside it would dismiss it first.
+        pop.addEventListener('click', (event) => event.stopPropagation());
+
+        document.addEventListener('click', (event) => {
+          if (!event.target.closest('[data-explain], .module-button, #next50-toggle')) {
+            map.closePop();
+          }
+        });
+
+        // The popover is positioned against its anchor in viewport pixels, so
+        // anything that moves the anchor has to close it rather than leave it
+        // pointing at nothing.
+        window.addEventListener('resize', () => map.closePop());
+
+        // User guide
+        const guide = document.getElementById('guide-panel');
+        const guideButton = document.getElementById('guide-open');
+
+        const setGuideOpen = (open) => {
+          guide.toggleAttribute('hidden', !open);
+          guideButton.setAttribute('aria-expanded', String(open));
+          if (open) map.closePop();
         };
 
-        helpButton.addEventListener('click', () => {
-          setHelpOpen(helpPanel.hasAttribute('hidden'));
+        guideButton.addEventListener('click', () => setGuideOpen(guide.hasAttribute('hidden')));
+        document.getElementById('guide-close')
+          .addEventListener('click', () => setGuideOpen(false));
+
+        // Next 50: toggles the tier and explains what it is
+        document.getElementById('next50-toggle').addEventListener('click', (event) => {
+          event.stopPropagation();
+          const on = !map.getState().showNext50;
+          map.update(context, { showNext50: on });
+          map.showNext50Panel();
         });
-        document.getElementById('dl-points-close')
-          .addEventListener('click', () => setHelpOpen(false));
 
-        // Ranking explainer
-        document.getElementById('module-panel-close')
-          .addEventListener('click', () => window.DigitalLeadersMap.hideModulePanel());
+        // A ranking button both selects and explains, so its click must not
+        // reach the dismiss handler above.
+        document.getElementById('module-selector')
+          .addEventListener('click', (event) => event.stopPropagation());
 
-
-        // Next 50 — toggles the tier and explains what it is
-        document.getElementById('next50-toggle').addEventListener('click', () => {
-          const on = !window.DigitalLeadersMap.getState().showNext50;
-          window.DigitalLeadersMap.update(context, { showNext50: on });
-          window.DigitalLeadersMap.showNext50Panel();
-        });
-        document.getElementById('next50-panel-close')
-          .addEventListener('click', () => window.DigitalLeadersMap.hideNext50Panel());
         document.addEventListener('keydown', (e) => {
           if (e.key !== 'Escape') return;
-          // Escape closes the explainer first, then clears any selection.
-          // Escape closes the explainer first, then walks back up the
-          // drill-down one level at a time: hub → country → world.
-          const map = window.DigitalLeadersMap;
+
+          // Escape closes what is open, innermost first, then walks back up the
+          // drill-down one level at a time: hub, country, world.
           const state = map.getState();
 
-          const modulePanel = document.getElementById('module-panel');
-
-          if (!helpPanel.hasAttribute('hidden')) {
-            setHelpOpen(false);
-          } else if (!modulePanel.hasAttribute('hidden')) {
-            map.hideModulePanel();
-          } else if (!document.getElementById('next50-panel').hasAttribute('hidden')) {
-            map.hideNext50Panel();
+          if (!guide.hasAttribute('hidden')) {
+            setGuideOpen(false);
+          } else if (map.isPopOpen()) {
+            map.closePop();
           } else if (state.selectedInstitution) {
             map.update(context, { selectedInstitution: null });
             map.resetZoom(context);
@@ -5472,17 +5883,14 @@ console.log('[Map] Module loaded. Call window.DigitalLeadersMap.init(container) 
           }
         });
 
-        // Reset view: back to the whole world, selection cleared
+        // Reset view: back to the whole world, selection cleared. It lives on
+        // the map itself now, top right, beside the zoom stack.
         document.getElementById('reset-zoom').addEventListener('click', () => {
-          window.DigitalLeadersMap.update(context, {
-            selectedCountry: null,
-            selectedHub: null
-          });
-          window.DigitalLeadersMap.resetZoom(context);
+          map.update(context, { selectedCountry: null, selectedHub: null });
+          map.resetZoom(context);
         });
 
         // Zoom controls
-        const map = window.DigitalLeadersMap;
         document.getElementById('zoom-in')
           .addEventListener('click', () => map.zoomBy(context, 1.6));
         document.getElementById('zoom-out')
