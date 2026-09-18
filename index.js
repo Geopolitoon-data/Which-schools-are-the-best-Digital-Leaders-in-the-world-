@@ -791,10 +791,10 @@ const METRICS = [
   },
   {
     id: 'delta',
-    label: 'Evolution',
-    legend: 'Change in DL Points, DL25 → DL26',
-    unit: 'DL Points, DL25 → DL26',
-    description: 'Movement between DL25 and DL26 editions. Green is rising, red is falling.'
+    label: 'Evolution 2025-2026',
+    legend: 'Change in DL Points, 2025 to 2026',
+    unit: 'DL Points, 2025 to 2026',
+    description: 'Movement between the 2025 and 2026 editions. Green is rising, red is falling.'
   }
 ];
 
@@ -1012,8 +1012,13 @@ const CONTROL_EXPLAINERS = {
       <h3>The three measures</h3>
       <p><strong>Overall strength</strong> is that total.
       <strong>Talent density</strong> divides it by population, asking who does
-      most with what they have. <strong>Evolution</strong> compares the DL25 and
-      DL26 editions: green is rising, red is falling.</p>`
+      most with what they have. <strong>Evolution 2025-2026</strong> compares the
+      two editions: green is rising, red is falling.</p>
+      <h3>The numbered circles</h3>
+      <p>The five leaders on whichever measure is selected carry their position
+      on the map, so the podium can be read without comparing colours. They
+      follow the measure: on <strong>Evolution 2025-2026</strong> the circle
+      marked 1 is the biggest riser, not the highest scorer.</p>`
   },
 
   rankings: {
@@ -1241,7 +1246,18 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
     button.type = 'button';
     button.className = 'chip module-button';
     button.dataset.module = module;
-    button.textContent = MODULE_LABELS[module] || module;
+
+    // Global and the Next 50 together are the Top 200, so the two buttons
+    // sit side by side each naming the stretch of the ranking it covers.
+    // Only the BUTTON carries the range: MODULE_LABELS.global stays "Global"
+    // because it also heads the key, the hover chip, the card sections and
+    // the export columns, where "Global | 1-150 rank (DL26)" would be wrong.
+    if (module === 'global') {
+      button.innerHTML = 'Global <span class="chip-rule">|</span> 1&ndash;150';
+    } else {
+      button.textContent = MODULE_LABELS[module] || module;
+    }
+
     button.setAttribute('aria-pressed', String(module === STATE.selectedModule));
 
     // Clicking a ranking both selects it and explains what it covers.
@@ -2234,6 +2250,9 @@ function drawCountries(selection, context, data, state, colorScale, agg) {
 /** How many leaders get a badge on the map. */
 const RANKED_LABEL_COUNT = 5;
 
+/** Badge radius in layer units, before the zoom counter-scale. */
+const RANK_BADGE_RADIUS = 11;
+
 /**
  * Put the leaders' positions on the map itself.
  *
@@ -2269,6 +2288,9 @@ function drawRankLabels(selection, context, data, state, agg) {
     .sort((a, b) => b.value - a.value)
     .slice(0, RANKED_LABEL_COUNT);
 
+  // Place first, draw second, so the badges can be pushed apart in between.
+  const placed = [];
+
   ranked.forEach((row, index) => {
     // A country's label sits at its projected centroid. City-states have no
     // polygon at this resolution, so they fall back to their own coordinates.
@@ -2282,22 +2304,78 @@ function drawRankLabels(selection, context, data, state, agg) {
     }
 
     if (!point || !Number.isFinite(point[0]) || !Number.isFinite(point[1])) return;
+    placed.push({ rank: index + 1, x: point[0], y: point[1] });
+  });
 
+  separateBadges(placed);
+
+  placed.forEach(badge => {
     const group = selection.append('g')
       .attr('class', 'rank-label')
-      .attr('data-xy', `${point[0]},${point[1]}`)
-      .attr('transform', `translate(${point[0]}, ${point[1]})`);
+      .attr('data-xy', `${badge.x},${badge.y}`)
+      .attr('transform', `translate(${badge.x}, ${badge.y})`);
 
     group.append('circle')
       .attr('class', 'rank-label-disc')
-      .attr('r', 11);
+      .attr('r', RANK_BADGE_RADIUS);
 
     group.append('text')
       .attr('class', 'rank-label-text')
       .attr('text-anchor', 'middle')
       .attr('dy', '0.36em')
-      .text(index + 1);
+      .text(badge.rank);
   });
+}
+
+/**
+ * Push overlapping badges apart.
+ *
+ * Centroids are where the countries are, not where five legible discs fit.
+ * On Overall strength the leaders are spread across the world and nothing
+ * collides; on Evolution the biggest movers are often four European
+ * neighbours, and the badges landed on top of each other, which defeats the
+ * point of putting a number on the map at all.
+ *
+ * A few iterations of pairwise repulsion is enough for five items. The better
+ * ranked badge moves less, so the leader stays closest to its own country.
+ * Displacement is only ever applied where discs would otherwise overlap.
+ */
+function separateBadges(badges, iterations = 24) {
+  const minimum = RANK_BADGE_RADIUS * 2 + 4;
+
+  for (let pass = 0; pass < iterations; pass += 1) {
+    let moved = false;
+
+    for (let i = 0; i < badges.length; i += 1) {
+      for (let j = i + 1; j < badges.length; j += 1) {
+        const a = badges[i];
+        const b = badges[j];
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let distance = Math.hypot(dx, dy);
+
+        if (distance >= minimum) continue;
+
+        // Exactly coincident centroids have no direction to separate along,
+        // so give them one rather than dividing by zero.
+        if (distance === 0) {
+          dx = Math.cos(i + j);
+          dy = Math.sin(i + j);
+          distance = 1;
+        }
+
+        const push = (minimum - distance) / distance / 2;
+        // The better rank is first in the array and yields less ground.
+        a.x -= dx * push * 0.7;
+        a.y -= dy * push * 0.7;
+        b.x += dx * push * 1.3;
+        b.y += dy * push * 1.3;
+        moved = true;
+      }
+    }
+
+    if (!moved) break;
+  }
 }
 
 /**
@@ -2779,6 +2857,11 @@ function renderKey(state, data, values, colorScale, agg) {
 
     <ul class="key-items">
       <li class="key-item">
+        <span class="key-badge">1</span>
+        <span class="key-item-label">Position on this measure, top ${
+          RANKED_LABEL_COUNT} only</span>
+      </li>
+      <li class="key-item">
         <span class="key-swatch key-swatch-unranked"></span>
         <span class="key-item-label">Not ranked</span>
       </li>
@@ -3230,7 +3313,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
     && ownRank < previous;
 
   const evolution = improved ? `
-    <h3 class="panel-section">Evolution</h3>
+    <h3 class="panel-section">Evolution 2025-2026</h3>
     <p class="panel-note rising">
       <span class="rising-arrow" aria-hidden="true">▲</span>
       Rising in ${escapeHtml(MODULE_LABELS[module])} since DL25

@@ -1632,6 +1632,30 @@
     .key-swatch-unranked { background-color: var(--color-land-unranked); }
     .key-swatch-nodata   { background-color: #E3E5EF; }
 
+    /* A sample of the numbered circle drawn on the map, so the key can say
+       what it means. Matches .rank-label-disc and .rank-label-text. */
+    .key-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      flex: none;
+      margin-top: 1px;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+      border: 1.5px solid var(--color-navy);
+      color: var(--color-navy);
+      font-size: 9px;
+      font-weight: var(--font-weight-bold);
+      line-height: 1;
+    }
+
+    .key-badge.is-inline {
+      vertical-align: -3px;
+      margin-top: 0;
+    }
+
     .key-dot {
       width: 11px;
       height: 11px;
@@ -2211,16 +2235,24 @@
           <li><strong>View</strong> switches between the world coloured by score,
           and every ranked university or school plotted as a dot.</li>
           <li><strong>Rankings</strong> moves the whole map to Global or to one of
-          the four areas. <strong>Next 50</strong> extends Global to 200 places.</li>
+          the four areas. <strong>New 50</strong> extends Global from 150 to 200
+          places.</li>
           <li><strong>Measure</strong> reads the map three ways: overall strength,
-          talent density against population, or <strong>evolution</strong> between
-          the DL25 and DL26 editions.</li>
+          talent density against population, or <strong>evolution 2025-2026</strong>
+          between the two editions.</li>
           <li><strong>Show hubs</strong> draws each city cluster as a bubble sized
           by the weight of the universities &amp; schools in it, so you can see where the
           ranking concentrates.</li>
           <li><strong>Filter</strong> narrows to a type of school or to the
           top of the ranking. Every figure on screen follows.</li>
         </ul>
+
+        <h3>Reading the map</h3>
+        <p>Colour carries the score for every country. The
+        <span class="key-badge is-inline">1</span> to
+        <span class="key-badge is-inline">5</span> circles mark the five leaders
+        on whichever measure is selected, so the top of the table can be read at
+        a glance. The key on the left of the map names everything on screen.</p>
 
         <h3>Finding your way</h3>
         <p>Click a country to drill into it, then a hub inside it. Search flies
