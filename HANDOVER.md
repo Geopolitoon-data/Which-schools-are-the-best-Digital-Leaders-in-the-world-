@@ -133,6 +133,7 @@ To force a refresh of a mutable URL: `https://purge.jsdelivr.net/gh/<org>/<repo>
 | `index.html` | The page. Markup, all component CSS in one `<style>` block, and the bootstrap script that wires the controls at the bottom. **The Digital Leaders logo is inline SVG here** — see §6. |
 | `index.js` | The whole map, ~2,600 lines. Exposes `window.DigitalLeadersMap`. Sections are signposted with banner comments: config, state, init, rendering, filtering/aggregation, metrics, controls, search, map layers, zoom, detail panels. |
 | `scales.js` | D3 colour and size scales, and value formatting. The country ramp and the per-ranking colours live here and must stay in step with `MODULE_COLORS` in `index.js`. |
+| `xlsx.js` | The Excel export behind the Download button: a small ZIP-of-XML writer, about 300 lines, exposing `window.DLXlsx`. It exists because the page may not load a library from a CDN. Entries are STORED rather than deflated, which is legal and costs roughly 3x in file size on a dataset this small. |
 | `tokens.css` | Design tokens: Emerging palette, Digital Leaders blue, type scale, spacing, radii, plus the SVG map element styles (`.country`, `.hub`, `.institution-dot`). **The theme is light**, so every surface token is a paper value and the country ramp runs pale to orange. `--color-gold` is retired and aliases to the orange accent. |
 | `serve.py` | Development server. Threaded, sends `no-store`, and version-stamps asset URLs. Not needed in production. |
 
@@ -195,8 +196,10 @@ changed:
 
 - USA reads **44** ranked institutions in Data and AI and **62** in Computer Science
 - Golden Triangle reads **7** in Global
-- the key strip under the controls reads
-  **264 institutions · 41 countries · 15 hubs**
+- the key down the left of the map reads
+  **264 universities & schools · 41 countries · 15 hubs**
+- the five rank badges on the map read USA, United Kingdom, Australia, Canada,
+  France, in that order
 
 If those drift, something upstream broke.
 
@@ -241,6 +244,28 @@ coordinate exactly (Delhi University and IIT Delhi), so zoom alone cannot
 separate them. A collision relaxation runs in screen space and re-runs when a
 zoom gesture settles; it self-cancels as real separation grows. Dots are only
 ever displaced where they would otherwise be indistinguishable.
+
+**"Institutions" is the code's word, never the interface's.** Every string a
+reader sees says *universities & schools*. The identifiers (`data.institutions`,
+`agg.scored`, `institutionSection`, `.institution-dot`) keep the old word,
+because renaming them would touch every file to change nothing anybody sees. If
+you add copy, use the interface's vocabulary, not the model's.
+
+**The country ramp is blue to violet, and orange is deliberately not in it.**
+Orange reads as a warning before it reads as a large number, so the top of the
+ramp would have flagged the leader rather than ranked it. Green is out for a
+different reason: it already means "rising" on the Evolution measure, and one
+colour cannot answer two questions. Orange survives as the interface accent and
+as the Global institution dots, neither of which is a quantity. The stops are in
+`COUNTRY_RAMP` in `scales.js` and documented in `--scale-seq-*` in `tokens.css`;
+change both together.
+
+**The export withholds per-institution DL Points on purpose.** Ranks are in the
+file because the interface already shows every one of them. Points per
+institution are not, because it never does, and they are the module-by-module
+breakdown the institution card exists to withhold. `buildExportSheets()` in
+`index.js` says so at the top; if that commercial position changes, that is the
+one function to revisit.
 
 **`readableOn()` moves a colour toward the background, not always upward.**
 A brand colour picked to work as a fill is rarely readable as type. On the old

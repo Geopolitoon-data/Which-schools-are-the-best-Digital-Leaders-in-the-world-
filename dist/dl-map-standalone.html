@@ -1,4 +1,4 @@
-<title>Digital Leaders Ranking — World Map</title>
+<title>Digital Leaders 2026 World Map</title>
 
 <style>
 /* Montserrat (SIL Open Font License), inlined so the page needs
@@ -224,8 +224,10 @@
   /* One step down again, for the "not ranked" swatch and dimmed land. */
   --color-navy-light: #BFC5DA;
 
-  /* The accent. Emerging orange, used for the selected state, the active
-     ranking, the Global institution dots and the top of the country ramp. */
+  /* The accent. Emerging orange: the selected state, the active ranking, and
+     the Global institution dots. It is deliberately NOT in the country ramp.
+     Orange sits next to red, and a reader takes red on a map for a warning
+     before they take it for a large number. The ramp is blue to violet. */
   --color-orange: #FF4901;
 
   /* The same orange, lightened. This is the Next 50 tier: visibly the same
@@ -413,16 +415,19 @@
   /* ====================================================================
      DATA VISUALIZATION SCALES
 
-     On paper the ramp runs the other way round from the dark theme: the
-     lightest stop is the lowest value and the accent is the peak, so the
-     busiest countries are the ones that burn through the page.
+     Blue through violet, lightest at the bottom. Orange was tried at the
+     top and retired: next to red, it reads as a warning rather than as a
+     large number. Green is reserved for the Evolution measure, where it
+     means "rising", so it is kept out of the magnitude ramp.
+
+     Keep these in step with COUNTRY_RAMP in scales.js.
      ==================================================================== */
 
-  --scale-seq-0: #DCE3FA;
-  --scale-seq-25: #9AA7EB;
-  --scale-seq-50: #4B5BCB;
-  --scale-seq-75: #FF9E79;
-  --scale-seq-100: #FF4901;
+  --scale-seq-0: #EAEEFC;
+  --scale-seq-25: #A7B3EE;
+  --scale-seq-50: #5566D2;
+  --scale-seq-75: #6B3CA8;
+  --scale-seq-100: #4C1D95;
 
   /* Diverging: maroon, through the page ground, to green */
   --scale-div-neg: #C21E2F;
@@ -1418,6 +1423,11 @@ a:focus-visible,
       flex-wrap: wrap;
     }
 
+    /* The export is not a filter, so it sits apart from them. */
+    .toolbar-group-end {
+      margin-left: auto;
+    }
+
     /* Group labels. Uppercase at 11px is already hard work; they were also
        the darkest text on the darkest band, which is why they disappeared. */
     .toolbar-label,
@@ -2214,28 +2224,28 @@ a:focus-visible,
     }
 
     /* ==================================================================
-       THE KEY STRIP
+       THE KEY
 
-       How to read the map, directly under the controls at the top left.
-       This is where the SVG legend and the coverage caption went: they used
-       to sit in the bottom-left corner of the map, which is the last place a
-       reader looks and, on a short window, below the fold.
+       Down the left edge of the map, stacked vertically. Three earlier
+       homes were wrong for different reasons: the bottom-left corner of the
+       map is where the eye arrives last; a horizontal strip above the map
+       read well but ate a band of height; and inside the control band it
+       competed with the controls. On the map, at the left, it sits beside
+       what it explains and costs no layout.
        ================================================================== */
     .map-key {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      padding: var(--spacing-sm) var(--spacing-md) 10px;
-      background-color: #FFFFFF;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    .key-row {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      flex-wrap: wrap;
-      min-height: 22px;
+      position: absolute;
+      left: var(--spacing-md);
+      top: var(--spacing-md);
+      width: 212px;
+      max-height: calc(100% - 2 * var(--spacing-md));
+      overflow-y: auto;
+      padding: 12px 14px;
+      background-color: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      z-index: var(--z-dropdown);
     }
 
     .key-heading {
@@ -2244,22 +2254,41 @@ a:focus-visible,
       letter-spacing: var(--letter-spacing-wider);
       text-transform: uppercase;
       color: var(--color-text);
+      line-height: var(--line-height-tight);
     }
 
+    .key-subheading {
+      font-size: 10.5px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+      line-height: var(--line-height-normal);
+    }
+
+    /* The ramp runs bottom to top, because that is the direction a reader
+       expects a quantity to grow. The ticks are a flex column beside it, so
+       the high label pins to its top and the low one to its bottom however
+       tall the bar is. */
     .key-scale {
-      display: inline-flex;
-      align-items: center;
+      display: flex;
+      align-items: stretch;
       gap: var(--spacing-sm);
+      margin: 10px 0 12px;
     }
 
-    /* The bar is sampled from the same scale function that fills the
-       countries, so the key cannot drift from the map. */
     .key-ramp {
       display: block;
-      width: 190px;
-      height: 10px;
+      width: 14px;
+      height: 96px;
+      flex: none;
       border-radius: var(--radius-xs);
       border: 1px solid rgba(15, 19, 116, 0.12);
+    }
+
+    .key-ticks {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1px 0;
     }
 
     .key-tick {
@@ -2270,24 +2299,27 @@ a:focus-visible,
     }
 
     .key-items {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      flex-wrap: wrap;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
     }
 
     .key-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
       font-size: var(--font-size-xs);
       color: var(--color-text-secondary);
-      white-space: nowrap;
+      line-height: var(--line-height-normal);
     }
 
     .key-swatch {
       width: 11px;
       height: 11px;
+      flex: none;
+      margin-top: 3px;
       border-radius: var(--radius-xs);
       border: 1px solid rgba(15, 19, 116, 0.12);
     }
@@ -2298,35 +2330,246 @@ a:focus-visible,
     .key-dot {
       width: 11px;
       height: 11px;
+      flex: none;
+      margin-top: 3px;
       border-radius: 50%;
       border: 1px solid rgba(15, 19, 116, 0.25);
     }
 
-    .key-scope {
+    .key-measure {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* The counts are the way into the lists, so they have to look like
+       controls rather than like the caption they used to be part of. */
+    .key-counts {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      margin: 8px 0 6px;
+    }
+
+    .key-count {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      width: 100%;
+      padding: 4px 6px;
+      background: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-family);
+    }
+
+    .key-count:hover {
+      background-color: var(--chip-bg);
+    }
+
+    .key-count-value {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .key-count-label {
+      flex: 1;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .key-count-chevron {
+      font-size: var(--font-size-md);
+      line-height: 1;
+      color: var(--color-text-muted);
+    }
+
+    .key-count:hover .key-count-chevron,
+    .key-count:hover .key-count-value {
+      color: var(--color-dl-blue);
+    }
+
+    .key-edition {
+      font-size: 10.5px;
+      letter-spacing: var(--letter-spacing-wide);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+
+    /* Breadcrumb clears the key rather than sitting under it. */
+    #breadcrumb {
+      left: 244px;
+    }
+
+    /* ==================================================================
+       BROWSE
+
+       The list behind a count.
+       ================================================================== */
+    .browse-panel {
+      display: flex;
+      flex-direction: column;
+      width: min(560px, calc(100vw - 2 * var(--spacing-xl)));
+      max-height: min(640px, calc(100vh - 2 * var(--spacing-xl)));
+      overflow: hidden;
+      border-top-color: var(--color-dl-blue);
+    }
+
+    .browse-sub {
+      margin-top: 3px;
+    }
+
+    .browse-search {
+      width: 100%;
+      margin-bottom: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+    }
+
+    .browse-list {
+      list-style: none;
+      flex: 1;
+      overflow-y: auto;
+      margin: 0 calc(-1 * var(--spacing-xs));
+    }
+
+    .browse-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      width: 100%;
+      padding: 7px var(--spacing-sm);
+      background: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-family);
+    }
+
+    .browse-row:hover {
+      background-color: var(--chip-bg);
+    }
+
+    .browse-rank {
+      flex: 0 0 52px;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dl-blue);
+      font-variant-numeric: tabular-nums;
+      padding-top: 1px;
+    }
+
+    .browse-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .browse-name {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      line-height: var(--line-height-normal);
+    }
+
+    .browse-meta {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .browse-empty {
+      padding: var(--spacing-md);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+
+    /* ==================================================================
+       RANK BADGES ON THE MAP
+
+       The leaders carry their position, so the podium needs no trip to the
+       key. Drawn in the zoom layer and counter-scaled, so they travel with
+       their country but keep their size on screen.
+       ================================================================== */
+    .rank-label {
+      pointer-events: none;
+    }
+
+    .rank-label-disc {
+      fill: #FFFFFF;
+      stroke: var(--color-navy);
+      stroke-width: 1.5px;
+      opacity: 0.95;
+    }
+
+    .rank-label-text {
+      fill: var(--color-navy);
+      font-family: var(--font-family);
+      font-size: 12px;
+      font-weight: var(--font-weight-bold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==================================================================
+       CONTEXT FOR A FIGURE
+
+       A score on its own is not information. These two lines say what it is
+       a share of, and who the leader is.
+       ================================================================== */
+    .hover-context {
+      margin-top: var(--spacing-xs);
+      padding-top: var(--spacing-xs);
+      border-top: 1px solid var(--color-border);
+      font-size: 10.5px;
+      color: var(--color-text-muted);
+      line-height: var(--line-height-normal);
+    }
+
+    .panel-context {
+      margin-top: 6px;
       font-size: var(--font-size-xs);
       color: var(--color-text-muted);
       line-height: var(--line-height-normal);
     }
 
-    .key-scope strong {
+    /* The country's best school, named up front. */
+    .panel-lead {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: var(--spacing-md);
+      padding: 10px 12px;
+      background-color: var(--color-background);
+      border-left: 3px solid var(--color-orange);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .panel-lead-label {
+      font-size: 9.5px;
+      letter-spacing: var(--letter-spacing-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+
+    .panel-lead-name {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--color-text);
+      line-height: var(--line-height-normal);
+    }
+
+    .panel-lead-rank {
+      font-size: var(--font-size-xs);
+      color: var(--color-orange);
       font-weight: var(--font-weight-semibold);
       font-variant-numeric: tabular-nums;
-    }
-
-    .key-measure {
-      color: var(--color-text-secondary);
-    }
-
-    .key-sep {
-      opacity: 0.45;
-      padding: 0 2px;
-    }
-
-    /* A filter is narrowing everything on screen, so the line says so in the
-       accent rather than quietly. */
-    .key-scope.is-filtered .key-coverage strong {
-      color: var(--color-orange);
     }
 
     /* ==================================================================
@@ -2539,7 +2782,7 @@ a:focus-visible,
 
       <div class="controls">
         <div class="search">
-          <input id="search-input" type="search" placeholder="Search countries, hubs, institutions&hellip;"
+          <input id="search-input" type="search" placeholder="Search countries, hubs, universities&hellip;"
                  autocomplete="off" aria-label="Search">
           <div id="search-results" class="search-results"></div>
         </div>
@@ -2554,7 +2797,7 @@ a:focus-visible,
       <p class="intro-text">
         A global ranking of universities and schools based on graduate career outcomes
         across four key areas of the AI &amp; tech economy, showing the Top 150
-        institutions in each ranking.
+        universities &amp; schools in each ranking.
       </p>
       <button id="guide-open" class="chip chip-on-blue" type="button" aria-expanded="false">
         How to use this map
@@ -2568,7 +2811,7 @@ a:focus-visible,
           <span class="toolbar-label">View</span>
           <div id="view-selector" class="view-selector" role="group" aria-label="Map view">
             <button type="button" class="view-button is-active" data-view="country">Countries / Hubs</button>
-            <button type="button" class="view-button" data-view="institution">Institutions</button>
+            <button type="button" class="view-button" data-view="institution">Universities &amp; schools</button>
           </div>
           <button class="info-button" type="button" data-explain="view"
                   aria-label="What the two views show">i</button>
@@ -2607,13 +2850,16 @@ a:focus-visible,
           <span class="toolbar-label">Filter</span>
           <div id="filters" class="filters"></div>
         </div>
+
+        <div class="toolbar-group toolbar-group-end">
+          <button id="download-dataset" class="chip is-quiet" type="button">
+            Download dataset
+          </button>
+          <button class="info-button" type="button" data-explain="download"
+                  aria-label="What the download contains">i</button>
+        </div>
       </div>
     </div>
-
-    <!-- The key. It used to be two SVG groups in the bottom-left corner of the
-         map, which is the last place a reader looks. It is now the first thing
-         under the controls. -->
-    <div id="map-key" class="map-key"></div>
 
     <!-- One popover, anchored to whichever control asked for it. Filled by
          openPop() in index.js. -->
@@ -2623,6 +2869,21 @@ a:focus-visible,
         <button class="pop-close" type="button" aria-label="Close">&times;</button>
       </div>
       <div class="pop-body"></div>
+    </div>
+
+    <!-- The list behind a count in the key -->
+    <div id="browse-panel" class="guide-panel browse-panel" role="dialog"
+         aria-labelledby="browse-title" hidden>
+      <div class="pop-head">
+        <div>
+          <h2 id="browse-title" class="pop-title browse-title"></h2>
+          <p class="panel-subtitle browse-sub"></p>
+        </div>
+        <button id="browse-close" class="pop-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <input class="browse-search" type="search" placeholder="Filter this list&hellip;"
+             autocomplete="off" aria-label="Filter this list">
+      <ul class="browse-list"></ul>
     </div>
 
     <!-- User guide -->
@@ -2636,22 +2897,22 @@ a:focus-visible,
         <p class="pop-lede">
           One global ranking and four specialist ones, mapped across 41 countries
           and 15 hubs. Pick a ranking, choose how to measure it, then click any
-          country, hub or institution to open its card.
+          country, hub or university to open its card.
         </p>
 
         <h3>What each control does</h3>
         <ul class="guide-list">
           <li><strong>View</strong> switches between the world coloured by score,
-          and every ranked institution plotted as a dot.</li>
+          and every ranked university or school plotted as a dot.</li>
           <li><strong>Rankings</strong> moves the whole map to Global or to one of
           the four areas. <strong>Next 50</strong> extends Global to 200 places.</li>
           <li><strong>Measure</strong> reads the map three ways: overall strength,
           talent density against population, or <strong>evolution</strong> between
           the DL25 and DL26 editions.</li>
           <li><strong>Show hubs</strong> draws each city cluster as a bubble sized
-          by the weight of the institutions in it, so you can see where the
+          by the weight of the universities &amp; schools in it, so you can see where the
           ranking concentrates.</li>
-          <li><strong>Filter</strong> narrows to a type of institution or to the
+          <li><strong>Filter</strong> narrows to a type of school or to the
           top of the ranking. Every figure on screen follows.</li>
         </ul>
 
@@ -2668,6 +2929,12 @@ a:focus-visible,
     <main>
       <!-- Map container -->
       <div id="map-container">
+        <!-- The key sits on the map, down its left edge, stacked vertically.
+             It began life as two SVG groups in the bottom-left corner, which is
+             the last place a reader looks; a horizontal strip above the map read
+             better but cost a band of height and pushed the map down. -->
+        <div id="map-key" class="map-key"></div>
+
         <nav id="breadcrumb" aria-label="Drill-down"></nav>
         <button id="reset-zoom" class="chip map-reset" type="button"
                 title="Return to the whole-world view">Reset view</button>
@@ -2687,6 +2954,7 @@ a:focus-visible,
   </div>
 
   <!-- D3 Visualization Scripts -->
+  
   
   
 
@@ -2713,21 +2981,31 @@ const scales = (() => {
   // ========================================================================
 
   // ------------------------------------------------------------------------
-  // Country fills use the Emerging palette and nothing else:
-  //   pale periwinkle #DCE3FA · periwinkle #4B5BCB · navy #0F1374
-  //   orange #FF4901 · salmon #FF9E79 · maroon #860018
+  // THE COUNTRY RAMP: pale blue, periwinkle, indigo, violet.
   //
-  // The ramp is INVERTED relative to the dark theme, and it has to be. On a
-  // dark canvas the lowest value was the darkest navy, because dark meant
-  // "recedes into the ground". On paper that reads backwards: the eye takes
-  // the darkest patch for the biggest number. So the ramp now climbs
-  // pale periwinkle, periwinkle, navy, orange: the lightest stop is the
-  // smallest score, and the accent is the peak.
+  // It used to top out in Emerging orange. That was wrong for a quantity.
+  // Orange sits next to red, and red on a map is read as a warning before it
+  // is read as a value: the United States looked flagged rather than first.
+  // A reader should not have to overrule an instinct to interpret a score.
   //
-  // Gold is gone from the ramp. It is the GEURS colour; Digital Leaders
-  // accents in orange.
+  // Blue through violet has no such baggage. It also stays monotonic in
+  // lightness, which is what actually makes a sequential scale legible:
+  // every step down the ramp is darker than the one before, so the order
+  // survives a greyscale print and the common forms of colour blindness.
+  //
+  //   #EAEEFC  L 92   the floor, barely off the paper
+  //   #A7B3EE  L 73
+  //   #5566D2  L 47
+  //   #4C1D95  L 22   the peak
+  //
+  // Green is deliberately NOT in this ramp. Green already means "rising" on
+  // the Evolution measure; using it for magnitude as well would make the one
+  // colour answer two different questions.
+  //
+  // Orange stays where it belongs: the interface accent, and the Global
+  // institution dots. Neither is a quantity.
   // ------------------------------------------------------------------------
-  const COUNTRY_RAMP = ['#DCE3FA', '#8D9BE8', '#3D4CB8', '#FF4901'];
+  const COUNTRY_RAMP = ['#EAEEFC', '#A7B3EE', '#5566D2', '#4C1D95'];
 
   const dlPointsSequential = (maxValue) => {
     return d3.scaleLinear()
@@ -2770,7 +3048,7 @@ const scales = (() => {
   const perCapitaStrength = (maxValue) => {
     return d3.scaleLinear()
       .domain([0, maxValue * 0.5, maxValue])
-      .range(['#BCC7F2', '#4B5BCB', '#FF4901'])
+      .range(['#C2CBF4', '#5566D2', '#4C1D95'])
       .clamp(true);
   };
 
@@ -2825,9 +3103,9 @@ const scales = (() => {
       dlPoints: dlPointsScale(maxValue),
       perCapita: perCapitaStrength(maxValue),
       delta: editionDelta(range || [-50, 50]),
-      top50Count: d3.scaleLinear().domain([0, 5]).range(['#DCE3FA', '#FF4901']),
-      breadth: d3.scaleLinear().domain([0, 5]).range(['#DCE3FA', '#4B5BCB']),
-      concentration: d3.scaleLinear().domain([0, 100]).range(['#DCE3FA', '#FF4901'])
+      top50Count: d3.scaleLinear().domain([0, 5]).range(['#EAEEFC', '#4C1D95']),
+      breadth: d3.scaleLinear().domain([0, 5]).range(['#EAEEFC', '#5566D2']),
+      concentration: d3.scaleLinear().domain([0, 100]).range(['#EAEEFC', '#4C1D95'])
     };
     return scaleMap[metric] || dlPointsSequential(maxValue);
   };
@@ -2887,6 +3165,322 @@ const scales = (() => {
 })();
 
 console.log('[Scales] Module loaded');
+</script>
+
+<script>
+/**
+ * A MINIMAL XLSX WRITER
+ *
+ * Why this exists rather than a library: the map is self-contained by
+ * requirement. It vendors D3 and TopoJSON and loads nothing from a CDN, and
+ * the standalone build in dist/ inlines every byte it needs. Pulling SheetJS
+ * in for one button would break that, and a CSV would not be the Excel file
+ * that was actually asked for.
+ *
+ * An .xlsx is a ZIP of XML parts. The only hard problems in writing one by
+ * hand are the ZIP container and the CRC32 of each entry, and both are short.
+ * Entries are STORED rather than deflated: the spec allows it, Excel opens it,
+ * and the alternative is shipping an implementation of DEFLATE. The dataset is
+ * a few hundred rows, so the cost is a file about three times larger than it
+ * needs to be, measured in hundreds of kilobytes.
+ *
+ * Scope: strings and numbers, one header row per sheet, no formatting beyond
+ * a bold header and frozen top row. That is what a data export needs.
+ *
+ * Exposes window.DLXlsx.
+ */
+const DLXlsx = (() => {
+  // --------------------------------------------------------------------
+  // CRC32, table-driven. Required per ZIP entry.
+  // --------------------------------------------------------------------
+  const CRC_TABLE = (() => {
+    const table = new Uint32Array(256);
+    for (let i = 0; i < 256; i += 1) {
+      let c = i;
+      for (let k = 0; k < 8; k += 1) {
+        c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      }
+      table[i] = c >>> 0;
+    }
+    return table;
+  })();
+
+  function crc32(bytes) {
+    let c = 0xFFFFFFFF;
+    for (let i = 0; i < bytes.length; i += 1) {
+      c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+    }
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  const utf8 = (text) => new TextEncoder().encode(text);
+
+  // --------------------------------------------------------------------
+  // ZIP container
+  // --------------------------------------------------------------------
+
+  /**
+   * Build a ZIP from [{name, bytes}].
+   *
+   * Local header, then data, per entry; then the central directory; then the
+   * end-of-central-directory record. Everything little-endian. Dates are
+   * written as a fixed 1980-01-01, because a reproducible export is worth
+   * more here than a timestamp nobody reads.
+   */
+  function zip(entries) {
+    const chunks = [];
+    const directory = [];
+    let offset = 0;
+
+    const u16 = (v) => [v & 0xFF, (v >>> 8) & 0xFF];
+    const u32 = (v) => [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF];
+
+    entries.forEach(entry => {
+      const name = utf8(entry.name);
+      const data = entry.bytes;
+      const sum = crc32(data);
+
+      const local = [
+        ...u32(0x04034B50),   // local file header signature
+        ...u16(20),           // version needed
+        ...u16(0x0800),       // flags: UTF-8 names
+        ...u16(0),            // method: stored
+        ...u16(0), ...u16(0x0021),  // time, date (1980-01-01)
+        ...u32(sum),
+        ...u32(data.length),  // compressed size
+        ...u32(data.length),  // uncompressed size
+        ...u16(name.length),
+        ...u16(0)             // extra field length
+      ];
+
+      chunks.push(new Uint8Array(local), name, data);
+
+      directory.push([
+        ...u32(0x02014B50),   // central directory header signature
+        ...u16(20), ...u16(20),
+        ...u16(0x0800),
+        ...u16(0),
+        ...u16(0), ...u16(0x0021),
+        ...u32(sum),
+        ...u32(data.length),
+        ...u32(data.length),
+        ...u16(name.length),
+        ...u16(0), ...u16(0),  // extra, comment
+        ...u16(0),             // disk number
+        ...u16(0),             // internal attributes
+        ...u32(0),             // external attributes
+        ...u32(offset),        // offset of local header
+        ...Array.from(name)
+      ]);
+
+      offset += local.length + name.length + data.length;
+    });
+
+    const central = new Uint8Array(directory.flat());
+    const end = new Uint8Array([
+      ...u32(0x06054B50),
+      ...u16(0), ...u16(0),
+      ...u16(entries.length), ...u16(entries.length),
+      ...u32(central.length),
+      ...u32(offset),
+      ...u16(0)
+    ]);
+
+    return new Blob([...chunks, central, end],
+      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+
+  // --------------------------------------------------------------------
+  // XML
+  // --------------------------------------------------------------------
+
+  // XML 1.0 forbids most control characters outright, so they are stripped
+  // rather than escaped: a stray one makes the whole workbook unopenable.
+  const xmlEscape = (value) => String(value)
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  /** A1, B1 ... Z1, AA1. Column index is zero-based. */
+  function cellRef(column, row) {
+    let name = '';
+    let n = column;
+    do {
+      name = String.fromCharCode(65 + (n % 26)) + name;
+      n = Math.floor(n / 26) - 1;
+    } while (n >= 0);
+    return name + row;
+  }
+
+  /**
+   * One row of cells.
+   *
+   * Numbers are written as numbers so Excel can sum and sort them; everything
+   * else is an inline string. Inline strings avoid the shared-string table,
+   * which is a size optimisation this export does not need.
+   *
+   * null and undefined produce an empty cell rather than the text "null",
+   * which is what a naive String() would give.
+   */
+  function rowXml(values, rowNumber, styleIndex) {
+    const cells = values.map((value, column) => {
+      const ref = cellRef(column, rowNumber);
+      const style = styleIndex ? ` s="${styleIndex}"` : '';
+
+      if (value === null || value === undefined || value === '') {
+        return `<c r="${ref}"${style}/>`;
+      }
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        return `<c r="${ref}"${style}><v>${value}</v></c>`;
+      }
+      return `<c r="${ref}"${style} t="inlineStr"><is><t xml:space="preserve">${
+        xmlEscape(value)}</t></is></c>`;
+    }).join('');
+
+    return `<row r="${rowNumber}">${cells}</row>`;
+  }
+
+  /** Widen every column to fit its widest value, within reason. */
+  function columnsXml(header, rows) {
+    return '<cols>' + header.map((title, i) => {
+      let widest = String(title).length;
+      rows.forEach(row => {
+        const value = row[i];
+        if (value !== null && value !== undefined) {
+          widest = Math.max(widest, String(value).length);
+        }
+      });
+      const width = Math.min(60, Math.max(9, widest + 2));
+      return `<col min="${i + 1}" max="${i + 1}" width="${width}" customWidth="1"/>`;
+    }).join('') + '</cols>';
+  }
+
+  function sheetXml(sheet) {
+    const header = sheet.header || [];
+    const rows = sheet.rows || [];
+
+    const body = [rowXml(header, 1, 1)]
+      .concat(rows.map((row, i) => rowXml(row, i + 2, 0)))
+      .join('');
+
+    const lastCell = cellRef(Math.max(0, header.length - 1), rows.length + 1);
+
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<sheetPr><outlinePr summaryBelow="1" summaryRight="1"/></sheetPr>
+<dimension ref="A1:${lastCell}"/>
+<sheetViews><sheetView workbookViewId="0">
+<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>
+</sheetView></sheetViews>
+<sheetFormatPr defaultRowHeight="15"/>
+${columnsXml(header, rows)}
+<sheetData>${body}</sheetData>
+<autoFilter ref="A1:${cellRef(Math.max(0, header.length - 1), rows.length + 1)}"/>
+</worksheet>`;
+  }
+
+  // Two styles: 0 is the default, 1 is the bold header.
+  const STYLES = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<fonts count="2">
+<font><sz val="11"/><name val="Calibri"/></font>
+<font><b/><sz val="11"/><name val="Calibri"/></font>
+</fonts>
+<fills count="2"><fill><patternFill patternType="none"/></fill>
+<fill><patternFill patternType="gray125"/></fill></fills>
+<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="2">
+<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
+</cellXfs>
+</styleSheet>`;
+
+  /**
+   * Build a workbook.
+   *
+   * `sheets` is [{ name, header: [...], rows: [[...], ...] }].
+   * Sheet names are truncated to Excel's 31-character limit and stripped of
+   * the characters it refuses, because a bad name is another way to produce a
+   * file that will not open.
+   */
+  function build(sheets) {
+    const safeName = (name, index) =>
+      (String(name).replace(/[\\/?*[\]:]/g, ' ').trim().slice(0, 31)) || `Sheet${index + 1}`;
+
+    const named = sheets.map((sheet, i) => ({ ...sheet, name: safeName(sheet.name, i) }));
+
+    const parts = [
+      {
+        name: '[Content_Types].xml',
+        text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+${named.map((s, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('\n')}
+</Types>`
+      },
+      {
+        name: '_rels/.rels',
+        text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>`
+      },
+      {
+        name: 'xl/workbook.xml',
+        text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+ xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<sheets>
+${named.map((s, i) => `<sheet name="${xmlEscape(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('\n')}
+</sheets>
+</workbook>`
+      },
+      {
+        name: 'xl/_rels/workbook.xml.rels',
+        text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+${named.map((s, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('\n')}
+<Relationship Id="rId${named.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`
+      },
+      { name: 'xl/styles.xml', text: STYLES }
+    ];
+
+    named.forEach((sheet, i) => {
+      parts.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(sheet) });
+    });
+
+    return zip(parts.map(part => ({ name: part.name, bytes: utf8(part.text) })));
+  }
+
+  /** Build and hand it to the browser as a download. */
+  function download(sheets, filename) {
+    const blob = build(sheets);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    // Revoking immediately can cancel the download in some browsers.
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+
+  return { build, download, crc32, cellRef };
+})();
+
+window.DLXlsx = DLXlsx;
+console.log('[Xlsx] Module loaded');
+
 </script>
 
 <script>
@@ -3082,6 +3676,7 @@ async function init(container) {
     graticule: g.append('g').attr('class', 'layer-graticule'),
     countries: g.append('g').attr('class', 'layer-countries'),
     cityStates: g.append('g').attr('class', 'layer-city-states'),
+    rankLabels: g.append('g').attr('class', 'layer-rank-labels'),
     hubs: g.append('g').attr('class', 'layer-hubs'),
     institutions: g.append('g').attr('class', 'layer-institutions'),
     interactive: g.append('g').attr('class', 'layer-interactive')
@@ -3335,6 +3930,10 @@ function render(context, state, data) {
     drawCityStates(layers.cityStates, context, data, STATE, colorScale, agg);
   }
 
+  // The leaders wear their position on the map, so "who is first" needs no
+  // trip to the key.
+  drawRankLabels(layers.rankLabels, context, data, STATE, agg);
+
   // Hubs belong to the country view; the institution view replaces them with
   // per-institution dots so the two encodings never compete on one map.
   const institutionView = STATE.view === 'institution';
@@ -3489,6 +4088,69 @@ function buildAggregates(data, state) {
 // ============================================================================
 
 /**
+ * The best-placed institution in a set, for the ranking on screen.
+ * Returns null when nothing in the set is ranked there.
+ */
+function topInstitution(institutions, state) {
+  let best = null;
+  let bestRank = Infinity;
+
+  institutions.forEach(institution => {
+    const rank = scoredRank(institution, state.selectedEdition, state.selectedModule);
+    if (rank !== null && rank < bestRank) {
+      bestRank = rank;
+      best = institution;
+    }
+  });
+
+  return best ? { institution: best, rank: bestRank } : null;
+}
+
+/**
+ * What a figure is worth, relative to the rest of the map.
+ *
+ * "154 DL Points" says nothing on its own. It is only meaningful against
+ * something: the leader, the total, or the field. This returns the one line
+ * that supplies that, phrased for the measure actually on screen, and is used
+ * by both the hover card and the country panel so the two never contextualise
+ * the same number differently.
+ */
+function metricContext(value, state, data, agg, kind = 'country') {
+  if (value === null || value === undefined || Number.isNaN(value)) return '';
+
+  const pool = kind === 'hub'
+    ? data.hubs.filter(h => agg.byHub.has(h.name))
+        .map(h => hubPoints(h, state, agg))
+    : data.countries.filter(c => agg.byCountry.has(c.name))
+        .map(c => countryMetricValue(c, state, agg));
+
+  const values = pool.filter(v => v !== null && !Number.isNaN(v));
+  if (!values.length) return '';
+
+  const max = Math.max(...values);
+
+  if (state.colorMetric === 'delta') {
+    // A change is already relative; what it needs is the size of the field
+    // it moved within, not a share of a total that can be negative.
+    const movers = values.filter(v => v !== 0).length;
+    return `${movers} of ${values.length} moved between the editions`;
+  }
+
+  if (state.colorMetric === 'perCapita') {
+    const median = values.slice().sort((a, b) => a - b)[Math.floor(values.length / 2)];
+    return `the leader has ${scales.formatDataValue(max, state.colorMetric)}, `
+      + `the median ${scales.formatDataValue(median, state.colorMetric)}`;
+  }
+
+  const total = values.reduce((sum, v) => sum + v, 0);
+  const share = total > 0 ? (value / total) * 100 : 0;
+  const shareText = share >= 1 ? share.toFixed(0) : share.toFixed(1);
+
+  return `${shareText}% of the ${Math.round(total).toLocaleString()} DL Points on screen`
+    + ` · the leader has ${Math.round(max).toLocaleString()}`;
+}
+
+/**
  * Resolve the number a country should be coloured by, for the current
  * module / edition / metric. Returns null when the country has nothing to
  * say for this combination, which callers render as "no data" rather than 0.
@@ -3604,7 +4266,7 @@ const METRICS = [
     label: 'Overall strength',
     legend: 'DL Points',
     unit: 'DL Points',
-    description: 'Total DL Points. The weight of a country’s ranked institutions.'
+    description: 'Total DL Points. The weight of a country’s ranked universities & schools.'
   },
   {
     id: 'perCapita',
@@ -3797,14 +4459,16 @@ const CONTROL_EXPLAINERS = {
       <p><strong>Countries / Hubs</strong> colours every country by its score and
       draws a bubble over each hub, sized by the weight of the institutions in
       it. Use it to read the world.</p>
-      <p><strong>Institutions</strong> drops the colouring and plots every ranked
-      school as a single dot where it actually sits. Use it to find a school.</p>`
+      <p><strong>Universities &amp; schools</strong> drops the colouring and plots
+      every ranked university or school as a single dot where it actually sits.
+      Use it to find one.</p>`
   },
 
   hubs: {
     title: 'Show hubs',
     body: `
-      <p>A hub is a city or city-region that concentrates ranked institutions:
+      <p>A hub is a city or city-region that concentrates ranked universities &amp;
+      schools:
       Greater Boston, the Golden Triangle, Greater Paris, and twelve others.</p>
       <p>The bubble is sized by the DL Points of its members, so the biggest
       circles are the places where the ranking is densest. Turn it off to read
@@ -3820,18 +4484,17 @@ const CONTROL_EXPLAINERS = {
       <p>They are not a separate ranking or a sixth module. They turn ranking
       positions into a number you can add up.</p>
       <h3>How the score works</h3>
-      <p>Each ranking places 150 institutions. An institution&rsquo;s DL Points come
-      from where it sits on that 1 to 150 scale: the higher the position, the
-      higher the score.</p>
+      <p>Each ranking places 150 universities &amp; schools. A school&rsquo;s DL Points
+      come from where it sits on that 1 to 150 scale: the higher the position,
+      the higher the score.</p>
       <table class="pop-table">
-        <tr><th>An institution ranked</th><th>scores</th></tr>
+        <tr><th>A school ranked</th><th>scores</th></tr>
         <tr><td>1st</td><td>150 points</td></tr>
         <tr><td>50th</td><td>101 points</td></tr>
         <tr><td>100th</td><td>51 points</td></tr>
         <tr><td>150th</td><td>1 point</td></tr>
       </table>
-      <p>A country&rsquo;s score is all of its institutions&rsquo; points added
-      together.</p>
+      <p>A country&rsquo;s score is all of its schools&rsquo; points added together.</p>
       <h3>The three measures</h3>
       <p><strong>Overall strength</strong> is that total.
       <strong>Talent density</strong> divides it by population, asking who does
@@ -3842,7 +4505,8 @@ const CONTROL_EXPLAINERS = {
   rankings: {
     title: 'Rankings',
     body: `
-      <p>Five ways to read the same set of institutions. <strong>Global</strong>
+      <p>Five ways to read the same set of universities &amp; schools.
+      <strong>Global</strong>
       is the combined ranking; the other four are the areas of the AI and tech
       economy it is built from.</p>
       <p>Pick one and the whole map follows it: the colouring, the dots, the hub
@@ -3853,30 +4517,41 @@ const CONTROL_EXPLAINERS = {
   next50: {
     title: 'The Next 50',
     body: `
-      <p class="pop-lede">A spotlight on the institutions ranked
+      <p class="pop-lede">A spotlight on the universities &amp; schools ranked
       <strong>151st to 200th in the Global Ranking</strong>, completing the
       <strong>Digital Leaders Global Top 200</strong>.</p>
       <p>Turning this on adds the Next 50 to the Institution view in
       <strong>light orange</strong>, alongside the Top 150 in full orange. The
       Next 50 are also assessed across Data and AI, Computer Science, Digital
-      Transformation and Entrepreneurship, with some institutions ranking beyond
+      Transformation and Entrepreneurship, with some of them ranking beyond
       the published Top 150 in these areas. <em>However, the Next 50 feature only
       displays them in the Global Ranking Institution view.</em></p>
       <p class="commercial-cta">Want to access their DL Points or benchmark an
-      institution against its peers?
+      university against its peers?
       <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>`
   },
 
   types: {
     title: 'Type',
     body: `
-      <p>Narrows the map to one kind of institution.</p>
+      <p>Narrows the map to one kind of school.</p>
       <p><strong>University (incl. Business School)</strong> covers comprehensive
       universities and business schools.
       <strong>Science &amp; Tech School</strong> covers engineering schools and
       vocational technical or STEM institutions.</p>
       <p>Leave both unticked to see everything. Every figure on screen, including
       the country colouring, is recomputed from what survives the filter.</p>`
+  },
+
+  download: {
+    title: 'Download dataset',
+    body: `
+      <p>An Excel workbook of the published dataset, in four sheets:
+      <strong>Universities &amp; schools</strong> with every ranking position in
+      both editions, <strong>Countries</strong> and <strong>Hubs</strong> with their
+      totals, and an <strong>About</strong> sheet explaining the fields.</p>
+      <p>It is the complete dataset, not what the filters have narrowed the map
+      to. DL Points are given for countries and hubs; per-school points are not published.</p>`
   },
 
   rank: {
@@ -4217,6 +4892,415 @@ function buildFilters(context, mountSelector = '#filters') {
 }
 
 // ============================================================================
+// BROWSE
+//
+// The lists behind the counts in the key. Clicking "41 countries" should
+// answer "which 41", and clicking a row in the answer should take you there.
+// ============================================================================
+
+/**
+ * Rows for one kind of thing, ordered the way the map orders it: by weight,
+ * not alphabetically. The reader who opens this list is looking for the head
+ * of it, and an A-to-Z buries that.
+ *
+ * Everything here reads the same aggregates the map does, so an open list
+ * always agrees with what is on screen, filters included.
+ */
+function browseRows(kind, state, data, agg) {
+  const points = (value) => Math.round(value || 0).toLocaleString();
+
+  if (kind === 'countries') {
+    return data.countries
+      .filter(c => agg.byCountry.has(c.name))
+      .map(country => {
+        const totals = agg.byCountry.get(country.name);
+        const value = countryMetricValue(country, state, agg);
+        return {
+          key: country.name,
+          name: country.name,
+          meta: formatRegion(country.region),
+          figure: value === null || Number.isNaN(value)
+            ? '' : scales.formatDataValue(value, state.colorMetric),
+          sub: `${totals.ranked} ranked`,
+          sort: value === null || Number.isNaN(value) ? -Infinity : value,
+          go: { country: country.name }
+        };
+      })
+      .sort((a, b) => b.sort - a.sort);
+  }
+
+  if (kind === 'hubs') {
+    return data.hubs
+      .filter(h => agg.byHub.has(h.name))
+      .map(hub => {
+        const value = hubPoints(hub, state, agg);
+        return {
+          key: hub.name,
+          name: hub.name,
+          meta: hub.country,
+          figure: points(value),
+          sub: `${hubInstitutionCount(hub, agg)} ranked`,
+          sort: value || 0,
+          go: { hub: hub.name, country: hub.country,
+                point: [hub.longitude, hub.latitude] }
+        };
+      })
+      .sort((a, b) => b.sort - a.sort);
+  }
+
+  // Universities and schools, best placed first in the ranking on screen.
+  const rankIn = (i) => scoredRank(i, state.selectedEdition, state.selectedModule);
+
+  return agg.scored
+    .map(institution => {
+      const rank = rankIn(institution);
+      return {
+        key: institution.id,
+        name: institution.name,
+        meta: institution.hub
+          ? `${institution.country} · ${institution.hub}`
+          : institution.country,
+        figure: rank === null ? '' : `#${rank}`,
+        sub: typeLabel(institution.type) || '',
+        sort: rank === null ? Infinity : rank,
+        go: { institution: institution.id, country: institution.country,
+              point: (institution.longitude != null && institution.latitude != null)
+                ? [institution.longitude, institution.latitude] : null }
+      };
+    })
+    .sort((a, b) => a.sort - b.sort || a.name.localeCompare(b.name));
+}
+
+const BROWSE_TITLES = {
+  institutions: 'Universities & schools',
+  countries: 'Countries',
+  hubs: 'Hubs'
+};
+
+/** Open the list behind a count. */
+function openBrowse(context, kind) {
+  const panel = document.getElementById('browse-panel');
+  if (!panel) return;
+
+  const state = STATE;
+  const data = context.data;
+  const agg = buildAggregates(data, state);
+  const rows = browseRows(kind, state, data, agg);
+
+  panel.querySelector('.browse-title').textContent =
+    `${BROWSE_TITLES[kind] || kind} (${rows.length.toLocaleString()})`;
+  panel.querySelector('.browse-sub').textContent =
+    `${MODULE_LABELS[state.selectedModule]} · ${metricMeta(state.colorMetric).label}`
+    + (agg.active ? ' · filtered' : '');
+
+  const list = panel.querySelector('.browse-list');
+  const search = panel.querySelector('.browse-search');
+
+  const paint = (query) => {
+    const needle = query.trim().toLowerCase();
+    const shown = needle
+      ? rows.filter(r => r.name.toLowerCase().includes(needle)
+          || r.meta.toLowerCase().includes(needle))
+      : rows;
+
+    if (!shown.length) {
+      list.innerHTML = '<li class="browse-empty">No matches</li>';
+      return;
+    }
+
+    list.innerHTML = shown.map((row, index) => `
+      <li>
+        <button class="browse-row" type="button" data-index="${index}">
+          <span class="browse-rank">${escapeHtml(row.figure)}</span>
+          <span class="browse-body">
+            <span class="browse-name">${escapeHtml(row.name)}</span>
+            <span class="browse-meta">${escapeHtml(row.meta)}${
+              row.sub ? ` · ${escapeHtml(row.sub)}` : ''}</span>
+          </span>
+        </button>
+      </li>`).join('');
+
+    list.querySelectorAll('.browse-row').forEach(button => {
+      button.addEventListener('click', () => {
+        goTo(context, shown[+button.dataset.index].go);
+        closeBrowse();
+      });
+    });
+  };
+
+  search.value = '';
+  paint('');
+  search.oninput = () => paint(search.value);
+
+  panel.removeAttribute('hidden');
+  list.scrollTop = 0;
+  search.focus();
+}
+
+/** Select and fly to whatever a browse row points at. */
+function goTo(context, target) {
+  if (!target) return;
+
+  if (target.institution) {
+    update(context, {
+      view: 'institution',
+      selectedInstitution: target.institution,
+      selectedCountry: target.country,
+      selectedHub: null
+    });
+    syncViewButtons('institution');
+    if (target.point) return zoomToPoint(context, target.point, 8);
+    return zoomToCountry(context, target.country);
+  }
+
+  if (target.hub) {
+    update(context, {
+      view: 'country',
+      selectedHub: target.hub,
+      selectedCountry: target.country,
+      selectedInstitution: null
+    });
+    syncViewButtons('country');
+    return zoomToPoint(context, target.point);
+  }
+
+  update(context, {
+    view: 'country',
+    selectedCountry: target.country,
+    selectedHub: null,
+    selectedInstitution: null
+  });
+  syncViewButtons('country');
+  zoomToCountry(context, target.country);
+}
+
+function closeBrowse() {
+  const panel = document.getElementById('browse-panel');
+  if (panel) panel.setAttribute('hidden', '');
+}
+
+const isBrowseOpen = () => {
+  const panel = document.getElementById('browse-panel');
+  return !!panel && !panel.hasAttribute('hidden');
+};
+
+/**
+ * The counts are rebuilt on every render, so the handler lives on the key
+ * itself rather than on each button.
+ */
+function wireBrowse(context) {
+  const mount = document.getElementById('map-key');
+  if (!mount || mount.dataset.browseWired === 'yes') return;
+  mount.dataset.browseWired = 'yes';
+
+  mount.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-browse]');
+    if (!button) return;
+    event.stopPropagation();
+    openBrowse(context, button.dataset.browse);
+  });
+}
+
+// ============================================================================
+// DATASET EXPORT
+//
+// Builds the workbook the Download button hands over. Written to xlsx.js,
+// which is a small ZIP-of-XML writer rather than a library, so the page stays
+// self-contained and the standalone build keeps working offline.
+// ============================================================================
+
+/**
+ * What goes in and what stays out.
+ *
+ * IN: every published ranking position, for both editions, plus the country
+ * and hub totals the interface already puts on screen.
+ *
+ * OUT: DL Points per institution. They are simply 151 minus the rank, so they
+ * are not a secret, but publishing them as a column hands over the
+ * module-by-module scoring breakdown that the institution card is built to
+ * withhold and that the commercial offer rests on. Ranks are exported because
+ * the interface already shows every one of them; points per institution are
+ * not, because it never does.
+ */
+function buildExportSheets(data, state) {
+  const modules = data.modules;
+  const editions = data.editions;
+  const edition = state.selectedEdition;
+
+  const rankOf = (institution, ed, module) => {
+    const rank = institution.ranks?.[ed]?.[module];
+    return (rank === null || rank === undefined) ? null : rank;
+  };
+
+  // ---------------------------------------------------------------- about
+  const about = {
+    name: 'About',
+    header: ['Field', 'Value'],
+    rows: [
+      ['Dataset', 'Digital Leaders 2026, AI & Tech Careers Edition'],
+      ['Published by', 'Emerging'],
+      ['Exported', new Date().toISOString().slice(0, 10)],
+      ['Edition on screen when exported', edition],
+      ['Editions included', editions.join(', ')],
+      ['Universities & schools', data.institutions.length],
+      ['Countries', data.countries.length],
+      ['Hubs', data.hubs.length],
+      ['Rankings', modules.map(m => MODULE_LABELS[m] || m).join(', ')],
+      [],
+      ['What a rank means', 'Each ranking places 150 universities & schools. 1 is the best position.'],
+      ['The Next 50', 'Universities & schools ranked 151st to 200th in the Global ranking. '
+        + 'Shown in the Global ranking only.'],
+      ['DL Points', 'A country or hub total: 151 minus the rank, summed over its '
+        + 'ranked universities & schools. Per-school DL Points are not published.'],
+      ['Scope of this file', 'The complete published dataset. It is not narrowed by '
+        + 'the filters that were set on the map.']
+    ]
+  };
+
+  // --------------------------------------------------------- institutions
+  const institutionHeader = ['University or school', 'Country', 'Region', 'Hub', 'Type'];
+  editions.forEach(ed => {
+    modules.forEach(module => {
+      institutionHeader.push(`${MODULE_LABELS[module] || module} rank (${ed})`);
+    });
+  });
+  institutionHeader.push('Global tier (' + edition + ')', 'Latitude', 'Longitude');
+
+  const institutionRows = data.institutions
+    .slice()
+    .sort((a, b) => {
+      // Best Global rank first, then everything unranked in Global by name,
+      // so the file opens on the head of the ranking rather than on whatever
+      // order the pipeline happened to emit.
+      const ra = rankOf(a, edition, 'global');
+      const rb = rankOf(b, edition, 'global');
+      if (ra === null && rb === null) return a.name.localeCompare(b.name);
+      if (ra === null) return 1;
+      if (rb === null) return -1;
+      return ra - rb;
+    })
+    .map(institution => {
+      const row = [
+        institution.name,
+        institution.country,
+        formatRegion(institution.region),
+        institution.hub || '',
+        typeLabel(institution.type) || ''
+      ];
+      editions.forEach(ed => {
+        modules.forEach(module => row.push(rankOf(institution, ed, module)));
+      });
+      row.push(
+        institution.tier?.[edition]?.global === 'next50' ? 'Next 50' :
+          (rankOf(institution, edition, 'global') !== null ? 'Top 150' : ''),
+        institution.latitude ?? null,
+        institution.longitude ?? null
+      );
+      return row;
+    });
+
+  // ------------------------------------------------------------ countries
+  // Totals are recomputed here from the ranks rather than read off the
+  // aggregates, so the file does not change depending on what was filtered
+  // on screen at the moment the button was pressed.
+  const countryTotals = new Map();
+  data.countries.forEach(c => countryTotals.set(c.name, {
+    points: Object.fromEntries(editions.map(ed => [ed, 0])),
+    ranked: Object.fromEntries(modules.map(m => [m, 0])),
+    institutions: 0
+  }));
+
+  data.institutions.forEach(institution => {
+    const totals = countryTotals.get(institution.country);
+    if (!totals || institution.next50Only) return;
+    totals.institutions += 1;
+
+    modules.forEach(module => {
+      if (scoredRank(institution, edition, module) !== null) totals.ranked[module] += 1;
+    });
+
+    editions.forEach(ed => {
+      const rank = scoredRank(institution, ed, state.selectedModule);
+      if (rank !== null) totals.points[ed] += 151 - rank;
+    });
+  });
+
+  const countryHeader = ['Country', 'Region', 'Population', 'GDP per capita (USD)',
+    'Universities & schools'];
+  modules.forEach(m => countryHeader.push(`Ranked in ${MODULE_LABELS[m] || m}`));
+  editions.forEach(ed => countryHeader.push(`DL Points, ${MODULE_LABELS[state.selectedModule]} (${ed})`));
+  countryHeader.push('Change');
+
+  const countryRows = data.countries
+    .map(country => {
+      const totals = countryTotals.get(country.name);
+      const row = [
+        country.name,
+        formatRegion(country.region),
+        country.population ?? null,
+        country.gdpPerCapita ? Math.round(country.gdpPerCapita) : null,
+        totals.institutions
+      ];
+      modules.forEach(m => row.push(totals.ranked[m]));
+      editions.forEach(ed => row.push(totals.points[ed]));
+      const first = totals.points[editions[0]] || 0;
+      const last = totals.points[editions[editions.length - 1]] || 0;
+      row.push(last - first);
+      return row;
+    })
+    .sort((a, b) => (b[b.length - 2] || 0) - (a[a.length - 2] || 0));
+
+  // ----------------------------------------------------------------- hubs
+  const hubTotals = new Map();
+  data.hubs.forEach(h => hubTotals.set(h.name, { institutions: 0, points: 0 }));
+  data.institutions.forEach(institution => {
+    if (!institution.hub || institution.next50Only) return;
+    const totals = hubTotals.get(institution.hub);
+    if (!totals) return;
+    totals.institutions += 1;
+    const rank = scoredRank(institution, edition, state.selectedModule);
+    if (rank !== null) totals.points += 151 - rank;
+  });
+
+  const hubRows = data.hubs
+    .map(hub => [
+      hub.name,
+      hub.country,
+      hubTotals.get(hub.name).institutions,
+      hubTotals.get(hub.name).points,
+      hub.latitude ?? null,
+      hub.longitude ?? null
+    ])
+    .sort((a, b) => b[3] - a[3]);
+
+  return [
+    about,
+    { name: 'Universities & schools', header: institutionHeader, rows: institutionRows },
+    { name: 'Countries', header: countryHeader, rows: countryRows },
+    {
+      name: 'Hubs',
+      header: ['Hub', 'Country', 'Universities & schools',
+        `DL Points, ${MODULE_LABELS[state.selectedModule]} (${edition})`,
+        'Latitude', 'Longitude'],
+      rows: hubRows
+    }
+  ];
+}
+
+/** Build the workbook and hand it to the browser. */
+function exportDataset(context) {
+  if (!window.DLXlsx) {
+    console.error('[Export] xlsx.js did not load');
+    return;
+  }
+  const sheets = buildExportSheets(context.data, STATE);
+  window.DLXlsx.download(sheets,
+    `digital-leaders-${STATE.selectedEdition.toLowerCase()}-dataset.xlsx`);
+  console.log('[Export] workbook built:',
+    sheets.map(s => `${s.name} ${s.rows.length}`).join(', '));
+}
+
+// ============================================================================
 // SEARCH
 // ============================================================================
 
@@ -4491,6 +5575,8 @@ function hoverFigures(entity, kind, state, data, agg) {
   const direction = state.colorMetric === 'delta'
     ? (value > 0 ? ' is-up' : value < 0 ? ' is-down' : '') : '';
 
+  const context = metricContext(value, state, data, agg, kind);
+
   return `
     <div class="hover-figures">
       <div class="hover-figure">
@@ -4503,7 +5589,8 @@ function hoverFigures(entity, kind, state, data, agg) {
           ? `of ${standing.of} ${peers}`
           : 'not ranked here'}</span>
       </div>
-    </div>`;
+    </div>
+    ${context ? `<p class="hover-context">${escapeHtml(context)}</p>` : ''}`;
 }
 
 
@@ -4534,7 +5621,7 @@ function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
       ${hoverFigures(entity, kind, state, data, agg)}
     </div>
     <table class="hover-table">
-      <caption>Ranked institutions</caption>
+      <caption>Ranked universities &amp; schools</caption>
       ${rows}
     </table>
     <p class="hover-cta">Click to view more information</p>`;
@@ -4628,6 +5715,75 @@ function drawCountries(selection, context, data, state, colorScale, agg) {
         country, 'country', formatRegion(country.region), totals, state, data, agg));
     })
     .on('mouseleave', hideHoverCard);
+}
+
+/** How many leaders get a badge on the map. */
+const RANKED_LABEL_COUNT = 5;
+
+/**
+ * Put the leaders' positions on the map itself.
+ *
+ * Colour alone makes you consult the key and then compare swatches by eye,
+ * which is exactly the work a reader should not have to do to answer "who is
+ * first". The top five carry their rank as a numbered badge, so the podium is
+ * legible in one look and the ramp is left to do what it is good at, which is
+ * showing the shape of the field behind them.
+ *
+ * Five, not ten: beyond that the badges start to crowd Europe, where the
+ * countries are small and close together.
+ *
+ * The badge is drawn inside the zoom layer so it travels with its country,
+ * and rescaled by rescaleMarkers() so it does not grow as you zoom in.
+ */
+function drawRankLabels(selection, context, data, state, agg) {
+  selection.selectAll('*').remove();
+
+  // Only the choropleth has a ranking to annotate. In the institution view
+  // the dots are the data and a country rank would be answering a question
+  // nobody asked.
+  if (state.view === 'institution') return;
+
+  const path = d3.geoPath(context.projection);
+  const byAtlasName = new Map(
+    data.world.features.map(f => [f.properties.name, f])
+  );
+
+  const ranked = data.countries
+    .filter(c => agg.byCountry.has(c.name) && hasMetricValue(c, state, agg))
+    .map(c => ({ country: c, value: countryMetricValue(c, state, agg) }))
+    .filter(row => row.value !== null && !Number.isNaN(row.value))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, RANKED_LABEL_COUNT);
+
+  ranked.forEach((row, index) => {
+    // A country's label sits at its projected centroid. City-states have no
+    // polygon at this resolution, so they fall back to their own coordinates.
+    const feature = byAtlasName.get(toAtlasName(row.country.name));
+    let point = null;
+
+    if (feature) {
+      point = path.centroid(feature);
+    } else if (row.country.longitude != null && row.country.latitude != null) {
+      point = context.projection([row.country.longitude, row.country.latitude]);
+    }
+
+    if (!point || !Number.isFinite(point[0]) || !Number.isFinite(point[1])) return;
+
+    const group = selection.append('g')
+      .attr('class', 'rank-label')
+      .attr('data-xy', `${point[0]},${point[1]}`)
+      .attr('transform', `translate(${point[0]}, ${point[1]})`);
+
+    group.append('circle')
+      .attr('class', 'rank-label-disc')
+      .attr('r', 11);
+
+    group.append('text')
+      .attr('class', 'rank-label-text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '0.36em')
+      .text(index + 1);
+  });
 }
 
 /**
@@ -4893,6 +6049,16 @@ function rescaleMarkers(context) {
   context.g.selectAll('.city-state-dot').attr('r', 4 / k);
   context.g.selectAll('.institution-dot')
     .attr('r', institutionRadius(INSTITUTION_DOT_RADIUS, k));
+
+  // The rank badges live in the zoom layer so they follow their country, but
+  // they are chrome, not geography: they must stay the same size on screen.
+  // Scaling the whole group is one transform instead of two attributes, and
+  // keeps the disc and its number in step.
+  context.g.selectAll('.rank-label')
+    .attr('transform', function () {
+      const [x, y] = (this.getAttribute('data-xy') || '0,0').split(',').map(Number);
+      return `translate(${x}, ${y}) scale(${1 / k})`;
+    });
 }
 
 // ============================================================================
@@ -5032,8 +6198,7 @@ function renderKey(state, data, values, colorScale, agg) {
   const mount = document.getElementById('map-key');
   if (!mount) return;
 
-  const scopeHtml =
-    `<p class="key-scope${agg.active ? ' is-filtered' : ''}">${scopeLine(state, data, agg)}</p>`;
+  const scopeHtml = scopeLine(state, data, agg);
 
   // The institution view has no choropleth to explain; the key that matters
   // is which ranking the dots represent.
@@ -5042,19 +6207,18 @@ function renderKey(state, data, values, colorScale, agg) {
       && NEXT50_MODULES.includes(state.selectedModule);
 
     const dot = (colour, label) => `
-      <span class="key-item">
-        <span class="key-dot" style="background:${colour}"></span>${escapeHtml(label)}
-      </span>`;
+      <li class="key-item">
+        <span class="key-dot" style="background:${colour}"></span>
+        <span class="key-item-label">${escapeHtml(label)}</span>
+      </li>`;
 
     mount.innerHTML = `
-      <div class="key-row">
-        <span class="key-heading">Institutions ranked in</span>
-        <span class="key-items">
-          ${dot(MODULE_COLORS[state.selectedModule],
-                MODULE_LABELS[state.selectedModule] + (showingNext50 ? ' · top 150' : ''))}
-          ${showingNext50 ? dot(NEXT50_COLOR, 'Next 50 · ranks 151 to 200') : ''}
-        </span>
-      </div>
+      <p class="key-heading">Ranked in</p>
+      <ul class="key-items">
+        ${dot(MODULE_COLORS[state.selectedModule],
+              MODULE_LABELS[state.selectedModule] + (showingNext50 ? ', top 150' : ''))}
+        ${showingNext50 ? dot(NEXT50_COLOR, 'Next 50, ranks 151 to 200') : ''}
+      </ul>
       ${scopeHtml}`;
     return;
   }
@@ -5067,6 +6231,10 @@ function renderKey(state, data, values, colorScale, agg) {
   const { lo, hi, clamped } = metricBounds(state.colorMetric, values);
 
   // Sample the scale into a CSS gradient so the bar can't drift from the map.
+  //
+  // `to top`, not `to right`: the bar is vertical now, and a vertical ramp
+  // has to run the way a reader expects a quantity to run, with the largest
+  // value at the top. The stops are generated low to high either way.
   const steps = 16;
   const stops = d3.range(steps + 1).map(i => {
     const t = i / steps;
@@ -5075,8 +6243,8 @@ function renderKey(state, data, values, colorScale, agg) {
 
   // A leading <= or >= tells the reader the ends of the ramp are saturated
   // rather than being the true extremes of the data.
-  const lowLabel = (clamped ? '≤ ' : '') + scales.formatDataValue(lo, state.colorMetric);
-  const highLabel = (clamped ? '≥ ' : '') + scales.formatDataValue(hi, state.colorMetric);
+  const lowLabel = (clamped ? '\u2264 ' : '') + scales.formatDataValue(lo, state.colorMetric);
+  const highLabel = (clamped ? '\u2265 ' : '') + scales.formatDataValue(hi, state.colorMetric);
 
   // Only advertise a "no figures" key when some ranked country actually
   // lacks a value for the metric on screen.
@@ -5084,24 +6252,29 @@ function renderKey(state, data, values, colorScale, agg) {
     .filter(c => agg.byCountry.has(c.name) && !hasMetricValue(c, state, agg)).length;
 
   mount.innerHTML = `
-    <div class="key-row">
-      <span class="key-heading">${escapeHtml(MODULE_LABELS[state.selectedModule])} ·
-        ${escapeHtml(metricMeta(state.colorMetric).legend)}</span>
-      <span class="key-scale">
-        <span class="key-tick">${escapeHtml(lowLabel)}</span>
-        <span class="key-ramp" style="background:linear-gradient(90deg, ${stops})"></span>
+    <p class="key-heading">${escapeHtml(MODULE_LABELS[state.selectedModule])}</p>
+    <p class="key-subheading">${escapeHtml(metricMeta(state.colorMetric).legend)}</p>
+
+    <div class="key-scale">
+      <span class="key-ramp" style="background:linear-gradient(to top, ${stops})"></span>
+      <span class="key-ticks">
         <span class="key-tick">${escapeHtml(highLabel)}</span>
-      </span>
-      <span class="key-items">
-        <span class="key-item">
-          <span class="key-swatch key-swatch-unranked"></span>Not ranked
-        </span>
-        ${missing > 0 ? `
-        <span class="key-item">
-          <span class="key-swatch key-swatch-nodata"></span>No figures available (${missing})
-        </span>` : ''}
+        <span class="key-tick">${escapeHtml(lowLabel)}</span>
       </span>
     </div>
+
+    <ul class="key-items">
+      <li class="key-item">
+        <span class="key-swatch key-swatch-unranked"></span>
+        <span class="key-item-label">Not ranked</span>
+      </li>
+      ${missing > 0 ? `
+      <li class="key-item">
+        <span class="key-swatch key-swatch-nodata"></span>
+        <span class="key-item-label">No figures available (${missing})</span>
+      </li>` : ''}
+    </ul>
+
     ${scopeHtml}`;
 }
 
@@ -5199,7 +6372,7 @@ function renderDetailPanel(context, state, data, agg) {
         <li>
           <button class="hub-link" type="button" data-hub="${escapeHtml(h.name)}">
             <span class="hub-link-name">${escapeHtml(h.name)}</span>
-            <span class="hub-link-meta">${count} institution${count === 1 ? '' : 's'} · ${Math.round(hubPoints(h, state, agg) || 0).toLocaleString()} pts</span>
+            <span class="hub-link-meta">${count} ranked · ${Math.round(hubPoints(h, state, agg) || 0).toLocaleString()} pts</span>
           </button>
         </li>`;
       }).join('')}
@@ -5212,6 +6385,20 @@ function renderDetailPanel(context, state, data, agg) {
     country.gdpPerCapita ? `$${Math.round(country.gdpPerCapita).toLocaleString()} GDP per capita` : null
   ].filter(Boolean).join(' · ');
 
+  // The country's best school, named. A score is abstract; the institution
+  // behind it is the thing a reader recognises, and it is the first question
+  // anyone asks of a country on this map.
+  const best = topInstitution(institutions, state);
+  const leadHtml = best ? `
+    <div class="panel-lead">
+      <span class="panel-lead-label">Top ranked in ${escapeHtml(moduleLabel)}</span>
+      <span class="panel-lead-name">${escapeHtml(best.institution.name)}</span>
+      <span class="panel-lead-rank">#${best.rank} in the world</span>
+    </div>` : '';
+
+  const headline = countryMetricValue(country, state, agg);
+  const contextLine = metricContext(headline, state, data, agg, 'country');
+
   panel.innerHTML = `
     <div class="panel-head">
       <div>
@@ -5223,8 +6410,11 @@ function renderDetailPanel(context, state, data, agg) {
 
     ${enrichment ? `<p class="panel-enrichment">${escapeHtml(enrichment)}</p>` : ''}
 
+    ${leadHtml}
+
     <h3 class="panel-section">${escapeHtml(moduleLabel)} · how it measures up</h3>
     <table class="measure-table">${measureRows}</table>
+    ${contextLine ? `<p class="panel-context">${escapeHtml(contextLine)}</p>` : ''}
 
     ${countrySections(country, state, data, agg)}
 
@@ -5285,7 +6475,7 @@ function institutionSection(institutions, state) {
 
   return `
     <h3 class="panel-section">
-      Institutions in ${escapeHtml(MODULE_LABELS[state.selectedModule])}
+      Universities &amp; schools in ${escapeHtml(MODULE_LABELS[state.selectedModule])}
       <span class="panel-count">${scored.length} of ${institutions.length} ranked</span>
     </h3>
     <ul class="institution-list">
@@ -5710,17 +6900,15 @@ function renderHubPanel(panel, context, state, data, hub, agg) {
  * What the reader is looking at: the measure in plain words, then how much of
  * the ranking is on screen.
  *
- * This is what used to be the blue scope band under the controls plus the
- * caption in the bottom-left corner of the map. Both said something the reader
- * needed and neither was anywhere near the thing it described, so they are one
- * line now, in the key strip.
+ * The three counts are buttons. A figure like "41 countries" invites the
+ * question "which ones?", and until now the interface had no answer: the only
+ * way to find out was to hunt across the map. Each one opens the list it
+ * counts, and every row in that list flies to the thing it names.
  *
- * Returns HTML, not text: the figures are set in bold and the measure name is
- * a distinct colour.
- *
- * The institution count is of the scored set, which excludes the rows the Next
- * 50 brought in, so the total reads exactly as it did before the tier existed.
- * With the tier on, the institution view is showing the fifty and says so.
+ * Returns HTML. The institution count is of the scored set, which excludes the
+ * rows the Next 50 brought in, so the total reads exactly as it did before the
+ * tier existed. With the tier on, the institution view is showing the fifty and
+ * says so.
  */
 function scopeLine(state, data, agg) {
   const metric = metricMeta(state.colorMetric);
@@ -5728,24 +6916,34 @@ function scopeLine(state, data, agg) {
   const showingNext50 = state.view === 'institution' && state.showNext50
     && NEXT50_MODULES.includes(state.selectedModule);
 
-  const institutions = agg.scored.length;
+  const places = agg.scored.length;
   const total = data.institutions.filter(i => !i.next50Only).length;
   const hubs = data.hubs.filter(h => agg.byHub.has(h.name)).length;
 
-  const coverage = [
-    `<strong>${institutions.toLocaleString()}</strong>${
-      agg.active ? ` of ${total.toLocaleString()}` : ''} institutions`,
-    `<strong>${agg.byCountry.size}</strong> countries`,
-    `<strong>${hubs}</strong> hubs`,
-    escapeHtml(state.selectedEdition)
-  ].join(' &middot; ')
-    + (agg.active ? ' &middot; filtered' : '')
-    + (showingNext50 ? ' &middot; Next 50 shown' : '');
+  const count = (kind, value, suffix, label) => `
+    <li>
+      <button class="key-count" type="button" data-browse="${kind}">
+        <span class="key-count-value">${value}</span>
+        <span class="key-count-label">${label}${suffix}</span>
+        <span class="key-count-chevron" aria-hidden="true">&rsaquo;</span>
+      </button>
+    </li>`;
 
-  return `<span class="key-measure">${escapeHtml(metric.description)}</span>
-    <span class="key-sep">&middot;</span>
-    <span class="key-coverage">${coverage}</span>`;
+  return `
+    <p class="key-measure">${escapeHtml(metric.description)}</p>
+    <ul class="key-counts">
+      ${count('institutions',
+              places.toLocaleString(),
+              agg.active ? ` of ${total.toLocaleString()}` : '',
+              'universities &amp; schools')}
+      ${count('countries', agg.byCountry.size, '', 'countries')}
+      ${count('hubs', hubs, '', 'hubs')}
+    </ul>
+    <p class="key-edition">${escapeHtml(state.selectedEdition)}${
+      agg.active ? ' &middot; filtered' : ''}${
+      showingNext50 ? ' &middot; Next 50 shown' : ''}</p>`;
 }
+
 
 // ============================================================================
 // PUBLIC API
@@ -5767,6 +6965,12 @@ window.DigitalLeadersMap = {
   hideNext50Panel,
   explainControl,
   wireExplainers,
+  exportDataset,
+  buildExportSheets,
+  openBrowse,
+  closeBrowse,
+  isBrowseOpen,
+  wireBrowse,
   closePop,
   isPopOpen,
   openPop,
@@ -5833,6 +7037,16 @@ console.log('[Map] Module loaded. Call window.DigitalLeadersMap.init(container) 
         // pointing at nothing.
         window.addEventListener('resize', () => map.closePop());
 
+        // The counts in the key open the lists they count
+        map.wireBrowse(context);
+        document.getElementById('browse-close')
+          .addEventListener('click', () => map.closeBrowse());
+
+        // Dataset export
+        document.getElementById('download-dataset').addEventListener('click', () => {
+          map.exportDataset(context);
+        });
+
         // User guide
         const guide = document.getElementById('guide-panel');
         const guideButton = document.getElementById('guide-open');
@@ -5867,7 +7081,9 @@ console.log('[Map] Module loaded. Call window.DigitalLeadersMap.init(container) 
           // drill-down one level at a time: hub, country, world.
           const state = map.getState();
 
-          if (!guide.hasAttribute('hidden')) {
+          if (map.isBrowseOpen()) {
+            map.closeBrowse();
+          } else if (!guide.hasAttribute('hidden')) {
             setGuideOpen(false);
           } else if (map.isPopOpen()) {
             map.closePop();

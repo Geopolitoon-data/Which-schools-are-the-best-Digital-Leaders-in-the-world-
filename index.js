@@ -780,7 +780,7 @@ const METRICS = [
     label: 'Overall strength',
     legend: 'DL Points',
     unit: 'DL Points',
-    description: 'Total DL Points. The weight of a country’s ranked institutions.'
+    description: 'Total DL Points. The weight of a country’s ranked universities & schools.'
   },
   {
     id: 'perCapita',
@@ -973,14 +973,16 @@ const CONTROL_EXPLAINERS = {
       <p><strong>Countries / Hubs</strong> colours every country by its score and
       draws a bubble over each hub, sized by the weight of the institutions in
       it. Use it to read the world.</p>
-      <p><strong>Institutions</strong> drops the colouring and plots every ranked
-      school as a single dot where it actually sits. Use it to find a school.</p>`
+      <p><strong>Universities &amp; schools</strong> drops the colouring and plots
+      every ranked university or school as a single dot where it actually sits.
+      Use it to find one.</p>`
   },
 
   hubs: {
     title: 'Show hubs',
     body: `
-      <p>A hub is a city or city-region that concentrates ranked institutions:
+      <p>A hub is a city or city-region that concentrates ranked universities &amp;
+      schools:
       Greater Boston, the Golden Triangle, Greater Paris, and twelve others.</p>
       <p>The bubble is sized by the DL Points of its members, so the biggest
       circles are the places where the ranking is densest. Turn it off to read
@@ -996,18 +998,17 @@ const CONTROL_EXPLAINERS = {
       <p>They are not a separate ranking or a sixth module. They turn ranking
       positions into a number you can add up.</p>
       <h3>How the score works</h3>
-      <p>Each ranking places 150 institutions. An institution&rsquo;s DL Points come
-      from where it sits on that 1 to 150 scale: the higher the position, the
-      higher the score.</p>
+      <p>Each ranking places 150 universities &amp; schools. A school&rsquo;s DL Points
+      come from where it sits on that 1 to 150 scale: the higher the position,
+      the higher the score.</p>
       <table class="pop-table">
-        <tr><th>An institution ranked</th><th>scores</th></tr>
+        <tr><th>A school ranked</th><th>scores</th></tr>
         <tr><td>1st</td><td>150 points</td></tr>
         <tr><td>50th</td><td>101 points</td></tr>
         <tr><td>100th</td><td>51 points</td></tr>
         <tr><td>150th</td><td>1 point</td></tr>
       </table>
-      <p>A country&rsquo;s score is all of its institutions&rsquo; points added
-      together.</p>
+      <p>A country&rsquo;s score is all of its schools&rsquo; points added together.</p>
       <h3>The three measures</h3>
       <p><strong>Overall strength</strong> is that total.
       <strong>Talent density</strong> divides it by population, asking who does
@@ -1018,7 +1019,8 @@ const CONTROL_EXPLAINERS = {
   rankings: {
     title: 'Rankings',
     body: `
-      <p>Five ways to read the same set of institutions. <strong>Global</strong>
+      <p>Five ways to read the same set of universities &amp; schools.
+      <strong>Global</strong>
       is the combined ranking; the other four are the areas of the AI and tech
       economy it is built from.</p>
       <p>Pick one and the whole map follows it: the colouring, the dots, the hub
@@ -1029,24 +1031,24 @@ const CONTROL_EXPLAINERS = {
   next50: {
     title: 'The Next 50',
     body: `
-      <p class="pop-lede">A spotlight on the institutions ranked
+      <p class="pop-lede">A spotlight on the universities &amp; schools ranked
       <strong>151st to 200th in the Global Ranking</strong>, completing the
       <strong>Digital Leaders Global Top 200</strong>.</p>
       <p>Turning this on adds the Next 50 to the Institution view in
       <strong>light orange</strong>, alongside the Top 150 in full orange. The
       Next 50 are also assessed across Data and AI, Computer Science, Digital
-      Transformation and Entrepreneurship, with some institutions ranking beyond
+      Transformation and Entrepreneurship, with some of them ranking beyond
       the published Top 150 in these areas. <em>However, the Next 50 feature only
       displays them in the Global Ranking Institution view.</em></p>
       <p class="commercial-cta">Want to access their DL Points or benchmark an
-      institution against its peers?
+      university against its peers?
       <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>`
   },
 
   types: {
     title: 'Type',
     body: `
-      <p>Narrows the map to one kind of institution.</p>
+      <p>Narrows the map to one kind of school.</p>
       <p><strong>University (incl. Business School)</strong> covers comprehensive
       universities and business schools.
       <strong>Science &amp; Tech School</strong> covers engineering schools and
@@ -1059,12 +1061,11 @@ const CONTROL_EXPLAINERS = {
     title: 'Download dataset',
     body: `
       <p>An Excel workbook of the published dataset, in four sheets:
-      <strong>Institutions</strong> with every ranking position in both
-      editions, <strong>Countries</strong> and <strong>Hubs</strong> with their
+      <strong>Universities &amp; schools</strong> with every ranking position in
+      both editions, <strong>Countries</strong> and <strong>Hubs</strong> with their
       totals, and an <strong>About</strong> sheet explaining the fields.</p>
       <p>It is the complete dataset, not what the filters have narrowed the map
-      to. DL Points are given for countries and hubs; per-institution points are
-      not published.</p>`
+      to. DL Points are given for countries and hubs; per-school points are not published.</p>`
   },
 
   rank: {
@@ -1405,6 +1406,216 @@ function buildFilters(context, mountSelector = '#filters') {
 }
 
 // ============================================================================
+// BROWSE
+//
+// The lists behind the counts in the key. Clicking "41 countries" should
+// answer "which 41", and clicking a row in the answer should take you there.
+// ============================================================================
+
+/**
+ * Rows for one kind of thing, ordered the way the map orders it: by weight,
+ * not alphabetically. The reader who opens this list is looking for the head
+ * of it, and an A-to-Z buries that.
+ *
+ * Everything here reads the same aggregates the map does, so an open list
+ * always agrees with what is on screen, filters included.
+ */
+function browseRows(kind, state, data, agg) {
+  const points = (value) => Math.round(value || 0).toLocaleString();
+
+  if (kind === 'countries') {
+    return data.countries
+      .filter(c => agg.byCountry.has(c.name))
+      .map(country => {
+        const totals = agg.byCountry.get(country.name);
+        const value = countryMetricValue(country, state, agg);
+        return {
+          key: country.name,
+          name: country.name,
+          meta: formatRegion(country.region),
+          figure: value === null || Number.isNaN(value)
+            ? '' : scales.formatDataValue(value, state.colorMetric),
+          sub: `${totals.ranked} ranked`,
+          sort: value === null || Number.isNaN(value) ? -Infinity : value,
+          go: { country: country.name }
+        };
+      })
+      .sort((a, b) => b.sort - a.sort);
+  }
+
+  if (kind === 'hubs') {
+    return data.hubs
+      .filter(h => agg.byHub.has(h.name))
+      .map(hub => {
+        const value = hubPoints(hub, state, agg);
+        return {
+          key: hub.name,
+          name: hub.name,
+          meta: hub.country,
+          figure: points(value),
+          sub: `${hubInstitutionCount(hub, agg)} ranked`,
+          sort: value || 0,
+          go: { hub: hub.name, country: hub.country,
+                point: [hub.longitude, hub.latitude] }
+        };
+      })
+      .sort((a, b) => b.sort - a.sort);
+  }
+
+  // Universities and schools, best placed first in the ranking on screen.
+  const rankIn = (i) => scoredRank(i, state.selectedEdition, state.selectedModule);
+
+  return agg.scored
+    .map(institution => {
+      const rank = rankIn(institution);
+      return {
+        key: institution.id,
+        name: institution.name,
+        meta: institution.hub
+          ? `${institution.country} · ${institution.hub}`
+          : institution.country,
+        figure: rank === null ? '' : `#${rank}`,
+        sub: typeLabel(institution.type) || '',
+        sort: rank === null ? Infinity : rank,
+        go: { institution: institution.id, country: institution.country,
+              point: (institution.longitude != null && institution.latitude != null)
+                ? [institution.longitude, institution.latitude] : null }
+      };
+    })
+    .sort((a, b) => a.sort - b.sort || a.name.localeCompare(b.name));
+}
+
+const BROWSE_TITLES = {
+  institutions: 'Universities & schools',
+  countries: 'Countries',
+  hubs: 'Hubs'
+};
+
+/** Open the list behind a count. */
+function openBrowse(context, kind) {
+  const panel = document.getElementById('browse-panel');
+  if (!panel) return;
+
+  const state = STATE;
+  const data = context.data;
+  const agg = buildAggregates(data, state);
+  const rows = browseRows(kind, state, data, agg);
+
+  panel.querySelector('.browse-title').textContent =
+    `${BROWSE_TITLES[kind] || kind} (${rows.length.toLocaleString()})`;
+  panel.querySelector('.browse-sub').textContent =
+    `${MODULE_LABELS[state.selectedModule]} · ${metricMeta(state.colorMetric).label}`
+    + (agg.active ? ' · filtered' : '');
+
+  const list = panel.querySelector('.browse-list');
+  const search = panel.querySelector('.browse-search');
+
+  const paint = (query) => {
+    const needle = query.trim().toLowerCase();
+    const shown = needle
+      ? rows.filter(r => r.name.toLowerCase().includes(needle)
+          || r.meta.toLowerCase().includes(needle))
+      : rows;
+
+    if (!shown.length) {
+      list.innerHTML = '<li class="browse-empty">No matches</li>';
+      return;
+    }
+
+    list.innerHTML = shown.map((row, index) => `
+      <li>
+        <button class="browse-row" type="button" data-index="${index}">
+          <span class="browse-rank">${escapeHtml(row.figure)}</span>
+          <span class="browse-body">
+            <span class="browse-name">${escapeHtml(row.name)}</span>
+            <span class="browse-meta">${escapeHtml(row.meta)}${
+              row.sub ? ` · ${escapeHtml(row.sub)}` : ''}</span>
+          </span>
+        </button>
+      </li>`).join('');
+
+    list.querySelectorAll('.browse-row').forEach(button => {
+      button.addEventListener('click', () => {
+        goTo(context, shown[+button.dataset.index].go);
+        closeBrowse();
+      });
+    });
+  };
+
+  search.value = '';
+  paint('');
+  search.oninput = () => paint(search.value);
+
+  panel.removeAttribute('hidden');
+  list.scrollTop = 0;
+  search.focus();
+}
+
+/** Select and fly to whatever a browse row points at. */
+function goTo(context, target) {
+  if (!target) return;
+
+  if (target.institution) {
+    update(context, {
+      view: 'institution',
+      selectedInstitution: target.institution,
+      selectedCountry: target.country,
+      selectedHub: null
+    });
+    syncViewButtons('institution');
+    if (target.point) return zoomToPoint(context, target.point, 8);
+    return zoomToCountry(context, target.country);
+  }
+
+  if (target.hub) {
+    update(context, {
+      view: 'country',
+      selectedHub: target.hub,
+      selectedCountry: target.country,
+      selectedInstitution: null
+    });
+    syncViewButtons('country');
+    return zoomToPoint(context, target.point);
+  }
+
+  update(context, {
+    view: 'country',
+    selectedCountry: target.country,
+    selectedHub: null,
+    selectedInstitution: null
+  });
+  syncViewButtons('country');
+  zoomToCountry(context, target.country);
+}
+
+function closeBrowse() {
+  const panel = document.getElementById('browse-panel');
+  if (panel) panel.setAttribute('hidden', '');
+}
+
+const isBrowseOpen = () => {
+  const panel = document.getElementById('browse-panel');
+  return !!panel && !panel.hasAttribute('hidden');
+};
+
+/**
+ * The counts are rebuilt on every render, so the handler lives on the key
+ * itself rather than on each button.
+ */
+function wireBrowse(context) {
+  const mount = document.getElementById('map-key');
+  if (!mount || mount.dataset.browseWired === 'yes') return;
+  mount.dataset.browseWired = 'yes';
+
+  mount.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-browse]');
+    if (!button) return;
+    event.stopPropagation();
+    openBrowse(context, button.dataset.browse);
+  });
+}
+
+// ============================================================================
 // DATASET EXPORT
 //
 // Builds the workbook the Download button hands over. Written to xlsx.js,
@@ -1445,23 +1656,23 @@ function buildExportSheets(data, state) {
       ['Exported', new Date().toISOString().slice(0, 10)],
       ['Edition on screen when exported', edition],
       ['Editions included', editions.join(', ')],
-      ['Institutions', data.institutions.length],
+      ['Universities & schools', data.institutions.length],
       ['Countries', data.countries.length],
       ['Hubs', data.hubs.length],
       ['Rankings', modules.map(m => MODULE_LABELS[m] || m).join(', ')],
       [],
-      ['What a rank means', 'Each ranking places 150 institutions. 1 is the best position.'],
-      ['The Next 50', 'Institutions ranked 151st to 200th in the Global ranking. '
+      ['What a rank means', 'Each ranking places 150 universities & schools. 1 is the best position.'],
+      ['The Next 50', 'Universities & schools ranked 151st to 200th in the Global ranking. '
         + 'Shown in the Global ranking only.'],
       ['DL Points', 'A country or hub total: 151 minus the rank, summed over its '
-        + 'ranked institutions. Per-institution DL Points are not published.'],
+        + 'ranked universities & schools. Per-school DL Points are not published.'],
       ['Scope of this file', 'The complete published dataset. It is not narrowed by '
         + 'the filters that were set on the map.']
     ]
   };
 
   // --------------------------------------------------------- institutions
-  const institutionHeader = ['Institution', 'Country', 'Region', 'Hub', 'Type'];
+  const institutionHeader = ['University or school', 'Country', 'Region', 'Hub', 'Type'];
   editions.forEach(ed => {
     modules.forEach(module => {
       institutionHeader.push(`${MODULE_LABELS[module] || module} rank (${ed})`);
@@ -1529,7 +1740,7 @@ function buildExportSheets(data, state) {
   });
 
   const countryHeader = ['Country', 'Region', 'Population', 'GDP per capita (USD)',
-    'Institutions'];
+    'Universities & schools'];
   modules.forEach(m => countryHeader.push(`Ranked in ${MODULE_LABELS[m] || m}`));
   editions.forEach(ed => countryHeader.push(`DL Points, ${MODULE_LABELS[state.selectedModule]} (${ed})`));
   countryHeader.push('Change');
@@ -1578,11 +1789,11 @@ function buildExportSheets(data, state) {
 
   return [
     about,
-    { name: 'Institutions', header: institutionHeader, rows: institutionRows },
+    { name: 'Universities & schools', header: institutionHeader, rows: institutionRows },
     { name: 'Countries', header: countryHeader, rows: countryRows },
     {
       name: 'Hubs',
-      header: ['Hub', 'Country', 'Institutions',
+      header: ['Hub', 'Country', 'Universities & schools',
         `DL Points, ${MODULE_LABELS[state.selectedModule]} (${edition})`,
         'Latitude', 'Longitude'],
       rows: hubRows
@@ -1924,7 +2135,7 @@ function hoverCardHtml(entity, kind, subtitle, totals, state, data, agg) {
       ${hoverFigures(entity, kind, state, data, agg)}
     </div>
     <table class="hover-table">
-      <caption>Ranked institutions</caption>
+      <caption>Ranked universities &amp; schools</caption>
       ${rows}
     </table>
     <p class="hover-cta">Click to view more information</p>`;
@@ -2501,8 +2712,7 @@ function renderKey(state, data, values, colorScale, agg) {
   const mount = document.getElementById('map-key');
   if (!mount) return;
 
-  const scopeHtml =
-    `<p class="key-scope${agg.active ? ' is-filtered' : ''}">${scopeLine(state, data, agg)}</p>`;
+  const scopeHtml = scopeLine(state, data, agg);
 
   // The institution view has no choropleth to explain; the key that matters
   // is which ranking the dots represent.
@@ -2511,19 +2721,18 @@ function renderKey(state, data, values, colorScale, agg) {
       && NEXT50_MODULES.includes(state.selectedModule);
 
     const dot = (colour, label) => `
-      <span class="key-item">
-        <span class="key-dot" style="background:${colour}"></span>${escapeHtml(label)}
-      </span>`;
+      <li class="key-item">
+        <span class="key-dot" style="background:${colour}"></span>
+        <span class="key-item-label">${escapeHtml(label)}</span>
+      </li>`;
 
     mount.innerHTML = `
-      <div class="key-row">
-        <span class="key-heading">Institutions ranked in</span>
-        <span class="key-items">
-          ${dot(MODULE_COLORS[state.selectedModule],
-                MODULE_LABELS[state.selectedModule] + (showingNext50 ? ' · top 150' : ''))}
-          ${showingNext50 ? dot(NEXT50_COLOR, 'Next 50 · ranks 151 to 200') : ''}
-        </span>
-      </div>
+      <p class="key-heading">Ranked in</p>
+      <ul class="key-items">
+        ${dot(MODULE_COLORS[state.selectedModule],
+              MODULE_LABELS[state.selectedModule] + (showingNext50 ? ', top 150' : ''))}
+        ${showingNext50 ? dot(NEXT50_COLOR, 'Next 50, ranks 151 to 200') : ''}
+      </ul>
       ${scopeHtml}`;
     return;
   }
@@ -2536,6 +2745,10 @@ function renderKey(state, data, values, colorScale, agg) {
   const { lo, hi, clamped } = metricBounds(state.colorMetric, values);
 
   // Sample the scale into a CSS gradient so the bar can't drift from the map.
+  //
+  // `to top`, not `to right`: the bar is vertical now, and a vertical ramp
+  // has to run the way a reader expects a quantity to run, with the largest
+  // value at the top. The stops are generated low to high either way.
   const steps = 16;
   const stops = d3.range(steps + 1).map(i => {
     const t = i / steps;
@@ -2544,8 +2757,8 @@ function renderKey(state, data, values, colorScale, agg) {
 
   // A leading <= or >= tells the reader the ends of the ramp are saturated
   // rather than being the true extremes of the data.
-  const lowLabel = (clamped ? '≤ ' : '') + scales.formatDataValue(lo, state.colorMetric);
-  const highLabel = (clamped ? '≥ ' : '') + scales.formatDataValue(hi, state.colorMetric);
+  const lowLabel = (clamped ? '\u2264 ' : '') + scales.formatDataValue(lo, state.colorMetric);
+  const highLabel = (clamped ? '\u2265 ' : '') + scales.formatDataValue(hi, state.colorMetric);
 
   // Only advertise a "no figures" key when some ranked country actually
   // lacks a value for the metric on screen.
@@ -2553,24 +2766,29 @@ function renderKey(state, data, values, colorScale, agg) {
     .filter(c => agg.byCountry.has(c.name) && !hasMetricValue(c, state, agg)).length;
 
   mount.innerHTML = `
-    <div class="key-row">
-      <span class="key-heading">${escapeHtml(MODULE_LABELS[state.selectedModule])} ·
-        ${escapeHtml(metricMeta(state.colorMetric).legend)}</span>
-      <span class="key-scale">
-        <span class="key-tick">${escapeHtml(lowLabel)}</span>
-        <span class="key-ramp" style="background:linear-gradient(90deg, ${stops})"></span>
+    <p class="key-heading">${escapeHtml(MODULE_LABELS[state.selectedModule])}</p>
+    <p class="key-subheading">${escapeHtml(metricMeta(state.colorMetric).legend)}</p>
+
+    <div class="key-scale">
+      <span class="key-ramp" style="background:linear-gradient(to top, ${stops})"></span>
+      <span class="key-ticks">
         <span class="key-tick">${escapeHtml(highLabel)}</span>
-      </span>
-      <span class="key-items">
-        <span class="key-item">
-          <span class="key-swatch key-swatch-unranked"></span>Not ranked
-        </span>
-        ${missing > 0 ? `
-        <span class="key-item">
-          <span class="key-swatch key-swatch-nodata"></span>No figures available (${missing})
-        </span>` : ''}
+        <span class="key-tick">${escapeHtml(lowLabel)}</span>
       </span>
     </div>
+
+    <ul class="key-items">
+      <li class="key-item">
+        <span class="key-swatch key-swatch-unranked"></span>
+        <span class="key-item-label">Not ranked</span>
+      </li>
+      ${missing > 0 ? `
+      <li class="key-item">
+        <span class="key-swatch key-swatch-nodata"></span>
+        <span class="key-item-label">No figures available (${missing})</span>
+      </li>` : ''}
+    </ul>
+
     ${scopeHtml}`;
 }
 
@@ -2668,7 +2886,7 @@ function renderDetailPanel(context, state, data, agg) {
         <li>
           <button class="hub-link" type="button" data-hub="${escapeHtml(h.name)}">
             <span class="hub-link-name">${escapeHtml(h.name)}</span>
-            <span class="hub-link-meta">${count} institution${count === 1 ? '' : 's'} · ${Math.round(hubPoints(h, state, agg) || 0).toLocaleString()} pts</span>
+            <span class="hub-link-meta">${count} ranked · ${Math.round(hubPoints(h, state, agg) || 0).toLocaleString()} pts</span>
           </button>
         </li>`;
       }).join('')}
@@ -2771,7 +2989,7 @@ function institutionSection(institutions, state) {
 
   return `
     <h3 class="panel-section">
-      Institutions in ${escapeHtml(MODULE_LABELS[state.selectedModule])}
+      Universities &amp; schools in ${escapeHtml(MODULE_LABELS[state.selectedModule])}
       <span class="panel-count">${scored.length} of ${institutions.length} ranked</span>
     </h3>
     <ul class="institution-list">
@@ -3196,17 +3414,15 @@ function renderHubPanel(panel, context, state, data, hub, agg) {
  * What the reader is looking at: the measure in plain words, then how much of
  * the ranking is on screen.
  *
- * This is what used to be the blue scope band under the controls plus the
- * caption in the bottom-left corner of the map. Both said something the reader
- * needed and neither was anywhere near the thing it described, so they are one
- * line now, in the key strip.
+ * The three counts are buttons. A figure like "41 countries" invites the
+ * question "which ones?", and until now the interface had no answer: the only
+ * way to find out was to hunt across the map. Each one opens the list it
+ * counts, and every row in that list flies to the thing it names.
  *
- * Returns HTML, not text: the figures are set in bold and the measure name is
- * a distinct colour.
- *
- * The institution count is of the scored set, which excludes the rows the Next
- * 50 brought in, so the total reads exactly as it did before the tier existed.
- * With the tier on, the institution view is showing the fifty and says so.
+ * Returns HTML. The institution count is of the scored set, which excludes the
+ * rows the Next 50 brought in, so the total reads exactly as it did before the
+ * tier existed. With the tier on, the institution view is showing the fifty and
+ * says so.
  */
 function scopeLine(state, data, agg) {
   const metric = metricMeta(state.colorMetric);
@@ -3214,24 +3430,34 @@ function scopeLine(state, data, agg) {
   const showingNext50 = state.view === 'institution' && state.showNext50
     && NEXT50_MODULES.includes(state.selectedModule);
 
-  const institutions = agg.scored.length;
+  const places = agg.scored.length;
   const total = data.institutions.filter(i => !i.next50Only).length;
   const hubs = data.hubs.filter(h => agg.byHub.has(h.name)).length;
 
-  const coverage = [
-    `<strong>${institutions.toLocaleString()}</strong>${
-      agg.active ? ` of ${total.toLocaleString()}` : ''} institutions`,
-    `<strong>${agg.byCountry.size}</strong> countries`,
-    `<strong>${hubs}</strong> hubs`,
-    escapeHtml(state.selectedEdition)
-  ].join(' &middot; ')
-    + (agg.active ? ' &middot; filtered' : '')
-    + (showingNext50 ? ' &middot; Next 50 shown' : '');
+  const count = (kind, value, suffix, label) => `
+    <li>
+      <button class="key-count" type="button" data-browse="${kind}">
+        <span class="key-count-value">${value}</span>
+        <span class="key-count-label">${label}${suffix}</span>
+        <span class="key-count-chevron" aria-hidden="true">&rsaquo;</span>
+      </button>
+    </li>`;
 
-  return `<span class="key-measure">${escapeHtml(metric.description)}</span>
-    <span class="key-sep">&middot;</span>
-    <span class="key-coverage">${coverage}</span>`;
+  return `
+    <p class="key-measure">${escapeHtml(metric.description)}</p>
+    <ul class="key-counts">
+      ${count('institutions',
+              places.toLocaleString(),
+              agg.active ? ` of ${total.toLocaleString()}` : '',
+              'universities &amp; schools')}
+      ${count('countries', agg.byCountry.size, '', 'countries')}
+      ${count('hubs', hubs, '', 'hubs')}
+    </ul>
+    <p class="key-edition">${escapeHtml(state.selectedEdition)}${
+      agg.active ? ' &middot; filtered' : ''}${
+      showingNext50 ? ' &middot; Next 50 shown' : ''}</p>`;
 }
+
 
 // ============================================================================
 // PUBLIC API
@@ -3255,6 +3481,10 @@ window.DigitalLeadersMap = {
   wireExplainers,
   exportDataset,
   buildExportSheets,
+  openBrowse,
+  closeBrowse,
+  isBrowseOpen,
+  wireBrowse,
   closePop,
   isPopOpen,
   openPop,

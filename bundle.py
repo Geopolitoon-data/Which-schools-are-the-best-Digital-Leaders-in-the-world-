@@ -24,7 +24,7 @@ import re
 HERE = os.path.dirname(os.path.abspath(__file__))
 DIST = os.path.join(HERE, 'dist')
 
-TITLE = 'Digital Leaders Ranking — World Map'
+TITLE = 'Digital Leaders 2026 World Map'
 
 
 def read(*parts):
@@ -100,6 +100,10 @@ def build(full_document=False):
         '<script>%s</script>' % read('vendor', 'topojson.v3.min.js'),
         '<script>window.DL_EMBEDDED=%s;</script>' % embedded,
         '<script>\n%s\n</script>' % read('scales.js'),
+        # The dataset export. index.js calls into it, so it has to be defined
+        # first; without it the Download button is dead in the single-file
+        # builds while working perfectly from the served page.
+        '<script>\n%s\n</script>' % read('xlsx.js'),
         '<script>\n%s\n</script>' % read('index.js'),
         '<script>\n%s\n</script>' % boot_script(index_html),
     ]

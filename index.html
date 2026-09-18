@@ -1529,28 +1529,28 @@
     }
 
     /* ==================================================================
-       THE KEY STRIP
+       THE KEY
 
-       How to read the map, directly under the controls at the top left.
-       This is where the SVG legend and the coverage caption went: they used
-       to sit in the bottom-left corner of the map, which is the last place a
-       reader looks and, on a short window, below the fold.
+       Down the left edge of the map, stacked vertically. Three earlier
+       homes were wrong for different reasons: the bottom-left corner of the
+       map is where the eye arrives last; a horizontal strip above the map
+       read well but ate a band of height; and inside the control band it
+       competed with the controls. On the map, at the left, it sits beside
+       what it explains and costs no layout.
        ================================================================== */
     .map-key {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      padding: var(--spacing-sm) var(--spacing-md) 10px;
-      background-color: #FFFFFF;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    .key-row {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      flex-wrap: wrap;
-      min-height: 22px;
+      position: absolute;
+      left: var(--spacing-md);
+      top: var(--spacing-md);
+      width: 212px;
+      max-height: calc(100% - 2 * var(--spacing-md));
+      overflow-y: auto;
+      padding: 12px 14px;
+      background-color: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      z-index: var(--z-dropdown);
     }
 
     .key-heading {
@@ -1559,22 +1559,41 @@
       letter-spacing: var(--letter-spacing-wider);
       text-transform: uppercase;
       color: var(--color-text);
+      line-height: var(--line-height-tight);
     }
 
+    .key-subheading {
+      font-size: 10.5px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+      line-height: var(--line-height-normal);
+    }
+
+    /* The ramp runs bottom to top, because that is the direction a reader
+       expects a quantity to grow. The ticks are a flex column beside it, so
+       the high label pins to its top and the low one to its bottom however
+       tall the bar is. */
     .key-scale {
-      display: inline-flex;
-      align-items: center;
+      display: flex;
+      align-items: stretch;
       gap: var(--spacing-sm);
+      margin: 10px 0 12px;
     }
 
-    /* The bar is sampled from the same scale function that fills the
-       countries, so the key cannot drift from the map. */
     .key-ramp {
       display: block;
-      width: 190px;
-      height: 10px;
+      width: 14px;
+      height: 96px;
+      flex: none;
       border-radius: var(--radius-xs);
       border: 1px solid rgba(15, 19, 116, 0.12);
+    }
+
+    .key-ticks {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1px 0;
     }
 
     .key-tick {
@@ -1585,24 +1604,27 @@
     }
 
     .key-items {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      flex-wrap: wrap;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
     }
 
     .key-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
       font-size: var(--font-size-xs);
       color: var(--color-text-secondary);
-      white-space: nowrap;
+      line-height: var(--line-height-normal);
     }
 
     .key-swatch {
       width: 11px;
       height: 11px;
+      flex: none;
+      margin-top: 3px;
       border-radius: var(--radius-xs);
       border: 1px solid rgba(15, 19, 116, 0.12);
     }
@@ -1613,35 +1635,246 @@
     .key-dot {
       width: 11px;
       height: 11px;
+      flex: none;
+      margin-top: 3px;
       border-radius: 50%;
       border: 1px solid rgba(15, 19, 116, 0.25);
     }
 
-    .key-scope {
+    .key-measure {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* The counts are the way into the lists, so they have to look like
+       controls rather than like the caption they used to be part of. */
+    .key-counts {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      margin: 8px 0 6px;
+    }
+
+    .key-count {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      width: 100%;
+      padding: 4px 6px;
+      background: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-family);
+    }
+
+    .key-count:hover {
+      background-color: var(--chip-bg);
+    }
+
+    .key-count-value {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .key-count-label {
+      flex: 1;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .key-count-chevron {
+      font-size: var(--font-size-md);
+      line-height: 1;
+      color: var(--color-text-muted);
+    }
+
+    .key-count:hover .key-count-chevron,
+    .key-count:hover .key-count-value {
+      color: var(--color-dl-blue);
+    }
+
+    .key-edition {
+      font-size: 10.5px;
+      letter-spacing: var(--letter-spacing-wide);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+
+    /* Breadcrumb clears the key rather than sitting under it. */
+    #breadcrumb {
+      left: 244px;
+    }
+
+    /* ==================================================================
+       BROWSE
+
+       The list behind a count.
+       ================================================================== */
+    .browse-panel {
+      display: flex;
+      flex-direction: column;
+      width: min(560px, calc(100vw - 2 * var(--spacing-xl)));
+      max-height: min(640px, calc(100vh - 2 * var(--spacing-xl)));
+      overflow: hidden;
+      border-top-color: var(--color-dl-blue);
+    }
+
+    .browse-sub {
+      margin-top: 3px;
+    }
+
+    .browse-search {
+      width: 100%;
+      margin-bottom: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+    }
+
+    .browse-list {
+      list-style: none;
+      flex: 1;
+      overflow-y: auto;
+      margin: 0 calc(-1 * var(--spacing-xs));
+    }
+
+    .browse-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      width: 100%;
+      padding: 7px var(--spacing-sm);
+      background: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-family);
+    }
+
+    .browse-row:hover {
+      background-color: var(--chip-bg);
+    }
+
+    .browse-rank {
+      flex: 0 0 52px;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dl-blue);
+      font-variant-numeric: tabular-nums;
+      padding-top: 1px;
+    }
+
+    .browse-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .browse-name {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      line-height: var(--line-height-normal);
+    }
+
+    .browse-meta {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .browse-empty {
+      padding: var(--spacing-md);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+
+    /* ==================================================================
+       RANK BADGES ON THE MAP
+
+       The leaders carry their position, so the podium needs no trip to the
+       key. Drawn in the zoom layer and counter-scaled, so they travel with
+       their country but keep their size on screen.
+       ================================================================== */
+    .rank-label {
+      pointer-events: none;
+    }
+
+    .rank-label-disc {
+      fill: #FFFFFF;
+      stroke: var(--color-navy);
+      stroke-width: 1.5px;
+      opacity: 0.95;
+    }
+
+    .rank-label-text {
+      fill: var(--color-navy);
+      font-family: var(--font-family);
+      font-size: 12px;
+      font-weight: var(--font-weight-bold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==================================================================
+       CONTEXT FOR A FIGURE
+
+       A score on its own is not information. These two lines say what it is
+       a share of, and who the leader is.
+       ================================================================== */
+    .hover-context {
+      margin-top: var(--spacing-xs);
+      padding-top: var(--spacing-xs);
+      border-top: 1px solid var(--color-border);
+      font-size: 10.5px;
+      color: var(--color-text-muted);
+      line-height: var(--line-height-normal);
+    }
+
+    .panel-context {
+      margin-top: 6px;
       font-size: var(--font-size-xs);
       color: var(--color-text-muted);
       line-height: var(--line-height-normal);
     }
 
-    .key-scope strong {
+    /* The country's best school, named up front. */
+    .panel-lead {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: var(--spacing-md);
+      padding: 10px 12px;
+      background-color: var(--color-background);
+      border-left: 3px solid var(--color-orange);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .panel-lead-label {
+      font-size: 9.5px;
+      letter-spacing: var(--letter-spacing-wider);
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+
+    .panel-lead-name {
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       color: var(--color-text);
+      line-height: var(--line-height-normal);
+    }
+
+    .panel-lead-rank {
+      font-size: var(--font-size-xs);
+      color: var(--color-orange);
       font-weight: var(--font-weight-semibold);
       font-variant-numeric: tabular-nums;
-    }
-
-    .key-measure {
-      color: var(--color-text-secondary);
-    }
-
-    .key-sep {
-      opacity: 0.45;
-      padding: 0 2px;
-    }
-
-    /* A filter is narrowing everything on screen, so the line says so in the
-       accent rather than quietly. */
-    .key-scope.is-filtered .key-coverage strong {
-      color: var(--color-orange);
     }
 
     /* ==================================================================
@@ -1855,7 +2088,7 @@
 
       <div class="controls">
         <div class="search">
-          <input id="search-input" type="search" placeholder="Search countries, hubs, institutions&hellip;"
+          <input id="search-input" type="search" placeholder="Search countries, hubs, universities&hellip;"
                  autocomplete="off" aria-label="Search">
           <div id="search-results" class="search-results"></div>
         </div>
@@ -1870,7 +2103,7 @@
       <p class="intro-text">
         A global ranking of universities and schools based on graduate career outcomes
         across four key areas of the AI &amp; tech economy, showing the Top 150
-        institutions in each ranking.
+        universities &amp; schools in each ranking.
       </p>
       <button id="guide-open" class="chip chip-on-blue" type="button" aria-expanded="false">
         How to use this map
@@ -1884,7 +2117,7 @@
           <span class="toolbar-label">View</span>
           <div id="view-selector" class="view-selector" role="group" aria-label="Map view">
             <button type="button" class="view-button is-active" data-view="country">Countries / Hubs</button>
-            <button type="button" class="view-button" data-view="institution">Institutions</button>
+            <button type="button" class="view-button" data-view="institution">Universities &amp; schools</button>
           </div>
           <button class="info-button" type="button" data-explain="view"
                   aria-label="What the two views show">i</button>
@@ -1934,11 +2167,6 @@
       </div>
     </div>
 
-    <!-- The key. It used to be two SVG groups in the bottom-left corner of the
-         map, which is the last place a reader looks. It is now the first thing
-         under the controls. -->
-    <div id="map-key" class="map-key"></div>
-
     <!-- One popover, anchored to whichever control asked for it. Filled by
          openPop() in index.js. -->
     <div id="control-pop" class="control-pop" role="dialog" aria-live="polite" hidden>
@@ -1947,6 +2175,21 @@
         <button class="pop-close" type="button" aria-label="Close">&times;</button>
       </div>
       <div class="pop-body"></div>
+    </div>
+
+    <!-- The list behind a count in the key -->
+    <div id="browse-panel" class="guide-panel browse-panel" role="dialog"
+         aria-labelledby="browse-title" hidden>
+      <div class="pop-head">
+        <div>
+          <h2 id="browse-title" class="pop-title browse-title"></h2>
+          <p class="panel-subtitle browse-sub"></p>
+        </div>
+        <button id="browse-close" class="pop-close" type="button" aria-label="Close">&times;</button>
+      </div>
+      <input class="browse-search" type="search" placeholder="Filter this list&hellip;"
+             autocomplete="off" aria-label="Filter this list">
+      <ul class="browse-list"></ul>
     </div>
 
     <!-- User guide -->
@@ -1960,22 +2203,22 @@
         <p class="pop-lede">
           One global ranking and four specialist ones, mapped across 41 countries
           and 15 hubs. Pick a ranking, choose how to measure it, then click any
-          country, hub or institution to open its card.
+          country, hub or university to open its card.
         </p>
 
         <h3>What each control does</h3>
         <ul class="guide-list">
           <li><strong>View</strong> switches between the world coloured by score,
-          and every ranked institution plotted as a dot.</li>
+          and every ranked university or school plotted as a dot.</li>
           <li><strong>Rankings</strong> moves the whole map to Global or to one of
           the four areas. <strong>Next 50</strong> extends Global to 200 places.</li>
           <li><strong>Measure</strong> reads the map three ways: overall strength,
           talent density against population, or <strong>evolution</strong> between
           the DL25 and DL26 editions.</li>
           <li><strong>Show hubs</strong> draws each city cluster as a bubble sized
-          by the weight of the institutions in it, so you can see where the
+          by the weight of the universities &amp; schools in it, so you can see where the
           ranking concentrates.</li>
-          <li><strong>Filter</strong> narrows to a type of institution or to the
+          <li><strong>Filter</strong> narrows to a type of school or to the
           top of the ranking. Every figure on screen follows.</li>
         </ul>
 
@@ -1992,6 +2235,12 @@
     <main>
       <!-- Map container -->
       <div id="map-container">
+        <!-- The key sits on the map, down its left edge, stacked vertically.
+             It began life as two SVG groups in the bottom-left corner, which is
+             the last place a reader looks; a horizontal strip above the map read
+             better but cost a band of height and pushed the map down. -->
+        <div id="map-key" class="map-key"></div>
+
         <nav id="breadcrumb" aria-label="Drill-down"></nav>
         <button id="reset-zoom" class="chip map-reset" type="button"
                 title="Return to the whole-world view">Reset view</button>
@@ -2059,6 +2308,11 @@
         // pointing at nothing.
         window.addEventListener('resize', () => map.closePop());
 
+        // The counts in the key open the lists they count
+        map.wireBrowse(context);
+        document.getElementById('browse-close')
+          .addEventListener('click', () => map.closeBrowse());
+
         // Dataset export
         document.getElementById('download-dataset').addEventListener('click', () => {
           map.exportDataset(context);
@@ -2098,7 +2352,9 @@
           // drill-down one level at a time: hub, country, world.
           const state = map.getState();
 
-          if (!guide.hasAttribute('hidden')) {
+          if (map.isBrowseOpen()) {
+            map.closeBrowse();
+          } else if (!guide.hasAttribute('hidden')) {
             setGuideOpen(false);
           } else if (map.isPopOpen()) {
             map.closePop();
