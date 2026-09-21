@@ -194,7 +194,7 @@ python bundle.py             # always
 Then verify against three figures that should not move unless the data really
 changed:
 
-- USA reads **44** ranked institutions in Data and AI and **62** in Computer Science
+- USA reads **44** ranked in Power – AI & Data and **62** in Power – AI & Technology builders
 - Golden Triangle reads **7** in Global
 - the key down the left of the map reads
   **264 universities & schools · 41 countries · 15 hubs**
@@ -259,6 +259,14 @@ colour cannot answer two questions. Orange survives as the interface accent and
 as the Global institution dots, neither of which is a quantity. The stops are in
 `COUNTRY_RAMP` in `scales.js` and documented in `--scale-seq-*` in `tokens.css`;
 change both together.
+
+**Competitors come in two views, two each.** *By profile* is the original
+method, unchanged: same type, same region, 60% rank closeness in the selected
+ranking plus 40% distance. *By Global Ranking position* is the nearest Global
+positions regardless of type or region; it exists because the type labels are
+not a clean line (IE University is "University and Business School", UC
+Berkeley incl. Haas is "University", and they sit 18th and 17th). The cap is
+`COMPETITORS_SHOWN`; the rest are the paid offer, and the card says so.
 
 **The export withholds per-institution DL Points on purpose.** Ranks are in the
 file because the interface already shows every one of them. Points per

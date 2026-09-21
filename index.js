@@ -50,7 +50,9 @@ const DEFAULT_STATE = {
   },
 
   // Display
-  view: 'country',          // 'country' (choropleth + hubs) or 'institution' (dots)
+  // Universities & Schools is the landing view: the dots are what a reader
+  // comes to find, and the country view is one click away.
+  view: 'institution',      // 'country' (choropleth + hubs) or 'institution' (dots)
   showHubs: true,
   showNext50: false,        // when on, the institution view shows the Next 50 INSTEAD of the top 150
   colorMetric: 'dlPoints',  // dlPoints, perCapita, delta, top50Count
@@ -802,12 +804,32 @@ const METRIC_BY_ID = new Map(METRICS.map(metric => [metric.id, metric]));
 
 const metricMeta = (id) => METRIC_BY_ID.get(id) || METRIC_BY_ID.get('dlPoints');
 
+/**
+ * The ranking names, as published on the Digital Leaders website. They head
+ * the buttons, the key, the hover chip, every card and the export columns.
+ */
 const MODULE_LABELS = {
-  global: 'Global',
-  AI: 'Data and AI',
-  CS: 'Computer Science',
-  transform: 'Digital Transformation',
-  create: 'Entrepreneurship'
+  global: 'Global Ranking',
+  AI: 'Power – AI & Data',
+  CS: 'Power – AI & Technology builders',
+  transform: 'Transform',
+  create: 'Create'
+};
+
+/**
+ * What each ranking is, in the website's own words, shown at the top of the
+ * explainer a ranking button opens. The description that follows it is the
+ * longer, job-level account.
+ */
+const MODULE_HEADLINES = {
+  global: {
+    title: 'The institutions that matter in AI, Tech & Digital Education',
+    sub: 'The overall benchmark combining all three pipelines: Power, Create and Transform.'
+  },
+  AI: { title: 'Best universities and schools in AI, Data Science & Advanced Analytics' },
+  CS: { title: 'Best universities and schools in Computer Science' },
+  transform: { title: 'Best universities and schools for AI & Digital transformation' },
+  create: { title: 'Best universities and schools for AI & Digital Entrepreneurship' }
 };
 
 /**
@@ -851,6 +873,20 @@ const COMPETITOR_RANK_SCALE = 30;        // places
 const COMPETITOR_DISTANCE_SCALE = 800;   // kilometres
 const COMPETITOR_RANK_WEIGHT = 0.6;      // remainder goes to distance
 
+// How many competitors each view shows. The rest are part of the paid offer,
+// and the card says so directly under the lists.
+const COMPETITORS_SHOWN = 2;
+
+/**
+ * An institution's own Global position and tier, or null when it has none.
+ * The Next 50 are included here, because a Next 50 card needs its neighbours.
+ */
+function scoredRankOrTier(institution, edition) {
+  const rank = institution.ranks?.[edition]?.global;
+  if (rank === null || rank === undefined) return null;
+  return { rank, tier: institution.tier?.[edition]?.global || 'top150' };
+}
+
 /**
  * One colour per module, used for institution dots in the institution view.
  * Drawn from the Emerging palette so the map stays on-brand.
@@ -863,7 +899,7 @@ const NEXT50_MODULES = ['global'];
 // as one family is the point: these are ranks 151 to 200 of the same ranking,
 // not a different kind of thing. Salmon #FF9E79 is the brand's own light
 // orange, so the pairing stays inside the palette.
-const NEXT50_COLOR = '#FF9E79';
+const NEXT50_COLOR = '#FFC4A8';
 
 /**
  * One colour per ranking. This map is the single source of truth — the map
@@ -881,8 +917,8 @@ const MODULE_COLORS = {
   AI: '#EFB41C',          // mustard, as Power / AI & Data on the DL site
   CS: '#B87308',          // ochre, a deeper shade of the Data and AI mustard,
                           // since both come from the same Power module
-  transform: '#93B23C',   // olive green, as Transform on the DL site
-  create: '#9B1FD8'       // violet, as Create on the DL site
+  transform: '#1839E2',   // Digital Leaders blue, the colour of the banner
+  create: '#404DB2'       // Create, as supplied by Emerging
 };
 
 // ============================================================================
@@ -970,12 +1006,11 @@ const CONTROL_EXPLAINERS = {
   view: {
     title: 'View',
     body: `
-      <p><strong>Countries / Hubs</strong> colours every country by its score and
-      draws a bubble over each hub, sized by the weight of the institutions in
-      it. Use it to read the world.</p>
-      <p><strong>Universities &amp; schools</strong> drops the colouring and plots
-      every ranked university or school as a single dot where it actually sits.
-      Use it to find one.</p>`
+      <p><strong>Universities &amp; Schools</strong> plots every ranked university
+      or school as a single dot where it actually sits. Use it to find one.</p>
+      <p><strong>Countries &amp; Hubs</strong> colours every country by its score
+      and draws a bubble over each hub, sized by the weight of the universities
+      &amp; schools in it. Use it to read the world.</p>`
   },
 
   hubs: {
@@ -1024,28 +1059,29 @@ const CONTROL_EXPLAINERS = {
   rankings: {
     title: 'Rankings',
     body: `
-      <p>Five ways to read the same set of universities &amp; schools.
-      <strong>Global</strong>
-      is the combined ranking; the other four are the areas of the AI and tech
-      economy it is built from.</p>
+      <p>Five rankings of the same universities &amp; schools. The
+      <strong>Global Ranking</strong> combines our three pipelines:
+      <strong>Power</strong> (AI &amp; Data, and AI &amp; Technology builders),
+      <strong>Create</strong> and <strong>Transform</strong>.</p>
       <p>Pick one and the whole map follows it: the colouring, the dots, the hub
-      sizes and every card. Click a ranking a second time to read what it
-      covers.</p>`
+      sizes and every card. Click a ranking again to read what it covers.</p>`
   },
 
   next50: {
     title: 'The Next 50',
     body: `
-      <p class="pop-lede">A spotlight on the universities &amp; schools ranked
+      <p class="pop-lede">The universities &amp; schools ranked
       <strong>151st to 200th in the Global Ranking</strong>, completing the
-      <strong>Digital Leaders Global Top 200</strong>.</p>
-      <p>Turning this on adds the Next 50 to the Institution view in
-      <strong>light orange</strong>, alongside the Top 150 in full orange. The
-      Next 50 are also assessed across Data and AI, Computer Science, Digital
-      Transformation and Entrepreneurship, with some of them ranking beyond
-      the published Top 150 in these areas. <em>However, the Next 50 feature only
-      displays them in the Global Ranking Institution view.</em></p>
-      <p class="commercial-cta">Want to access their DL Points or benchmark an
+      Digital Leaders Global Top 200.</p>
+      <p><strong>They are shown to be explored, not scored.</strong> Everything
+      else on this map is built on the Top 150 of each ranking: DL Points,
+      Overall strength, Talent density, Evolution 2025-2026, the country colours,
+      the hub sizes and every count. The Next 50 are counted in none of them, so
+      turning them on changes no figure anywhere.</p>
+      <p>Switch them on to see them in the <strong>Universities &amp;
+      Schools</strong> view, in light orange beside the Top 150 in full orange.
+      They appear with the Global Ranking only.</p>
+      <p class="commercial-cta">Want their DL Points, or to benchmark a
       university against its peers?
       <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>`
   },
@@ -1053,20 +1089,23 @@ const CONTROL_EXPLAINERS = {
   types: {
     title: 'Type',
     body: `
-      <p>Narrows the map to one kind of school.</p>
-      <p><strong>University (incl. Business School)</strong> covers comprehensive
-      universities and business schools.
-      <strong>Science &amp; Tech School</strong> covers engineering schools and
-      vocational technical or STEM institutions.</p>
-      <p>Leave both unticked to see everything. Every figure on screen, including
-      the country colouring, is recomputed from what survives the filter.</p>`
+      <p>Narrows the map to one or more types of school: <strong>University</strong>,
+      <strong>Business School</strong>, <strong>Science &amp; Tech School</strong>
+      (engineering, or vocational technical and STEM), and <strong>University
+      (incl. Business School)</strong>.</p>
+      <p>Ticking University or Business School also ticks University (incl.
+      Business School), because those schools are both. Untick it if you want
+      them out.</p>
+      <p>Leave everything unticked to see all types. Every figure on screen,
+      including the country colouring, is recomputed from what survives the
+      filter.</p>`
   },
 
   download: {
     title: 'Download dataset',
     body: `
       <p>An Excel workbook of the published dataset, in four sheets:
-      <strong>Universities &amp; schools</strong> with every ranking position in
+      <strong>Universities &amp; Schools</strong> with every ranking position in
       both editions, <strong>Countries</strong> and <strong>Hubs</strong> with their
       totals, and an <strong>About</strong> sheet explaining the fields.</p>
       <p>It is the complete dataset, not what the filters have narrowed the map
@@ -1178,10 +1217,15 @@ function showModulePanel(module) {
   const description = MODULE_DESCRIPTIONS[module];
   if (!anchor || !description) return;
 
+  const headline = MODULE_HEADLINES[module];
+  const lead = headline ? `
+    <p class="pop-lede">${escapeHtml(headline.title)}</p>
+    ${headline.sub ? `<p class="pop-sub">${escapeHtml(headline.sub)}</p>` : ''}` : '';
+
   openPop(anchor, {
     key: `module:${module}`,
     title: MODULE_LABELS[module] || module,
-    body: `<p>${escapeHtml(description)}</p>`,
+    body: `${lead}<p>${escapeHtml(description)}</p>`,
     accent: MODULE_COLORS[module] || MODULE_COLORS.global
   });
 }
@@ -1218,7 +1262,7 @@ function syncNext50Button() {
   button.setAttribute('aria-pressed', String(!!STATE.showNext50));
   button.title = STATE.view === 'institution'
     ? (STATE.showNext50 ? 'Hide the Next 50' : 'Show the Next 50')
-    : 'The Next 50 is shown in the Institution view';
+    : 'The Next 50 is shown in the Universities & Schools view';
 }
 
 /** Keep the view toggle in step when something else changes the view. */
@@ -1253,7 +1297,7 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
     // because it also heads the key, the hover chip, the card sections and
     // the export columns, where "Global | 1-150 rank (DL26)" would be wrong.
     if (module === 'global') {
-      button.innerHTML = 'Global <span class="chip-rule">|</span> 1&ndash;150';
+      button.innerHTML = 'Global Ranking <span class="chip-rule">|</span> 1&ndash;150';
     } else {
       button.textContent = MODULE_LABELS[module] || module;
     }
@@ -1271,16 +1315,6 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
 
     mount.appendChild(button);
   });
-
-  // The Next 50 extends the Global ranking to 200 places, so it belongs beside
-  // Global and nowhere else. It is declared in the markup, outside this mount,
-  // because this function clears the mount on every rebuild; moving the node
-  // here keeps the listener wired in the bootstrap intact.
-  const next50 = document.getElementById('next50-toggle');
-  const global = mount.querySelector('.module-button[data-module="global"]');
-  if (next50 && global) {
-    global.insertAdjacentElement('afterend', next50);
-  }
 
   console.log(`[Map] Module selector built with ${context.data.modules.length} modules`);
 }
@@ -1337,6 +1371,11 @@ const TYPE_LABELS = {
 };
 
 const typeLabel = (type) => TYPE_LABELS[type] || type;
+
+// The type that is both a university and a business school, and the two
+// types that imply it when ticked in the filter.
+const COMBINED_TYPE = 'University and Business School';
+const TYPES_IMPLYING_COMBINED = ['University', 'Business School'];
 
 const RANK_OPTION_BY_ID = new Map(RANK_OPTIONS.map(o => [o.id, o]));
 
@@ -1402,6 +1441,17 @@ function buildFilters(context, mountSelector = '#filters') {
   mount.querySelectorAll('input[data-filter]').forEach(input => {
     input.addEventListener('change', () => {
       const key = input.dataset.filter;
+
+      // A university that includes a business school is both a university
+      // and a business school, so asking for either should bring it in. It
+      // is ticked on the reader's behalf, only when a box is being TICKED, and
+      // stays an ordinary checkbox: they can untick it straight away.
+      if (key === 'types' && input.checked && TYPES_IMPLYING_COMBINED.includes(input.value)) {
+        const combined = mount.querySelector(
+          `input[data-filter="types"][value="${COMBINED_TYPE}"]`);
+        if (combined) combined.checked = true;
+      }
+
       const selected = [...mount.querySelectorAll(`input[data-filter="${key}"]:checked`)]
         .map(i => i.value);
       update(context, { filters: { ...STATE.filters, [key]: selected } });
@@ -1502,7 +1552,7 @@ function browseRows(kind, state, data, agg) {
 }
 
 const BROWSE_TITLES = {
-  institutions: 'Universities & schools',
+  institutions: 'Universities & Schools',
   countries: 'Countries',
   hubs: 'Hubs'
 };
@@ -1691,7 +1741,7 @@ function buildExportSheets(data, state) {
   const institutionHeader = ['University or school', 'Country', 'Region', 'Hub', 'Type'];
   editions.forEach(ed => {
     modules.forEach(module => {
-      institutionHeader.push(`${MODULE_LABELS[module] || module} rank (${ed})`);
+      institutionHeader.push(`Rank in ${MODULE_LABELS[module] || module} (${ed})`);
     });
   });
   institutionHeader.push('Global tier (' + edition + ')', 'Latitude', 'Longitude');
@@ -1805,7 +1855,7 @@ function buildExportSheets(data, state) {
 
   return [
     about,
-    { name: 'Universities & schools', header: institutionHeader, rows: institutionRows },
+    { name: 'Universities & Schools', header: institutionHeader, rows: institutionRows },
     { name: 'Countries', header: countryHeader, rows: countryRows },
     {
       name: 'Hubs',
@@ -3077,7 +3127,9 @@ function institutionSection(institutions, state) {
     </h3>
     <ul class="institution-list">
       ${scored.map(row).join('')}
-      ${unranked.length ? '<li class="institution-divider">Not in this ranking</li>' : ''}
+      ${unranked.length ? `<li class="institution-divider">Beyond the ${
+        escapeHtml(state.selectedModule === 'global' ? 'Global'
+          : MODULE_LABELS[state.selectedModule])} TOP 150</li>` : ''}
       ${unranked.map(row).join('')}
     </ul>`;
 }
@@ -3294,17 +3346,62 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
       };
     })
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5));
+    .slice(0, COMPETITORS_SHOWN));
 
-  const competitorRows = competitors.map(entry => `
+  // --- Closest in the Global Ranking ----------------------------------------
+  //
+  // The second view: whoever sits nearest in the Global Ranking, whatever
+  // their type or region.
+  //
+  // The profile method above only compares like with like, and "like" is a
+  // type label. Those labels are not a clean line. IE University is typed
+  // "University and Business School"; UC Berkeley, which includes the Haas
+  // School of Business, is typed "University". They sit 17th and 18th in the
+  // Global Ranking, and are about as direct a pair of competitors as the table
+  // holds, but the profile method cannot see it: different type, different
+  // region. This view can.
+  //
+  // The Top 150 compare with the Top 150. A Next 50 institution, whose Global
+  // neighbours are themselves Next 50, compares with the whole Top 200.
+  const ownGlobal = scoredRankOrTier(institution, edition);
+  const shownIds = new Set(competitors.map(entry => entry.institution.id));
+
+  const byGlobalRank = ownGlobal === null ? [] : data.institutions
+    .filter(other => {
+      if (other.id === institution.id || shownIds.has(other.id)) return false;
+      const rank = other.ranks?.[edition]?.global;
+      if (rank === null || rank === undefined) return false;
+      const otherTier = other.tier?.[edition]?.global;
+      return ownGlobal.tier === 'next50' || otherTier !== 'next50';
+    })
+    .map(other => {
+      const rank = other.ranks[edition].global;
+      return { institution: other, rank, gap: Math.abs(rank - ownGlobal.rank) };
+    })
+    // Nearest first; on a tie, the better-ranked neighbour.
+    .sort((a, b) => a.gap - b.gap || a.rank - b.rank)
+    .slice(0, COMPETITORS_SHOWN);
+
+  const competitorRow = (id, name, meta, rank) => `
     <li class="competitor">
-      <button class="competitor-link" type="button" data-institution="${escapeHtml(entry.institution.id)}">
-        <span class="competitor-name">${escapeHtml(entry.institution.name)}</span>
-        <span class="competitor-meta">${escapeHtml(entry.institution.hub
-          || entry.institution.country)} · ${formatDistance(entry.km)}</span>
+      <button class="competitor-link" type="button" data-institution="${escapeHtml(id)}">
+        <span class="competitor-name">${escapeHtml(name)}</span>
+        <span class="competitor-meta">${escapeHtml(meta)}</span>
       </button>
-      <span class="competitor-rank">#${entry.rank}</span>
-    </li>`).join('');
+      <span class="competitor-rank">#${rank}</span>
+    </li>`;
+
+  const competitorRows = competitors.map(entry => competitorRow(
+    entry.institution.id,
+    entry.institution.name,
+    `${entry.institution.hub || entry.institution.country} · ${formatDistance(entry.km)}`,
+    entry.rank)).join('');
+
+  const globalRows = byGlobalRank.map(entry => competitorRow(
+    entry.institution.id,
+    entry.institution.name,
+    `${typeLabel(entry.institution.type)} · ${entry.institution.country}`,
+    entry.rank)).join('');
 
   // --- Evolution, upward only ---------------------------------------------
   const previous = institution.ranks?.DL25?.[module];
@@ -3364,36 +3461,64 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
 
     ${evolution}
 
-    ${competitorRows ? `
-      <h3 class="panel-section">Closest competitors<span class="panel-count">${escapeHtml(group.label)}</span></h3>
-      <ul class="competitor-list">${competitorRows}</ul>
+    ${(competitorRows || globalRows) ? `
+      <h3 class="panel-section">Closest competitors</h3>
+
+      ${competitorRows ? `
+        <p class="competitor-group">By profile
+          <span>${escapeHtml(typeLabel(institution.type))} · ${escapeHtml(group.label)}</span></p>
+        <ul class="competitor-list">${competitorRows}</ul>` : ''}
+
+      ${globalRows ? `
+        <p class="competitor-group">By Global Ranking position
+          <span>any type · any region</span></p>
+        <ul class="competitor-list">${globalRows}</ul>` : ''}
+
+      <p class="commercial-cta">
+        <strong>See the full competitor set.</strong> Two of each are shown here.
+        The complete list, with the gap on every ranking, is part of our offer for
+        universities &amp; schools.
+        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
+      </p>
+
       <details class="method">
         <summary>How these are chosen</summary>
-        <p>
-          Competitors are institutions of the same kind
-         : <strong>${escapeHtml(typeLabel(institution.type))}</strong> 
-          within <strong>${escapeHtml(group.label)}</strong>. An institution is
-          compared inside its own region, except in India, Japan and Israel,
-          which each form a group of their own.
-        </p>
-        <p>
-          Within that group, a competitor is close on <strong>both</strong>
-          counts: near in the ${escapeHtml(MODULE_LABELS[module])} ranking, and
-          near geographically. Each gets two closeness scores between 0 and 1 
-        </p>
+
+        <p><strong>By profile.</strong> Competitors are universities &amp; schools
+        of the <strong>same type</strong>, here
+        <strong>${escapeHtml(typeLabel(institution.type))}</strong>, within
+        <strong>${escapeHtml(group.label)}</strong>. A university or school is
+        compared inside its own region, except in India, Japan and Israel, which
+        each form a group of their own.</p>
+
+        <p>Within that group, a competitor has to be close on
+        <strong>both</strong> counts: near in the ${escapeHtml(MODULE_LABELS[module])}
+        ranking, and near on the map. Each candidate gets two closeness scores
+        between 0 and 1:</p>
+
         <p class="method-formula">
           rank closeness = 1 ÷ (1 + places apart ÷ ${RANK_SCALE})<br>
           distance closeness = 1 ÷ (1 + km apart ÷ ${DISTANCE_SCALE})
         </p>
-        <p>
-         : which are combined as
-          <strong>${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
-          ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>,
-          and the five highest are
-          shown. Rank is weighted higher because competing is mostly about
-          standing; distance breaks ties. Being ${RANK_SCALE} places apart, or
-          ${DISTANCE_SCALE} km apart, halves that half of the score.
-        </p>
+
+        <p>They are combined as
+        <strong>${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
+        ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>.
+        Rank weighs more because competing is mostly about standing; distance
+        breaks ties. Being ${RANK_SCALE} places apart, or ${DISTANCE_SCALE} km
+        apart, halves that part of the score.</p>
+
+        <p><strong>By Global Ranking position.</strong> The universities &amp;
+        schools sitting nearest in the Global Ranking, whatever their type or
+        region. Type labels are not a clean line: a university that includes a
+        business school can compete head to head with one classed simply as a
+        university, and this view shows it.</p>
+
+        <p><strong>Built with you.</strong> Both views follow our methodology. A
+        university or school working with us can design the method with us, or
+        tell us how its competitors should be chosen, drawing on our dozens of
+        variables, and we will adapt the selection accordingly.
+        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>
       </details>` : ''}
   `;
 

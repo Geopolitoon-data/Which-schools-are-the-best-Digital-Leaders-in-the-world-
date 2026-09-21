@@ -81,11 +81,11 @@ const scales = (() => {
   };
 
   // One colour per ranking, matching MODULE_COLORS in index.js. Keep the two
-  // in step: Global is orange, green is Digital Transformation, violet is
-  // Entrepreneurship.
+  // in step: Global is orange, Transform is the Digital Leaders blue, Create
+  // is the indigo Emerging supplied.
   const moduleColor = d3.scaleOrdinal()
     .domain(['global', 'AI', 'CS', 'transform', 'create'])
-    .range(['#FF4901', '#EFB41C', '#B87308', '#93B23C', '#9B1FD8']);
+    .range(['#FF4901', '#EFB41C', '#B87308', '#1839E2', '#404DB2']);
 
   // Categorical: 5 Emerging brand colors
   const categorical = d3.scaleOrdinal()

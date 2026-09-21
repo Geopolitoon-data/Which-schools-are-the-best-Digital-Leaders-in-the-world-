@@ -232,7 +232,7 @@
 
   /* The same orange, lightened. This is the Next 50 tier: visibly the same
      family as Global, one step down. */
-  --color-orange-soft: #FF9E79;
+  --color-orange-soft: #FFC4A8;
 
   /* A tint of the accent, for the soft fill behind a selected control. */
   --color-orange-wash: #FFEDE4;
@@ -540,7 +540,10 @@
 /* Next 50: ranks 151 to 200 in the Global ranking. Same family as Global,
    one tier down, so it carries the lighter orange rather than a hollow ring. */
 .institution-dot.is-next50 {
-  stroke: #FFFFFF;
+  /* The Next 50 fill is a pale orange that would dissolve into the grey
+     basemap behind a white ring. An orange edge keeps each dot legible and
+     still reads as the lighter member of the Global family. */
+  stroke: #FF8A5B;
   stroke-width: 1.2px;
 }
 
@@ -754,12 +757,32 @@ a:focus-visible,
     /* Header */
     header {
       background-color: var(--color-dl-blue);
-      padding: var(--spacing-md);
+      border-bottom: 3px solid var(--color-orange);
+      padding: var(--spacing-md) var(--spacing-md) 14px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: var(--spacing-md);
+      align-items: flex-start;
+      gap: var(--spacing-lg);
       z-index: var(--z-header);
+    }
+
+    /* Left: title, the sentence, and the guide under it. */
+    .banner-main {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    /* Right: the logo, and search directly beneath it. */
+    .banner-side {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      flex: none;
     }
 
     header h1 {
@@ -773,20 +796,6 @@ a:focus-visible,
       color: rgba(255, 255, 255, 0.5);
       font-weight: var(--font-weight-regular);
       padding: 0 2px;
-    }
-
-    header .controls {
-      display: flex;
-      gap: var(--spacing-md);
-      align-items: center;
-    }
-
-    /* Title lockup — Digital Leaders mark sits beside the title */
-    .title-block {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      min-width: 0;
     }
 
     /* The mark is a two-tone lockup — "digital" in blue, "leaders" in navy —
@@ -844,44 +853,16 @@ a:focus-visible,
       display: none;
     }
 
-    /* Intro — what the ranking measures.
-       It has to sit on one line, and the sentence is long, so the size tracks
-       the viewport instead of being fixed: ~11px at 1280, up to 14px on wide
-       screens. Below roughly 1200px it wraps rather than shrinking to
-       illegibility. */
-    .intro {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--spacing-md);
-      min-height: 44px;
-      padding: var(--spacing-sm) var(--spacing-md);
-      background-color: var(--color-dl-blue);
-      border-bottom: 3px solid var(--color-orange);
+    /* What the map is. It may take two lines now: it sits under the title
+       with the full width of the band, rather than squeezed onto one line
+       beside the guide button. */
+    .intro-text {
+      max-width: 980px;
       color: rgba(255, 255, 255, 0.94);
-      font-size: clamp(10px, 0.86vw, 14px);
+      font-size: var(--font-size-sm);
       line-height: var(--line-height-normal);
     }
 
-    /* The sentence holds one line and truncates; the guide button never
-       shrinks, because it is the only instruction on the page. */
-    .intro-text {
-      min-width: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    #guide-open {
-      flex: none;
-    }
-
-    @media (max-width: 1200px) {
-      .intro-text {
-        white-space: normal;
-        font-size: var(--font-size-xs);
-      }
-    }
 
     /* Country / Hub vs Institution view */
     .view-selector {
@@ -1118,7 +1099,7 @@ a:focus-visible,
       display: none;
       position: absolute;
       top: calc(100% + 4px);
-      left: 0;
+      right: 0;
       width: 320px;
       max-height: 320px;
       overflow-y: auto;
@@ -1999,11 +1980,15 @@ a:focus-visible,
       color: var(--color-text);
     }
 
+    /* A translucent navy ground was right on the dark theme and turned into
+       an opaque purple slab on paper, with the formula lost inside it. */
     .method-formula {
       font-variant-numeric: tabular-nums;
-      color: var(--color-text-muted);
-      padding: var(--spacing-sm);
-      background-color: rgba(15, 19, 116, 0.45);
+      color: var(--color-text);
+      padding: var(--spacing-sm) 10px;
+      background-color: var(--color-background);
+      border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-dl-blue);
       border-radius: var(--radius-sm);
       line-height: 1.7;
     }
@@ -2139,9 +2124,9 @@ a:focus-visible,
        wearing the tier's own light orange rather than the periwinkle of a
        ranking it is not. */
     .tier-button {
-      background-color: var(--color-orange-wash);
-      border-color: var(--color-orange-soft);
-      color: #A8330A;
+      background-color: #FFF1EA;
+      border-color: #FFC4A8;
+      color: #B5461A;
       font-weight: var(--font-weight-bold);
       letter-spacing: 0.02em;
     }
@@ -2597,6 +2582,53 @@ a:focus-visible,
     }
 
     /* ==================================================================
+       THE NEXT 50 BOX
+
+       Framed and set apart at the end of the first row, so it cannot be read
+       as a sixth ranking. It extends the Global Ranking to 200 places for
+       exploring; the caption says, in place, that it counts toward nothing.
+       ================================================================== */
+    .next50-box {
+      padding: 5px 8px 5px 6px;
+      border: 1px dashed var(--color-orange-soft);
+      border-radius: var(--radius-full);
+      background-color: #FFF8F4;
+    }
+
+    .next50-caption {
+      font-size: 10px;
+      line-height: 1.25;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    /* ==================================================================
+       COMPETITORS
+       ================================================================== */
+    .competitor-group {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+      margin: var(--spacing-sm) 0 2px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text);
+    }
+
+    .competitor-group span {
+      font-weight: var(--font-weight-regular);
+      color: var(--color-text-muted);
+      text-align: right;
+    }
+
+    /* The website's one-line description of a ranking, under its headline. */
+    .pop-sub {
+      color: var(--color-text-muted) !important;
+      font-size: var(--font-size-xs) !important;
+    }
+
+    /* ==================================================================
        CONTROL POPOVER
 
        One panel, opened against whichever control asked for it. Fixed
@@ -2794,17 +2826,29 @@ a:focus-visible,
     <!-- The Digital Leaders band. Blue #1839E2, unchanged: it is the one
          surface on the page that carries the brand colour, and everything
          below it is paper. -->
+    <!-- The Digital Leaders band. Blue #1839E2, unchanged.
+         Left: the title, what the map is, and the guide directly under that
+         sentence, which is the moment a first-time reader wonders what to do.
+         Right: the logo, with search beneath it. -->
     <header>
-      <div class="title-block">
+      <div class="banner-main">
+        <h1>Digital Leaders 2026 <span class="title-rule">|</span> AI &amp; Tech Careers Edition</h1>
+        <p class="intro-text">
+          A global ranking of universities and schools based on graduate career outcomes
+          across four key areas of the AI &amp; tech economy, showing the Top 150
+          universities &amp; schools in each ranking.
+        </p>
+        <button id="guide-open" class="chip chip-on-blue" type="button" aria-expanded="false">
+          How to use this map
+        </button>
+      </div>
+
+      <div class="banner-side">
         <span class="dl-logo-plate">
 <!-- dl-logo:start -->
 <svg id="dl-logo" class="dl-logo" role="img" aria-label="Digital Leaders: Higher Education for AI &amp; Tech Careers" id="Calque_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 507.5 83.4"><defs><style>#dl-logo .dllogo-1{fill:none;}#dl-logo .dllogo-2,.dllogo-3,.dllogo-4,.dllogo-5{fill:#04f;}#dl-logo .dllogo-2,.dllogo-6{letter-spacing:-.05em;}#dl-logo .dllogo-3{letter-spacing:-.05em;}#dl-logo .dllogo-4{letter-spacing:-.05em;}#dl-logo .dllogo-7{font-family:Lexend-Light, Lexend;font-size:19px;font-weight:300;}#dl-logo .dllogo-7,.dllogo-8,.dllogo-6{fill:#000b59;}#dl-logo .dllogo-9{clip-path:url(#clippath-1);}#dl-logo .dllogo-10{font-family:Lexend-Medium, Lexend;font-size:66px;font-weight:500;}#dl-logo .dllogo-11{letter-spacing:-.12em;}#dl-logo .dllogo-12{letter-spacing:-.02em;}#dl-logo .dllogo-13{letter-spacing:-.02em;}#dl-logo .dllogo-14{letter-spacing:-.03em;}#dl-logo .dllogo-15{letter-spacing:-.04em;}#dl-logo .dllogo-16{letter-spacing:-.04em;}#dl-logo .dllogo-17{letter-spacing:0em;}#dl-logo .dllogo-18{clip-path:url(#clippath);}#dl-logo .dllogo-8{letter-spacing:-.06em;}</style><clipPath id="clippath"><path class="dllogo-1" d="M479.97,12.04c-.82,3.59-4.7,13.55-21.98,18.44-7.71,2.19-13.98,2.54-27.23-.85,3.23.98,5.94,3.12,7.68,5.93,9.77,1.66,19.58,1.18,31.53-1.6,20.85-4.84,31.92-27.82,31.92-27.82l-21.92,5.89Z"/></clipPath><clipPath id="clippath-1"><rect class="dllogo-1" x="425.76" y="1.14" width="81.13" height="40.38"/></clipPath></defs><g id="Layer_1"><g class="dllogo-18"><g class="dllogo-9"><image width="170" height="85" transform="translate(425.32 .75) scale(.48)" xlink:href="data:image/png;base64,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"/></g></g><path class="dllogo-5" d="M430.76,29.63c-1.25-.38-2.58-.59-3.96-.59-7.55,0-13.68,6.12-13.68,13.68s6.12,13.68,13.68,13.68,13.68-6.12,13.68-13.68c0-2.63-.75-5.08-2.04-7.16-1.73-2.81-4.45-4.95-7.68-5.93Z"/><text class="dllogo-10" transform="translate(0 56.1)"><tspan class="dllogo-2" x="0" y="0">digi</tspan><tspan class="dllogo-4" x="112.13" y="0">t</tspan><tspan class="dllogo-3" x="134.44" y="0">al</tspan><tspan class="dllogo-8" x="188.56" y="0">l</tspan><tspan class="dllogo-6" x="202.68" y="0">eaders</tspan></text><text class="dllogo-7" transform="translate(98.97 78.89)"><tspan class="dllogo-13" x="0" y="0">Higher </tspan><tspan class="dllogo-14" x="62.26" y="0">E</tspan><tspan class="dllogo-17" x="73.13" y="0">d</tspan><tspan class="dllogo-12" x="84.81" y="0">ucation </tspan><tspan class="dllogo-15" x="154.07" y="0">f</tspan><tspan class="dllogo-13" x="160.45" y="0">or AI &amp; </tspan><tspan class="dllogo-11" x="226.55" y="0">T</tspan><tspan class="dllogo-13" x="234.59" y="0">ech Ca</tspan><tspan class="dllogo-16" x="293.64" y="0">r</tspan><tspan class="dllogo-13" x="299.89" y="0">eers</tspan></text></g></svg>
         <!-- dl-logo:end -->
         </span>
-        <h1>Digital Leaders 2026 <span class="title-rule">|</span> AI &amp; Tech Careers Edition</h1>
-      </div>
-
-      <div class="controls">
         <div class="search">
           <input id="search-input" type="search" placeholder="Search countries, hubs, universities&hellip;"
                  autocomplete="off" aria-label="Search">
@@ -2813,29 +2857,19 @@ a:focus-visible,
       </div>
     </header>
 
-    <!-- What the ranking measures, with the user guide at its right-hand end.
-         The guide sits here rather than in the control band because this is
-         the sentence a first-time reader finishes before wondering what to do
-         next. -->
-    <div class="intro">
-      <p class="intro-text">
-        A global ranking of universities and schools based on graduate career outcomes
-        across four key areas of the AI &amp; tech economy, showing the Top 150
-        universities &amp; schools in each ranking.
-      </p>
-      <button id="guide-open" class="chip chip-on-blue" type="button" aria-expanded="false">
-        How to use this map
-      </button>
-    </div>
-
-    <!-- Controls. Two rows, each control carrying its own explainer. -->
+    <!-- Controls. Three rows, fixed: each is its own flex line, so a control
+         can never jump up a row because the one above it got shorter.
+           1. how to read the map: view, hubs, measure; and, set apart at the
+              far end, the Next 50, which is not part of any measure
+           2. which ranking
+           3. what to keep: the filters, and the export -->
     <div class="toolbar">
       <div class="toolbar-row">
         <div class="toolbar-group">
           <span class="toolbar-label">View</span>
           <div id="view-selector" class="view-selector" role="group" aria-label="Map view">
-            <button type="button" class="view-button is-active" data-view="country">Countries / Hubs</button>
-            <button type="button" class="view-button" data-view="institution">Universities &amp; schools</button>
+            <button type="button" class="view-button is-active" data-view="institution">Universities &amp; Schools</button>
+            <button type="button" class="view-button" data-view="country">Countries &amp; Hubs</button>
           </div>
           <button class="info-button" type="button" data-explain="view"
                   aria-label="What the two views show">i</button>
@@ -2856,20 +2890,29 @@ a:focus-visible,
           <button class="info-button" type="button" data-explain="measure"
                   aria-label="What DL Points are">i</button>
         </div>
+
+        <!-- The Next 50 sits in a box of its own, away from the rankings: it
+             extends the Global Ranking to 200 places for exploring, but is
+             counted in no score, colour or total on this map. -->
+        <div class="toolbar-group toolbar-group-end next50-box">
+          <button type="button" id="next50-toggle" class="chip tier-button"
+                  aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
+          <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
+          <button class="info-button" type="button" data-explain="next50"
+                  aria-label="What the Next 50 is">i</button>
+        </div>
       </div>
 
       <div class="toolbar-row">
         <div class="toolbar-group">
           <span class="toolbar-label">Rankings</span>
-          <!-- The Next 50 button is declared here and moved next to Global by
-               buildModuleSelector(), which rebuilds that list from the data. -->
           <div id="module-selector" class="module-selector"></div>
-          <button type="button" id="next50-toggle" class="chip tier-button"
-                  aria-pressed="false">NEW 50 <span class="chip-rule">|</span> 151&ndash;200</button>
           <button class="info-button" type="button" data-explain="rankings"
                   aria-label="What the rankings are">i</button>
         </div>
+      </div>
 
+      <div class="toolbar-row">
         <div class="toolbar-group">
           <span class="toolbar-label">Filter</span>
           <div id="filters" class="filters"></div>
@@ -2926,11 +2969,13 @@ a:focus-visible,
 
         <h3>What each control does</h3>
         <ul class="guide-list">
-          <li><strong>View</strong> switches between the world coloured by score,
-          and every ranked university or school plotted as a dot.</li>
-          <li><strong>Rankings</strong> moves the whole map to Global or to one of
-          the four areas. <strong>New 50</strong> extends Global from 150 to 200
-          places.</li>
+          <li><strong>View</strong> switches between every ranked university or
+          school plotted as a dot, and the world coloured by score.</li>
+          <li><strong>Rankings</strong> moves the whole map to the Global Ranking or
+          to one of the specialist rankings: Power, Create and Transform.</li>
+          <li><strong>Next 50</strong>, set apart at the end of the first row,
+          shows the Global Ranking's places 151 to 200. They are there to explore
+          and are counted in no score.</li>
           <li><strong>Measure</strong> reads the map three ways: overall strength,
           talent density against population, or <strong>evolution 2025-2026</strong>
           between the two editions.</li>
@@ -3085,11 +3130,11 @@ const scales = (() => {
   };
 
   // One colour per ranking, matching MODULE_COLORS in index.js. Keep the two
-  // in step: Global is orange, green is Digital Transformation, violet is
-  // Entrepreneurship.
+  // in step: Global is orange, Transform is the Digital Leaders blue, Create
+  // is the indigo Emerging supplied.
   const moduleColor = d3.scaleOrdinal()
     .domain(['global', 'AI', 'CS', 'transform', 'create'])
-    .range(['#FF4901', '#EFB41C', '#B87308', '#93B23C', '#9B1FD8']);
+    .range(['#FF4901', '#EFB41C', '#B87308', '#1839E2', '#404DB2']);
 
   // Categorical: 5 Emerging brand colors
   const categorical = d3.scaleOrdinal()
@@ -3568,7 +3613,9 @@ const DEFAULT_STATE = {
   },
 
   // Display
-  view: 'country',          // 'country' (choropleth + hubs) or 'institution' (dots)
+  // Universities & Schools is the landing view: the dots are what a reader
+  // comes to find, and the country view is one click away.
+  view: 'institution',      // 'country' (choropleth + hubs) or 'institution' (dots)
   showHubs: true,
   showNext50: false,        // when on, the institution view shows the Next 50 INSTEAD of the top 150
   colorMetric: 'dlPoints',  // dlPoints, perCapita, delta, top50Count
@@ -4320,12 +4367,32 @@ const METRIC_BY_ID = new Map(METRICS.map(metric => [metric.id, metric]));
 
 const metricMeta = (id) => METRIC_BY_ID.get(id) || METRIC_BY_ID.get('dlPoints');
 
+/**
+ * The ranking names, as published on the Digital Leaders website. They head
+ * the buttons, the key, the hover chip, every card and the export columns.
+ */
 const MODULE_LABELS = {
-  global: 'Global',
-  AI: 'Data and AI',
-  CS: 'Computer Science',
-  transform: 'Digital Transformation',
-  create: 'Entrepreneurship'
+  global: 'Global Ranking',
+  AI: 'Power – AI & Data',
+  CS: 'Power – AI & Technology builders',
+  transform: 'Transform',
+  create: 'Create'
+};
+
+/**
+ * What each ranking is, in the website's own words, shown at the top of the
+ * explainer a ranking button opens. The description that follows it is the
+ * longer, job-level account.
+ */
+const MODULE_HEADLINES = {
+  global: {
+    title: 'The institutions that matter in AI, Tech & Digital Education',
+    sub: 'The overall benchmark combining all three pipelines: Power, Create and Transform.'
+  },
+  AI: { title: 'Best universities and schools in AI, Data Science & Advanced Analytics' },
+  CS: { title: 'Best universities and schools in Computer Science' },
+  transform: { title: 'Best universities and schools for AI & Digital transformation' },
+  create: { title: 'Best universities and schools for AI & Digital Entrepreneurship' }
 };
 
 /**
@@ -4369,6 +4436,20 @@ const COMPETITOR_RANK_SCALE = 30;        // places
 const COMPETITOR_DISTANCE_SCALE = 800;   // kilometres
 const COMPETITOR_RANK_WEIGHT = 0.6;      // remainder goes to distance
 
+// How many competitors each view shows. The rest are part of the paid offer,
+// and the card says so directly under the lists.
+const COMPETITORS_SHOWN = 2;
+
+/**
+ * An institution's own Global position and tier, or null when it has none.
+ * The Next 50 are included here, because a Next 50 card needs its neighbours.
+ */
+function scoredRankOrTier(institution, edition) {
+  const rank = institution.ranks?.[edition]?.global;
+  if (rank === null || rank === undefined) return null;
+  return { rank, tier: institution.tier?.[edition]?.global || 'top150' };
+}
+
 /**
  * One colour per module, used for institution dots in the institution view.
  * Drawn from the Emerging palette so the map stays on-brand.
@@ -4381,7 +4462,7 @@ const NEXT50_MODULES = ['global'];
 // as one family is the point: these are ranks 151 to 200 of the same ranking,
 // not a different kind of thing. Salmon #FF9E79 is the brand's own light
 // orange, so the pairing stays inside the palette.
-const NEXT50_COLOR = '#FF9E79';
+const NEXT50_COLOR = '#FFC4A8';
 
 /**
  * One colour per ranking. This map is the single source of truth — the map
@@ -4399,8 +4480,8 @@ const MODULE_COLORS = {
   AI: '#EFB41C',          // mustard, as Power / AI & Data on the DL site
   CS: '#B87308',          // ochre, a deeper shade of the Data and AI mustard,
                           // since both come from the same Power module
-  transform: '#93B23C',   // olive green, as Transform on the DL site
-  create: '#9B1FD8'       // violet, as Create on the DL site
+  transform: '#1839E2',   // Digital Leaders blue, the colour of the banner
+  create: '#404DB2'       // Create, as supplied by Emerging
 };
 
 // ============================================================================
@@ -4488,12 +4569,11 @@ const CONTROL_EXPLAINERS = {
   view: {
     title: 'View',
     body: `
-      <p><strong>Countries / Hubs</strong> colours every country by its score and
-      draws a bubble over each hub, sized by the weight of the institutions in
-      it. Use it to read the world.</p>
-      <p><strong>Universities &amp; schools</strong> drops the colouring and plots
-      every ranked university or school as a single dot where it actually sits.
-      Use it to find one.</p>`
+      <p><strong>Universities &amp; Schools</strong> plots every ranked university
+      or school as a single dot where it actually sits. Use it to find one.</p>
+      <p><strong>Countries &amp; Hubs</strong> colours every country by its score
+      and draws a bubble over each hub, sized by the weight of the universities
+      &amp; schools in it. Use it to read the world.</p>`
   },
 
   hubs: {
@@ -4542,28 +4622,29 @@ const CONTROL_EXPLAINERS = {
   rankings: {
     title: 'Rankings',
     body: `
-      <p>Five ways to read the same set of universities &amp; schools.
-      <strong>Global</strong>
-      is the combined ranking; the other four are the areas of the AI and tech
-      economy it is built from.</p>
+      <p>Five rankings of the same universities &amp; schools. The
+      <strong>Global Ranking</strong> combines our three pipelines:
+      <strong>Power</strong> (AI &amp; Data, and AI &amp; Technology builders),
+      <strong>Create</strong> and <strong>Transform</strong>.</p>
       <p>Pick one and the whole map follows it: the colouring, the dots, the hub
-      sizes and every card. Click a ranking a second time to read what it
-      covers.</p>`
+      sizes and every card. Click a ranking again to read what it covers.</p>`
   },
 
   next50: {
     title: 'The Next 50',
     body: `
-      <p class="pop-lede">A spotlight on the universities &amp; schools ranked
+      <p class="pop-lede">The universities &amp; schools ranked
       <strong>151st to 200th in the Global Ranking</strong>, completing the
-      <strong>Digital Leaders Global Top 200</strong>.</p>
-      <p>Turning this on adds the Next 50 to the Institution view in
-      <strong>light orange</strong>, alongside the Top 150 in full orange. The
-      Next 50 are also assessed across Data and AI, Computer Science, Digital
-      Transformation and Entrepreneurship, with some of them ranking beyond
-      the published Top 150 in these areas. <em>However, the Next 50 feature only
-      displays them in the Global Ranking Institution view.</em></p>
-      <p class="commercial-cta">Want to access their DL Points or benchmark an
+      Digital Leaders Global Top 200.</p>
+      <p><strong>They are shown to be explored, not scored.</strong> Everything
+      else on this map is built on the Top 150 of each ranking: DL Points,
+      Overall strength, Talent density, Evolution 2025-2026, the country colours,
+      the hub sizes and every count. The Next 50 are counted in none of them, so
+      turning them on changes no figure anywhere.</p>
+      <p>Switch them on to see them in the <strong>Universities &amp;
+      Schools</strong> view, in light orange beside the Top 150 in full orange.
+      They appear with the Global Ranking only.</p>
+      <p class="commercial-cta">Want their DL Points, or to benchmark a
       university against its peers?
       <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>`
   },
@@ -4571,20 +4652,23 @@ const CONTROL_EXPLAINERS = {
   types: {
     title: 'Type',
     body: `
-      <p>Narrows the map to one kind of school.</p>
-      <p><strong>University (incl. Business School)</strong> covers comprehensive
-      universities and business schools.
-      <strong>Science &amp; Tech School</strong> covers engineering schools and
-      vocational technical or STEM institutions.</p>
-      <p>Leave both unticked to see everything. Every figure on screen, including
-      the country colouring, is recomputed from what survives the filter.</p>`
+      <p>Narrows the map to one or more types of school: <strong>University</strong>,
+      <strong>Business School</strong>, <strong>Science &amp; Tech School</strong>
+      (engineering, or vocational technical and STEM), and <strong>University
+      (incl. Business School)</strong>.</p>
+      <p>Ticking University or Business School also ticks University (incl.
+      Business School), because those schools are both. Untick it if you want
+      them out.</p>
+      <p>Leave everything unticked to see all types. Every figure on screen,
+      including the country colouring, is recomputed from what survives the
+      filter.</p>`
   },
 
   download: {
     title: 'Download dataset',
     body: `
       <p>An Excel workbook of the published dataset, in four sheets:
-      <strong>Universities &amp; schools</strong> with every ranking position in
+      <strong>Universities &amp; Schools</strong> with every ranking position in
       both editions, <strong>Countries</strong> and <strong>Hubs</strong> with their
       totals, and an <strong>About</strong> sheet explaining the fields.</p>
       <p>It is the complete dataset, not what the filters have narrowed the map
@@ -4696,10 +4780,15 @@ function showModulePanel(module) {
   const description = MODULE_DESCRIPTIONS[module];
   if (!anchor || !description) return;
 
+  const headline = MODULE_HEADLINES[module];
+  const lead = headline ? `
+    <p class="pop-lede">${escapeHtml(headline.title)}</p>
+    ${headline.sub ? `<p class="pop-sub">${escapeHtml(headline.sub)}</p>` : ''}` : '';
+
   openPop(anchor, {
     key: `module:${module}`,
     title: MODULE_LABELS[module] || module,
-    body: `<p>${escapeHtml(description)}</p>`,
+    body: `${lead}<p>${escapeHtml(description)}</p>`,
     accent: MODULE_COLORS[module] || MODULE_COLORS.global
   });
 }
@@ -4736,7 +4825,7 @@ function syncNext50Button() {
   button.setAttribute('aria-pressed', String(!!STATE.showNext50));
   button.title = STATE.view === 'institution'
     ? (STATE.showNext50 ? 'Hide the Next 50' : 'Show the Next 50')
-    : 'The Next 50 is shown in the Institution view';
+    : 'The Next 50 is shown in the Universities & Schools view';
 }
 
 /** Keep the view toggle in step when something else changes the view. */
@@ -4771,7 +4860,7 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
     // because it also heads the key, the hover chip, the card sections and
     // the export columns, where "Global | 1-150 rank (DL26)" would be wrong.
     if (module === 'global') {
-      button.innerHTML = 'Global <span class="chip-rule">|</span> 1&ndash;150';
+      button.innerHTML = 'Global Ranking <span class="chip-rule">|</span> 1&ndash;150';
     } else {
       button.textContent = MODULE_LABELS[module] || module;
     }
@@ -4789,16 +4878,6 @@ function buildModuleSelector(context, mountSelector = '#module-selector') {
 
     mount.appendChild(button);
   });
-
-  // The Next 50 extends the Global ranking to 200 places, so it belongs beside
-  // Global and nowhere else. It is declared in the markup, outside this mount,
-  // because this function clears the mount on every rebuild; moving the node
-  // here keeps the listener wired in the bootstrap intact.
-  const next50 = document.getElementById('next50-toggle');
-  const global = mount.querySelector('.module-button[data-module="global"]');
-  if (next50 && global) {
-    global.insertAdjacentElement('afterend', next50);
-  }
 
   console.log(`[Map] Module selector built with ${context.data.modules.length} modules`);
 }
@@ -4855,6 +4934,11 @@ const TYPE_LABELS = {
 };
 
 const typeLabel = (type) => TYPE_LABELS[type] || type;
+
+// The type that is both a university and a business school, and the two
+// types that imply it when ticked in the filter.
+const COMBINED_TYPE = 'University and Business School';
+const TYPES_IMPLYING_COMBINED = ['University', 'Business School'];
 
 const RANK_OPTION_BY_ID = new Map(RANK_OPTIONS.map(o => [o.id, o]));
 
@@ -4920,6 +5004,17 @@ function buildFilters(context, mountSelector = '#filters') {
   mount.querySelectorAll('input[data-filter]').forEach(input => {
     input.addEventListener('change', () => {
       const key = input.dataset.filter;
+
+      // A university that includes a business school is both a university
+      // and a business school, so asking for either should bring it in. It
+      // is ticked on the reader's behalf, only when a box is being TICKED, and
+      // stays an ordinary checkbox: they can untick it straight away.
+      if (key === 'types' && input.checked && TYPES_IMPLYING_COMBINED.includes(input.value)) {
+        const combined = mount.querySelector(
+          `input[data-filter="types"][value="${COMBINED_TYPE}"]`);
+        if (combined) combined.checked = true;
+      }
+
       const selected = [...mount.querySelectorAll(`input[data-filter="${key}"]:checked`)]
         .map(i => i.value);
       update(context, { filters: { ...STATE.filters, [key]: selected } });
@@ -5020,7 +5115,7 @@ function browseRows(kind, state, data, agg) {
 }
 
 const BROWSE_TITLES = {
-  institutions: 'Universities & schools',
+  institutions: 'Universities & Schools',
   countries: 'Countries',
   hubs: 'Hubs'
 };
@@ -5209,7 +5304,7 @@ function buildExportSheets(data, state) {
   const institutionHeader = ['University or school', 'Country', 'Region', 'Hub', 'Type'];
   editions.forEach(ed => {
     modules.forEach(module => {
-      institutionHeader.push(`${MODULE_LABELS[module] || module} rank (${ed})`);
+      institutionHeader.push(`Rank in ${MODULE_LABELS[module] || module} (${ed})`);
     });
   });
   institutionHeader.push('Global tier (' + edition + ')', 'Latitude', 'Longitude');
@@ -5323,7 +5418,7 @@ function buildExportSheets(data, state) {
 
   return [
     about,
-    { name: 'Universities & schools', header: institutionHeader, rows: institutionRows },
+    { name: 'Universities & Schools', header: institutionHeader, rows: institutionRows },
     { name: 'Countries', header: countryHeader, rows: countryRows },
     {
       name: 'Hubs',
@@ -6595,7 +6690,9 @@ function institutionSection(institutions, state) {
     </h3>
     <ul class="institution-list">
       ${scored.map(row).join('')}
-      ${unranked.length ? '<li class="institution-divider">Not in this ranking</li>' : ''}
+      ${unranked.length ? `<li class="institution-divider">Beyond the ${
+        escapeHtml(state.selectedModule === 'global' ? 'Global'
+          : MODULE_LABELS[state.selectedModule])} TOP 150</li>` : ''}
       ${unranked.map(row).join('')}
     </ul>`;
 }
@@ -6812,17 +6909,62 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
       };
     })
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5));
+    .slice(0, COMPETITORS_SHOWN));
 
-  const competitorRows = competitors.map(entry => `
+  // --- Closest in the Global Ranking ----------------------------------------
+  //
+  // The second view: whoever sits nearest in the Global Ranking, whatever
+  // their type or region.
+  //
+  // The profile method above only compares like with like, and "like" is a
+  // type label. Those labels are not a clean line. IE University is typed
+  // "University and Business School"; UC Berkeley, which includes the Haas
+  // School of Business, is typed "University". They sit 17th and 18th in the
+  // Global Ranking, and are about as direct a pair of competitors as the table
+  // holds, but the profile method cannot see it: different type, different
+  // region. This view can.
+  //
+  // The Top 150 compare with the Top 150. A Next 50 institution, whose Global
+  // neighbours are themselves Next 50, compares with the whole Top 200.
+  const ownGlobal = scoredRankOrTier(institution, edition);
+  const shownIds = new Set(competitors.map(entry => entry.institution.id));
+
+  const byGlobalRank = ownGlobal === null ? [] : data.institutions
+    .filter(other => {
+      if (other.id === institution.id || shownIds.has(other.id)) return false;
+      const rank = other.ranks?.[edition]?.global;
+      if (rank === null || rank === undefined) return false;
+      const otherTier = other.tier?.[edition]?.global;
+      return ownGlobal.tier === 'next50' || otherTier !== 'next50';
+    })
+    .map(other => {
+      const rank = other.ranks[edition].global;
+      return { institution: other, rank, gap: Math.abs(rank - ownGlobal.rank) };
+    })
+    // Nearest first; on a tie, the better-ranked neighbour.
+    .sort((a, b) => a.gap - b.gap || a.rank - b.rank)
+    .slice(0, COMPETITORS_SHOWN);
+
+  const competitorRow = (id, name, meta, rank) => `
     <li class="competitor">
-      <button class="competitor-link" type="button" data-institution="${escapeHtml(entry.institution.id)}">
-        <span class="competitor-name">${escapeHtml(entry.institution.name)}</span>
-        <span class="competitor-meta">${escapeHtml(entry.institution.hub
-          || entry.institution.country)} · ${formatDistance(entry.km)}</span>
+      <button class="competitor-link" type="button" data-institution="${escapeHtml(id)}">
+        <span class="competitor-name">${escapeHtml(name)}</span>
+        <span class="competitor-meta">${escapeHtml(meta)}</span>
       </button>
-      <span class="competitor-rank">#${entry.rank}</span>
-    </li>`).join('');
+      <span class="competitor-rank">#${rank}</span>
+    </li>`;
+
+  const competitorRows = competitors.map(entry => competitorRow(
+    entry.institution.id,
+    entry.institution.name,
+    `${entry.institution.hub || entry.institution.country} · ${formatDistance(entry.km)}`,
+    entry.rank)).join('');
+
+  const globalRows = byGlobalRank.map(entry => competitorRow(
+    entry.institution.id,
+    entry.institution.name,
+    `${typeLabel(entry.institution.type)} · ${entry.institution.country}`,
+    entry.rank)).join('');
 
   // --- Evolution, upward only ---------------------------------------------
   const previous = institution.ranks?.DL25?.[module];
@@ -6882,36 +7024,64 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
 
     ${evolution}
 
-    ${competitorRows ? `
-      <h3 class="panel-section">Closest competitors<span class="panel-count">${escapeHtml(group.label)}</span></h3>
-      <ul class="competitor-list">${competitorRows}</ul>
+    ${(competitorRows || globalRows) ? `
+      <h3 class="panel-section">Closest competitors</h3>
+
+      ${competitorRows ? `
+        <p class="competitor-group">By profile
+          <span>${escapeHtml(typeLabel(institution.type))} · ${escapeHtml(group.label)}</span></p>
+        <ul class="competitor-list">${competitorRows}</ul>` : ''}
+
+      ${globalRows ? `
+        <p class="competitor-group">By Global Ranking position
+          <span>any type · any region</span></p>
+        <ul class="competitor-list">${globalRows}</ul>` : ''}
+
+      <p class="commercial-cta">
+        <strong>See the full competitor set.</strong> Two of each are shown here.
+        The complete list, with the gap on every ranking, is part of our offer for
+        universities &amp; schools.
+        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
+      </p>
+
       <details class="method">
         <summary>How these are chosen</summary>
-        <p>
-          Competitors are institutions of the same kind
-         : <strong>${escapeHtml(typeLabel(institution.type))}</strong> 
-          within <strong>${escapeHtml(group.label)}</strong>. An institution is
-          compared inside its own region, except in India, Japan and Israel,
-          which each form a group of their own.
-        </p>
-        <p>
-          Within that group, a competitor is close on <strong>both</strong>
-          counts: near in the ${escapeHtml(MODULE_LABELS[module])} ranking, and
-          near geographically. Each gets two closeness scores between 0 and 1 
-        </p>
+
+        <p><strong>By profile.</strong> Competitors are universities &amp; schools
+        of the <strong>same type</strong>, here
+        <strong>${escapeHtml(typeLabel(institution.type))}</strong>, within
+        <strong>${escapeHtml(group.label)}</strong>. A university or school is
+        compared inside its own region, except in India, Japan and Israel, which
+        each form a group of their own.</p>
+
+        <p>Within that group, a competitor has to be close on
+        <strong>both</strong> counts: near in the ${escapeHtml(MODULE_LABELS[module])}
+        ranking, and near on the map. Each candidate gets two closeness scores
+        between 0 and 1:</p>
+
         <p class="method-formula">
           rank closeness = 1 ÷ (1 + places apart ÷ ${RANK_SCALE})<br>
           distance closeness = 1 ÷ (1 + km apart ÷ ${DISTANCE_SCALE})
         </p>
-        <p>
-         : which are combined as
-          <strong>${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
-          ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>,
-          and the five highest are
-          shown. Rank is weighted higher because competing is mostly about
-          standing; distance breaks ties. Being ${RANK_SCALE} places apart, or
-          ${DISTANCE_SCALE} km apart, halves that half of the score.
-        </p>
+
+        <p>They are combined as
+        <strong>${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
+        ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>.
+        Rank weighs more because competing is mostly about standing; distance
+        breaks ties. Being ${RANK_SCALE} places apart, or ${DISTANCE_SCALE} km
+        apart, halves that part of the score.</p>
+
+        <p><strong>By Global Ranking position.</strong> The universities &amp;
+        schools sitting nearest in the Global Ranking, whatever their type or
+        region. Type labels are not a clean line: a university that includes a
+        business school can compete head to head with one classed simply as a
+        university, and this view shows it.</p>
+
+        <p><strong>Built with you.</strong> Both views follow our methodology. A
+        university or school working with us can design the method with us, or
+        tell us how its competitors should be chosen, drawing on our dozens of
+        variables, and we will adapt the selection accordingly.
+        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>
       </details>` : ''}
   `;
 

@@ -53,7 +53,7 @@
 
   /* The same orange, lightened. This is the Next 50 tier: visibly the same
      family as Global, one step down. */
-  --color-orange-soft: #FF9E79;
+  --color-orange-soft: #FFC4A8;
 
   /* A tint of the accent, for the soft fill behind a selected control. */
   --color-orange-wash: #FFEDE4;
@@ -361,7 +361,10 @@
 /* Next 50: ranks 151 to 200 in the Global ranking. Same family as Global,
    one tier down, so it carries the lighter orange rather than a hollow ring. */
 .institution-dot.is-next50 {
-  stroke: #FFFFFF;
+  /* The Next 50 fill is a pale orange that would dissolve into the grey
+     basemap behind a white ring. An orange edge keeps each dot legible and
+     still reads as the lighter member of the Global family. */
+  stroke: #FF8A5B;
   stroke-width: 1.2px;
 }
 
