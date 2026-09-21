@@ -1052,10 +1052,10 @@ const CONTROL_EXPLAINERS = {
       strength</strong>: how many of its universities &amp; schools reach the Top
       150, and how high they sit. In the Global Ranking, the United States holds
       3,469 of the 11,325 points available.</p>
-      <p>Set a school against its country and you see how that result is built.
-      IE University alone carries a third of Spain&rsquo;s DL Points, while Penn
-      State is under 1% of the United States&rsquo;: one country rests on a few
-      flagships, the other on depth.</p>
+      <p>Set a school against its country and you see where it stands at home.
+      Every school card shows the national median: University of Florida&rsquo;s
+      137 DL Points sit just below the United States median of 152, while IE
+      University&rsquo;s 557 are more than ten times Spain&rsquo;s median of 49.5.</p>
       <p>Divide a country&rsquo;s points by its population and you get
       <strong>Talent density</strong>: who does the most with their size. This is
       where small countries with a few excellent schools come through.</p>
@@ -1098,9 +1098,7 @@ const CONTROL_EXPLAINERS = {
       <p>Switch them on to see them in the <strong>Universities &amp;
       Schools</strong> view, in light orange beside the Top 150 in full orange.
       They appear with the Global Ranking only.</p>
-      <p class="commercial-cta">Want their DL Points, or to benchmark a
-      university against its peers?
-      <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>`
+      <p class="commercial-cta"><a href="https://emerging.fr/contact" class="cta-link">Contact us</a> to explore the data behind the rankings.</p>`
   },
 
   types: {
@@ -3552,9 +3550,8 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
           </p>
         </div>
         <p class="commercial-cta">
-          <strong>For universities &amp; schools:</strong> Explore your
-          institution&rsquo;s results.
-          <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
+          <strong>For universities &amp; schools:</strong>
+          <a href="https://emerging.fr/contact" class="cta-link">Contact us</a> to explore the data behind the rankings.
         </p>
       </div>` : ''}
 
@@ -3574,10 +3571,9 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <ul class="competitor-list">${globalRows}</ul>` : ''}
 
       <p class="commercial-cta">
-        <strong>See the full competitor set.</strong> Two of each are shown here.
-        The complete list, with the gap on every ranking, is part of our offer for
-        universities &amp; schools.
-        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
+        <strong>See the full competitor set.</strong> Two of each are shown here;
+        the complete list is part of our offer for universities &amp; schools.
+        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a> to explore the data behind the rankings.
       </p>
 
       <details class="method">
@@ -3611,7 +3607,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <p><strong>Built with you.</strong> Both follow our methodology. A
         university or school working with us can design its own, or tell us how
         its competitors should be chosen from our dozens of variables, and we
-        will adapt. <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>
+        will adapt. <a href="https://emerging.fr/contact" class="cta-link">Contact us</a> to explore the data behind the rankings.</p>
       </details>` : ''}
   `;
 
