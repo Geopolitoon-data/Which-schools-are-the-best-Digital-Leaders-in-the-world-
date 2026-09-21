@@ -1503,7 +1503,9 @@
       width: 18px;
       height: 18px;
       font-size: 11px;
-      vertical-align: -4px;
+      vertical-align: middle;
+      position: relative;
+      top: -0.1em;
       cursor: default;
     }
 
@@ -1630,8 +1632,12 @@
       line-height: 1;
     }
 
+    /* Centred on the lowercase letters around it rather than dropped onto
+       the baseline, which is where a fixed pixel offset had left it. */
     .key-badge.is-inline {
-      vertical-align: -3px;
+      vertical-align: middle;
+      position: relative;
+      top: -0.1em;
       margin-top: 0;
     }
 
@@ -1947,7 +1953,12 @@
       font-weight: var(--font-weight-bold);
     }
 
-    /* The second section: what the total means for the country. */
+    .method-lead {
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text) !important;
+    }
+
+    /* The second section: where the total sits in its own country. */
     .total-points-share {
       margin-top: var(--spacing-md);
       padding-top: var(--spacing-md);

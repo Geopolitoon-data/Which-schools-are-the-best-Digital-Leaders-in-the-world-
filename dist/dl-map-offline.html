@@ -2208,7 +2208,9 @@ a:focus-visible,
       width: 18px;
       height: 18px;
       font-size: 11px;
-      vertical-align: -4px;
+      vertical-align: middle;
+      position: relative;
+      top: -0.1em;
       cursor: default;
     }
 
@@ -2335,8 +2337,12 @@ a:focus-visible,
       line-height: 1;
     }
 
+    /* Centred on the lowercase letters around it rather than dropped onto
+       the baseline, which is where a fixed pixel offset had left it. */
     .key-badge.is-inline {
-      vertical-align: -3px;
+      vertical-align: middle;
+      position: relative;
+      top: -0.1em;
       margin-top: 0;
     }
 
@@ -2652,7 +2658,12 @@ a:focus-visible,
       font-weight: var(--font-weight-bold);
     }
 
-    /* The second section: what the total means for the country. */
+    .method-lead {
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text) !important;
+    }
+
+    /* The second section: where the total sits in its own country. */
     .total-points-share {
       margin-top: var(--spacing-md);
       padding-top: var(--spacing-md);
@@ -4817,9 +4828,33 @@ function wireExplainers(root = document) {
   });
 }
 
-/** A share as the card shows it: whole percent, one decimal under 10%. */
-const formatShare = (percent) =>
-  `${percent >= 10 ? Math.round(percent) : percent.toFixed(1)}%`;
+/** The median of a sorted list of numbers, or null when it is empty. */
+function medianOf(sorted) {
+  if (!sorted.length) return null;
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+/** DL Points as the card shows them: a median can land on a half point. */
+const formatPoints = (value) =>
+  Number.isInteger(value) ? value.toLocaleString() : value.toFixed(1);
+
+/**
+ * The one sentence under the median: above, below, level, or alone. A country
+ * with a single ranked school has a median that is that school, and saying
+ * "level with the median" there would be true and useless.
+ */
+function medianSentence(name, points, median, count, country) {
+  const who = escapeHtml(name);
+  const where = escapeHtml(country);
+  if (count <= 1) {
+    return `${who} is the only university or school from ${where} in the Top 150.`;
+  }
+  const standing = points > median ? '<strong>above</strong>'
+    : points < median ? '<strong>below</strong>' : '<strong>level with</strong>';
+  return `${who} sits ${standing} the median of the ${count} universities &amp;
+    schools from ${where} in the Top 150.`;
+}
 
 /**
  * An institution's name without its bracketed parts, for use in a sentence:
@@ -6928,12 +6963,26 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
     return sum + ((rank && tier !== 'next50') ? (151 - rank) : 0);
   }, 0);
 
-  const countryPoints = data.institutions
+  // Where the school sits among the universities & schools of its own
+  // country, as the median of their DL Points.
+  //
+  // This replaced a "share of the country's DL Points". A share works for a
+  // country with a handful of schools (IE carries a third of Spain) and
+  // collapses for one with many: every American school came out under 2%,
+  // which says more about the size of the United States than about the
+  // school. A median is read the same way everywhere: above it or below it.
+  // It is the median rather than the mean because a few very high scores
+  // pull a mean up and would put most schools "below average".
+  //
+  // Computed on the whole dataset, not on what the filters leave, so a Type
+  // filter cannot move the reference point.
+  const nationalScores = data.institutions
     .filter(other => other.country === institution.country && !other.next50Only)
-    .reduce((sum, other) => sum + institutionPoints(other), 0);
+    .map(institutionPoints)
+    .filter(points => points > 0)
+    .sort((a, b) => a - b);
 
-  const countryShare = countryPoints > 0 && institutionPoints(institution) > 0
-    ? (institutionPoints(institution) / countryPoints) * 100 : null;
+  const nationalMedian = medianOf(nationalScores);
 
   const totalPoints = data.modules.reduce((sum, module) => {
     const rank = institution.ranks?.[edition]?.[module];
@@ -7081,25 +7130,26 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
       </table>
 
       <div class="total-points">
-        <!-- 1. The school's own total, set against its country's. -->
+        <!-- 1. The school's own total. -->
         <div class="total-points-head">
           <span class="total-points-label">Total DL Points</span>
           <button class="score-info" type="button" aria-label="What does this score mean?"
                   aria-expanded="false">What does this score mean?</button>
         </div>
-        <p class="total-points-raw"><strong>${totalPoints.toLocaleString()} DL Points</strong>
-          <span>of ${countryPoints.toLocaleString()} for ${escapeHtml(institution.country)}</span></p>
+        <p class="total-points-raw"><strong>${totalPoints.toLocaleString()} DL Points</strong></p>
 
-        ${countryShare !== null ? `
-        <!-- 2. What that total means for the country. -->
+        ${nationalMedian !== null ? `
+        <!-- 2. Where that total sits in its own country. -->
         <div class="total-points-share">
-          <span class="total-points-label">Contribution to ${escapeHtml(institution.country)}</span>
-          <span class="total-points-value">${formatShare(countryShare)}</span>
-          <p class="total-points-sentence">${escapeHtml(shortName(institution.name))}
-            represents <strong>${formatShare(countryShare)}</strong> of the DL Points
-            attributed to universities and schools in
-            ${escapeHtml(institution.country)}.</p>
+          <span class="total-points-label">${nationalScores.length > 1
+            ? 'National median' : 'In'} · ${escapeHtml(institution.country)}</span>
+          ${nationalScores.length > 1 ? `
+          <p class="total-points-raw"><strong>${formatPoints(nationalMedian)} DL Points</strong></p>` : ''}
+          <p class="total-points-sentence">${medianSentence(
+            shortName(institution.name), totalPoints, nationalMedian,
+            nationalScores.length, institution.country)}</p>
         </div>` : ''}
+
         <div class="score-explainer" hidden>
           <p>
             Every ranking places 150 universities &amp; schools, and each place is
@@ -7107,10 +7157,11 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
             points across all five rankings gives its total.
           </p>
           <p>
-            On its own that total says little. Set against everything its country
-            earns, it says how much of that country&rsquo;s standing rests on this one
-            school: a high share means the country depends on it, a low one means
-            it is one strong school among several.
+            The national median is the middle score among the universities &amp;
+            schools ranked in the same country: half score more, half score less.
+            It shows at a glance whether a school sits above or below what is usual
+            at home. We use the median rather than the average because a few very
+            high scores pull an average up.
           </p>
         </div>
         <p class="commercial-cta">
@@ -7145,41 +7196,35 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
       <details class="method">
         <summary>How these are chosen</summary>
 
-        <p><strong>By profile.</strong> Competitors are universities &amp; schools
-        of the <strong>same type</strong>, here
-        <strong>${escapeHtml(typeLabel(institution.type))}</strong>, within
-        <strong>${escapeHtml(group.label)}</strong>. A university or school is
-        compared inside its own region, except in India, Japan and Israel, which
-        each form a group of their own.</p>
+        <p class="method-lead">Two lists, two methods.</p>
 
-        <p>Within that group, a competitor has to be close on
-        <strong>both</strong> counts: near in the ${escapeHtml(MODULE_LABELS[module])}
-        ranking, and near on the map. Each candidate gets two closeness scores
-        between 0 and 1:</p>
+        <p><strong>By profile</strong> uses a formula. It looks only at
+        <strong>${escapeHtml(typeLabel(institution.type))}</strong> schools in
+        <strong>${escapeHtml(group.label)}</strong> (India, Japan and Israel each
+        count as a region of their own), and scores each one on how close it is
+        in ${escapeHtml(module === 'global' ? 'the Global Ranking' : MODULE_LABELS[module])}
+        and on the map:</p>
 
         <p class="method-formula">
           rank closeness = 1 ÷ (1 + places apart ÷ ${RANK_SCALE})<br>
-          distance closeness = 1 ÷ (1 + km apart ÷ ${DISTANCE_SCALE})
+          distance closeness = 1 ÷ (1 + km apart ÷ ${DISTANCE_SCALE})<br>
+          <strong>score = ${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
+          ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>
         </p>
 
-        <p>They are combined as
-        <strong>${Math.round(COMPETITOR_RANK_WEIGHT * 100)}% rank +
-        ${Math.round((1 - COMPETITOR_RANK_WEIGHT) * 100)}% distance</strong>.
-        Rank weighs more because competing is mostly about standing; distance
-        breaks ties. Being ${RANK_SCALE} places apart, or ${DISTANCE_SCALE} km
-        apart, halves that part of the score.</p>
+        <p>The two highest scores are shown. Rank counts for more, because
+        competing is mostly about standing.</p>
 
-        <p><strong>By Global Ranking position.</strong> The universities &amp;
-        schools sitting nearest in the Global Ranking, whatever their type or
-        region. Type labels are not a clean line: a university that includes a
-        business school can compete head to head with one classed simply as a
-        university, and this view shows it.</p>
+        <p><strong>By Global Ranking position</strong> uses no formula: it is
+        simply the schools placed nearest in the Global Ranking, of any type and
+        in any region. It catches rivals the first list cannot, such as a
+        university with a business school facing one classed only as a
+        university.</p>
 
-        <p><strong>Built with you.</strong> Both views follow our methodology. A
-        university or school working with us can design the method with us, or
-        tell us how its competitors should be chosen, drawing on our dozens of
-        variables, and we will adapt the selection accordingly.
-        <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>
+        <p><strong>Built with you.</strong> Both follow our methodology. A
+        university or school working with us can design its own, or tell us how
+        its competitors should be chosen from our dozens of variables, and we
+        will adapt. <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.</p>
       </details>` : ''}
   `;
 
