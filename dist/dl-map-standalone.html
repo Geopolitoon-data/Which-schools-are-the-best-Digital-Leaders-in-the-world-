@@ -2628,6 +2628,27 @@ a:focus-visible,
       font-size: var(--font-size-xs) !important;
     }
 
+    /* The share is the headline; the raw DL Points support it. */
+    .total-points-sentence {
+      margin-top: 4px;
+      font-size: var(--font-size-xs);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+    }
+
+    .total-points-raw {
+      margin-top: 6px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .total-points-raw span {
+      font-weight: var(--font-weight-regular);
+      color: var(--color-text-muted);
+    }
+
     /* ==================================================================
        CONTROL POPOVER
 
@@ -4761,6 +4782,17 @@ function wireExplainers(root = document) {
   });
 }
 
+/** A share as the card shows it: whole percent, one decimal under 10%. */
+const formatShare = (percent) =>
+  `${percent >= 10 ? Math.round(percent) : percent.toFixed(1)}%`;
+
+/**
+ * An institution's name without its bracketed parts, for use in a sentence:
+ * "IE University represents...", not "IE University (incl. IE Business
+ * School) represents...".
+ */
+const shortName = (name) => name.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+
 /** Open the standing explainer for a named control. */
 function explainControl(anchor, key) {
   const entry = CONTROL_EXPLAINERS[key];
@@ -6690,9 +6722,10 @@ function institutionSection(institutions, state) {
     </h3>
     <ul class="institution-list">
       ${scored.map(row).join('')}
-      ${unranked.length ? `<li class="institution-divider">Beyond the ${
-        escapeHtml(state.selectedModule === 'global' ? 'Global'
-          : MODULE_LABELS[state.selectedModule])} TOP 150</li>` : ''}
+      ${unranked.length ? `<li class="institution-divider">${
+        state.selectedModule === 'global'
+          ? 'Beyond the Global TOP 150'
+          : `Beyond ${escapeHtml(MODULE_LABELS[state.selectedModule])} TOP 150`}</li>` : ''}
       ${unranked.map(row).join('')}
     </ul>`;
 }
@@ -6852,6 +6885,21 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
   // One number an institution can compare against another, summed across the
   // rankings it is placed in. Next 50 placings score nothing, so they add
   // nothing here either.
+  // An institution's DL Points across every ranking, on the same basis as the
+  // total shown in its card: Top 150 places only.
+  const institutionPoints = (subject) => data.modules.reduce((sum, module) => {
+    const rank = subject.ranks?.[edition]?.[module];
+    const tier = subject.tier?.[edition]?.[module];
+    return sum + ((rank && tier !== 'next50') ? (151 - rank) : 0);
+  }, 0);
+
+  const countryPoints = data.institutions
+    .filter(other => other.country === institution.country && !other.next50Only)
+    .reduce((sum, other) => sum + institutionPoints(other), 0);
+
+  const countryShare = countryPoints > 0 && institutionPoints(institution) > 0
+    ? (institutionPoints(institution) / countryPoints) * 100 : null;
+
   const totalPoints = data.modules.reduce((sum, module) => {
     const rank = institution.ranks?.[edition]?.[module];
     const tier = institution.tier?.[edition]?.[module];
@@ -6999,26 +7047,35 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
 
       <div class="total-points">
         <div class="total-points-head">
-          <span class="total-points-label">Total DL Points</span>
+          <span class="total-points-label">Contribution to ${escapeHtml(institution.country)}</span>
           <button class="score-info" type="button" aria-label="What does this score mean?"
                   aria-expanded="false">What does this score mean?</button>
         </div>
-        <span class="total-points-value">${totalPoints.toLocaleString()}</span>
+        ${countryShare !== null ? `
+        <span class="total-points-value">${formatShare(countryShare)}</span>
+        <p class="total-points-sentence">${escapeHtml(shortName(institution.name))}
+          represents <strong>${formatShare(countryShare)}</strong> of the DL Points
+          attributed to universities and schools in
+          ${escapeHtml(institution.country)}.</p>` : ''}
+        <p class="total-points-raw">${totalPoints.toLocaleString()} DL Points
+          <span>of ${countryPoints.toLocaleString()} for ${escapeHtml(institution.country)}</span></p>
         <div class="score-explainer" hidden>
           <p>
-            DL Points make institutions directly comparable on one scale.
+            Every ranking places 150 universities &amp; schools, and each place is
+            worth DL Points: 150 for 1st, down to 1 for 150th. Adding a school&rsquo;s
+            points across all five rankings gives its total.
           </p>
           <p>
-            Each ranking places 150 institutions, and the score is calculated
-            from where an institution sits on that 1&ndash;150 scale: the higher the
-            position, the higher the score. Adding those together gives a single
-            number you can set against any other institution, or against a
-            country&rsquo;s total.
+            On its own that total says little. Set against everything its country
+            earns, it says how much of that country&rsquo;s standing rests on this one
+            school: a high share means the country depends on it, a low one means
+            it is one strong school among several.
           </p>
         </div>
         <p class="commercial-cta">
-          <strong>For institutions:</strong> Access your detailed DL Points and key
-          insights. <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
+          <strong>For universities &amp; schools:</strong> Explore your
+          institution&rsquo;s results.
+          <a href="https://emerging.fr/contact" class="cta-link">Contact us</a>.
         </p>
       </div>` : ''}
 
