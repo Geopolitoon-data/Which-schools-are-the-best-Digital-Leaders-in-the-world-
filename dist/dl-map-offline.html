@@ -2873,9 +2873,13 @@ a:focus-visible,
       <div class="banner-main">
         <h1>Digital Leaders 2026 <span class="title-rule">|</span> AI &amp; Tech Careers Edition</h1>
         <p class="intro-text">
-          A global ranking of universities and schools based on graduate career outcomes
-          across four key areas of the AI &amp; tech economy, showing the Top 150
-          universities &amp; schools in each ranking.
+          A ranking tells you who is first. This map tells you what that means. We took
+          the Top 150 universities &amp; schools in each of our five rankings, built on
+          where graduates&rsquo; careers lead in AI &amp; tech, and turned every position
+          into DL Points, so that schools, countries and hubs can be weighed on the same
+          scale. See which countries punch above their size, which cities concentrate
+          talent, how much a country&rsquo;s standing rests on a single school, and who
+          moved between 2025 and 2026.
         </p>
         <button id="guide-open" class="chip chip-on-blue" type="button" aria-expanded="false">
           How to use this map
@@ -4630,15 +4634,12 @@ const CONTROL_EXPLAINERS = {
   measure: {
     title: 'Measure',
     body: `
-      <p class="pop-lede">DL Points are a simple scoring mechanism that lets you
-      compare one country against another, and one institution against another,
-      on a single scale.</p>
-      <p>They are not a separate ranking or a sixth module. They turn ranking
-      positions into a number you can add up.</p>
-      <h3>How the score works</h3>
-      <p>Each ranking places 150 universities &amp; schools. A school&rsquo;s DL Points
-      come from where it sits on that 1 to 150 scale: the higher the position,
-      the higher the score.</p>
+      <h3>Why DL Points exist</h3>
+      <p>A rank is a position, and positions don&rsquo;t add up. Being 18th in one
+      ranking and 5th in another tells you where a school stands, but not how
+      much it weighs, and it says nothing about a country at all. So we turned
+      every position into points: 150 for 1st place, 149 for 2nd, down to 1 for
+      150th. Positions become something you can add, share and compare.</p>
       <table class="pop-table">
         <tr><th>A school ranked</th><th>scores</th></tr>
         <tr><td>1st</td><td>150 points</td></tr>
@@ -4646,12 +4647,31 @@ const CONTROL_EXPLAINERS = {
         <tr><td>100th</td><td>51 points</td></tr>
         <tr><td>150th</td><td>1 point</td></tr>
       </table>
-      <p>A country&rsquo;s score is all of its schools&rsquo; points added together.</p>
-      <h3>The three measures</h3>
-      <p><strong>Overall strength</strong> is that total.
-      <strong>Talent density</strong> divides it by population, asking who does
-      most with what they have. <strong>Evolution 2025-2026</strong> compares the
-      two editions: green is rising, red is falling.</p>
+
+      <h3>What that unlocks</h3>
+      <p>Add up a school&rsquo;s points across all five rankings and you get its
+      <strong>total DL Points</strong>: one number that sets any university or
+      school directly against any other, however differently they place from
+      one ranking to the next. Open a school&rsquo;s card in the Universities &amp;
+      Schools view to see it.</p>
+      <p>Add up a country&rsquo;s schools and you get its <strong>Overall
+      strength</strong>: how many of its universities &amp; schools reach the Top
+      150, and how high they sit. In the Global Ranking, the United States holds
+      3,469 of the 11,325 points available.</p>
+      <p>Set a school against its country and you see how that result is built.
+      IE University alone carries a third of Spain&rsquo;s DL Points, while Penn
+      State is under 1% of the United States&rsquo;: one country rests on a few
+      flagships, the other on depth.</p>
+      <p>Divide a country&rsquo;s points by its population and you get
+      <strong>Talent density</strong>: who does the most with their size. This is
+      where small countries with a few excellent schools come through.</p>
+      <p>Compare the two editions and you get <strong>Evolution
+      2025-2026</strong>: who gained ground, and who lost it.</p>
+
+      <h3>One rule throughout</h3>
+      <p>Only the Top 150 of each ranking count. The Next 50 are there to
+      explore, and never enter any score.</p>
+
       <h3>The numbered circles</h3>
       <p>The five leaders on whichever measure is selected carry their position
       on the map, so the podium can be read without comparing colours. They
