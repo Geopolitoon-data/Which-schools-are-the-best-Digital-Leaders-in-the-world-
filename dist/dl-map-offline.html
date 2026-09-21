@@ -863,11 +863,19 @@ a:focus-visible,
        beside the guide button. */
     /* Bold, so the pitch reads as the page's opening statement rather than
        as a caption under the title. Full white for the same reason. */
+    /* Three lines at most. The size follows the window width, because what
+       decides the line count is the ratio of width to type size: at a fixed
+       12px the pitch spilled onto a fourth line, a single word long, on a
+       1280px-wide window (a laptop at 150% scaling). 0.88vw fits it in three
+       lines from 1280px up, with a little room to spare; the 12px cap keeps it
+       to two lines on a wide screen. text-wrap: pretty stops any line
+       ending on a lone word. */
     .intro-text {
       color: #FFFFFF;
-      font-size: 12px;
+      font-size: clamp(10.5px, 0.88vw, 12px);
       font-weight: var(--font-weight-semibold);
       line-height: 1.4;
+      text-wrap: pretty;
     }
 
 
