@@ -4838,9 +4838,11 @@ const formatPoints = (value) =>
   Number.isInteger(value) ? value.toLocaleString() : value.toFixed(1);
 
 /**
- * The one sentence under the median: above, below, level, or alone. A country
- * with a single ranked school has a median that is that school, and saying
- * "level with the median" there would be true and useless.
+ * The one sentence under the median. It names the pool the median is taken
+ * from and passes no verdict: the two figures above it already show where the
+ * school sits, and "below the median" would read as a judgement. A country
+ * with a single ranked school gets its own sentence, since its "median" is
+ * just that school.
  */
 function medianSentence(name, points, median, count, country) {
   const who = escapeHtml(name);
@@ -4848,10 +4850,8 @@ function medianSentence(name, points, median, count, country) {
   if (count <= 1) {
     return `${who} is the only university or school from ${where} in the Top 150.`;
   }
-  const standing = points > median ? '<strong>above</strong>'
-    : points < median ? '<strong>below</strong>' : '<strong>level with</strong>';
-  return `${who} sits ${standing} the median of the ${count} universities &amp;
-    schools from ${where} in the Top 150.`;
+  return `Median of the <strong>${count}</strong> universities &amp; schools from
+    ${where} in the Top 150.`;
 }
 
 /**
