@@ -2637,11 +2637,22 @@ a:focus-visible,
     }
 
     .total-points-raw {
-      margin-top: 6px;
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
+      margin-top: 4px;
+      font-size: var(--font-size-sm);
       color: var(--color-text);
       font-variant-numeric: tabular-nums;
+    }
+
+    .total-points-raw strong {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+    }
+
+    /* The second section: what the total means for the country. */
+    .total-points-share {
+      margin-top: var(--spacing-md);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid rgba(24, 57, 226, 0.25);
     }
 
     .total-points-raw span {
@@ -2911,17 +2922,6 @@ a:focus-visible,
           <button class="info-button" type="button" data-explain="measure"
                   aria-label="What DL Points are">i</button>
         </div>
-
-        <!-- The Next 50 sits in a box of its own, away from the rankings: it
-             extends the Global Ranking to 200 places for exploring, but is
-             counted in no score, colour or total on this map. -->
-        <div class="toolbar-group toolbar-group-end next50-box">
-          <button type="button" id="next50-toggle" class="chip tier-button"
-                  aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
-          <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
-          <button class="info-button" type="button" data-explain="next50"
-                  aria-label="What the Next 50 is">i</button>
-        </div>
       </div>
 
       <div class="toolbar-row">
@@ -2930,6 +2930,17 @@ a:focus-visible,
           <div id="module-selector" class="module-selector"></div>
           <button class="info-button" type="button" data-explain="rankings"
                   aria-label="What the rankings are">i</button>
+        </div>
+
+        <!-- The Next 50 sits in a box of its own at the end of the Rankings row: it
+             extends the Global Ranking to 200 places for exploring, but is
+             counted in no score, colour or total on this map. -->
+        <div class="toolbar-group toolbar-group-end next50-box">
+          <button type="button" id="next50-toggle" class="chip tier-button"
+                  aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
+          <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
+          <button class="info-button" type="button" data-explain="next50"
+                  aria-label="What the Next 50 is">i</button>
         </div>
       </div>
 
@@ -3152,10 +3163,10 @@ const scales = (() => {
 
   // One colour per ranking, matching MODULE_COLORS in index.js. Keep the two
   // in step: Global is orange, Transform is the Digital Leaders blue, Create
-  // is the indigo Emerging supplied.
+  // is a light purple.
   const moduleColor = d3.scaleOrdinal()
     .domain(['global', 'AI', 'CS', 'transform', 'create'])
-    .range(['#FF4901', '#EFB41C', '#B87308', '#1839E2', '#404DB2']);
+    .range(['#FF4901', '#EFB41C', '#B87308', '#1839E2', '#A78BFA']);
 
   // Categorical: 5 Emerging brand colors
   const categorical = d3.scaleOrdinal()
@@ -4502,7 +4513,8 @@ const MODULE_COLORS = {
   CS: '#B87308',          // ochre, a deeper shade of the Data and AI mustard,
                           // since both come from the same Power module
   transform: '#1839E2',   // Digital Leaders blue, the colour of the banner
-  create: '#404DB2'       // Create, as supplied by Emerging
+  create: '#A78BFA'       // Create: a light purple, kept well clear of
+                          // Transform's blue so the two never read as one
 };
 
 // ============================================================================
@@ -7046,19 +7058,25 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
       </table>
 
       <div class="total-points">
+        <!-- 1. The school's own total, set against its country's. -->
         <div class="total-points-head">
-          <span class="total-points-label">Contribution to ${escapeHtml(institution.country)}</span>
+          <span class="total-points-label">Total DL Points</span>
           <button class="score-info" type="button" aria-label="What does this score mean?"
                   aria-expanded="false">What does this score mean?</button>
         </div>
-        ${countryShare !== null ? `
-        <span class="total-points-value">${formatShare(countryShare)}</span>
-        <p class="total-points-sentence">${escapeHtml(shortName(institution.name))}
-          represents <strong>${formatShare(countryShare)}</strong> of the DL Points
-          attributed to universities and schools in
-          ${escapeHtml(institution.country)}.</p>` : ''}
-        <p class="total-points-raw">${totalPoints.toLocaleString()} DL Points
+        <p class="total-points-raw"><strong>${totalPoints.toLocaleString()} DL Points</strong>
           <span>of ${countryPoints.toLocaleString()} for ${escapeHtml(institution.country)}</span></p>
+
+        ${countryShare !== null ? `
+        <!-- 2. What that total means for the country. -->
+        <div class="total-points-share">
+          <span class="total-points-label">Contribution to ${escapeHtml(institution.country)}</span>
+          <span class="total-points-value">${formatShare(countryShare)}</span>
+          <p class="total-points-sentence">${escapeHtml(shortName(institution.name))}
+            represents <strong>${formatShare(countryShare)}</strong> of the DL Points
+            attributed to universities and schools in
+            ${escapeHtml(institution.country)}.</p>
+        </div>` : ''}
         <div class="score-explainer" hidden>
           <p>
             Every ranking places 150 universities &amp; schools, and each place is

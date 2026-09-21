@@ -1939,11 +1939,22 @@
     }
 
     .total-points-raw {
-      margin-top: 6px;
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
+      margin-top: 4px;
+      font-size: var(--font-size-sm);
       color: var(--color-text);
       font-variant-numeric: tabular-nums;
+    }
+
+    .total-points-raw strong {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-bold);
+    }
+
+    /* The second section: what the total means for the country. */
+    .total-points-share {
+      margin-top: var(--spacing-md);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid rgba(24, 57, 226, 0.25);
     }
 
     .total-points-raw span {
@@ -2214,17 +2225,6 @@
           <button class="info-button" type="button" data-explain="measure"
                   aria-label="What DL Points are">i</button>
         </div>
-
-        <!-- The Next 50 sits in a box of its own, away from the rankings: it
-             extends the Global Ranking to 200 places for exploring, but is
-             counted in no score, colour or total on this map. -->
-        <div class="toolbar-group toolbar-group-end next50-box">
-          <button type="button" id="next50-toggle" class="chip tier-button"
-                  aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
-          <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
-          <button class="info-button" type="button" data-explain="next50"
-                  aria-label="What the Next 50 is">i</button>
-        </div>
       </div>
 
       <div class="toolbar-row">
@@ -2233,6 +2233,17 @@
           <div id="module-selector" class="module-selector"></div>
           <button class="info-button" type="button" data-explain="rankings"
                   aria-label="What the rankings are">i</button>
+        </div>
+
+        <!-- The Next 50 sits in a box of its own at the end of the Rankings row: it
+             extends the Global Ranking to 200 places for exploring, but is
+             counted in no score, colour or total on this map. -->
+        <div class="toolbar-group toolbar-group-end next50-box">
+          <button type="button" id="next50-toggle" class="chip tier-button"
+                  aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
+          <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
+          <button class="info-button" type="button" data-explain="next50"
+                  aria-label="What the Next 50 is">i</button>
         </div>
       </div>
 

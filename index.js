@@ -918,7 +918,8 @@ const MODULE_COLORS = {
   CS: '#B87308',          // ochre, a deeper shade of the Data and AI mustard,
                           // since both come from the same Power module
   transform: '#1839E2',   // Digital Leaders blue, the colour of the banner
-  create: '#404DB2'       // Create, as supplied by Emerging
+  create: '#A78BFA'       // Create: a light purple, kept well clear of
+                          // Transform's blue so the two never read as one
 };
 
 // ============================================================================
@@ -3462,19 +3463,25 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
       </table>
 
       <div class="total-points">
+        <!-- 1. The school's own total, set against its country's. -->
         <div class="total-points-head">
-          <span class="total-points-label">Contribution to ${escapeHtml(institution.country)}</span>
+          <span class="total-points-label">Total DL Points</span>
           <button class="score-info" type="button" aria-label="What does this score mean?"
                   aria-expanded="false">What does this score mean?</button>
         </div>
-        ${countryShare !== null ? `
-        <span class="total-points-value">${formatShare(countryShare)}</span>
-        <p class="total-points-sentence">${escapeHtml(shortName(institution.name))}
-          represents <strong>${formatShare(countryShare)}</strong> of the DL Points
-          attributed to universities and schools in
-          ${escapeHtml(institution.country)}.</p>` : ''}
-        <p class="total-points-raw">${totalPoints.toLocaleString()} DL Points
+        <p class="total-points-raw"><strong>${totalPoints.toLocaleString()} DL Points</strong>
           <span>of ${countryPoints.toLocaleString()} for ${escapeHtml(institution.country)}</span></p>
+
+        ${countryShare !== null ? `
+        <!-- 2. What that total means for the country. -->
+        <div class="total-points-share">
+          <span class="total-points-label">Contribution to ${escapeHtml(institution.country)}</span>
+          <span class="total-points-value">${formatShare(countryShare)}</span>
+          <p class="total-points-sentence">${escapeHtml(shortName(institution.name))}
+            represents <strong>${formatShare(countryShare)}</strong> of the DL Points
+            attributed to universities and schools in
+            ${escapeHtml(institution.country)}.</p>
+        </div>` : ''}
         <div class="score-explainer" hidden>
           <p>
             Every ranking places 150 universities &amp; schools, and each place is
