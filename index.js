@@ -3446,9 +3446,19 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
   const ownGlobal = scoredRankOrTier(institution, edition);
   const shownIds = new Set(competitors.map(entry => entry.institution.id));
 
-  const byGlobalRank = ownGlobal === null ? [] : data.institutions
+  // Science & Tech schools are a different model: an engineering school is
+  // not a rival to a comprehensive university because they sit a place apart
+  // in the table (Navarra, 50th, came out next to Caltech, 51st). So they are
+  // compared only with each other. They get no Global-position list of their
+  // own, which is what the profile list already is for them, and they never
+  // appear in anybody else's.
+  const isTechSchool = (subject) => String(subject.type || '').startsWith('Science and Tech');
+  const ownIsTech = isTechSchool(institution);
+
+  const byGlobalRank = (ownGlobal === null || ownIsTech) ? [] : data.institutions
     .filter(other => {
       if (other.id === institution.id || shownIds.has(other.id)) return false;
+      if (isTechSchool(other)) return false;
       const rank = other.ranks?.[edition]?.global;
       if (rank === null || rank === undefined) return false;
       const otherTier = other.tier?.[edition]?.global;
@@ -3567,11 +3577,11 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
 
       ${globalRows ? `
         <p class="competitor-group">By Global Ranking position
-          <span>any type · any region</span></p>
+          <span>any region · excl. Science &amp; Tech</span></p>
         <ul class="competitor-list">${globalRows}</ul>` : ''}
 
       <p class="commercial-cta">
-        <strong>See the full competitor set.</strong> Two of each are shown here;
+        <strong>See the full competitor set.</strong> ${globalRows ? 'Two of each are' : 'Two are'} shown here;
         the complete list is part of our offer for universities &amp; schools.
         <a href="https://emerging.fr/contact" class="cta-link">Contact us</a> to explore the data behind the rankings.
       </p>
@@ -3579,7 +3589,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
       <details class="method">
         <summary>How these are chosen</summary>
 
-        <p class="method-lead">Two lists, two methods.</p>
+        <p class="method-lead">${ownIsTech ? 'One list, one method.' : 'Two lists, two methods.'}</p>
 
         <p><strong>By profile</strong> uses a formula. It looks only at
         <strong>${escapeHtml(typeLabel(institution.type))}</strong> schools in
@@ -3598,13 +3608,18 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <p>The two highest scores are shown. Rank counts for more, because
         competing is mostly about standing.</p>
 
+        ${ownIsTech ? `
+        <p>Science &amp; Tech schools are compared only with each other: an
+        engineering school is a different model from a university, however
+        close the two sit in the ranking.</p>` : `
         <p><strong>By Global Ranking position</strong> uses no formula: it is
-        simply the schools placed nearest in the Global Ranking, of any type and
-        in any region. It catches rivals the first list cannot, such as a
+        simply the schools placed nearest in the Global Ranking, in any region
+        and of any type except Science &amp; Tech schools, which are compared
+        only with each other. It catches rivals the first list cannot, such as a
         university with a business school facing one classed only as a
-        university.</p>
+        university.</p>`}
 
-        <p><strong>Built with you.</strong> Both follow our methodology. A
+        <p><strong>Built with you.</strong> ${ownIsTech ? 'This follows' : 'Both follow'} our methodology. A
         university or school working with us can design its own, or tell us how
         its competitors should be chosen from our dozens of variables, and we
         will adapt. <a href="https://emerging.fr/contact" class="cta-link">Contact us</a> to explore the data behind the rankings.</p>

@@ -156,9 +156,12 @@
     /* What the map is. It may take two lines now: it sits under the title
        with the full width of the band, rather than squeezed onto one line
        beside the guide button. */
+    /* Bold, so the pitch reads as the page's opening statement rather than
+       as a caption under the title. Full white for the same reason. */
     .intro-text {
-      color: rgba(255, 255, 255, 0.94);
+      color: #FFFFFF;
       font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
       line-height: 1.45;
     }
 
@@ -2183,13 +2186,15 @@
       </span>
 
       <p class="intro-text">
-        A ranking tells you who is first. This map tells you what that means. We took
-        the Top 150 universities &amp; schools in each of our five rankings, built on
-        where graduates&rsquo; careers lead in AI &amp; tech, and turned every position
-        into DL Points, so that schools, countries and hubs can be weighed on the same
-        scale. See which countries punch above their size, which cities concentrate
-        talent, how much a country&rsquo;s standing rests on a single school, and who
-        moved between 2025 and 2026.
+        The rankings show where universities and schools stand. The map shows what
+        their results reveal. Based on graduates&rsquo; real AI &amp; tech career
+        outcomes, ranking positions are converted into a score, the DL points, to
+        compare universities and schools and measure their combined weight across
+        countries and innovation hubs. Start with a school and compare it with its
+        peers. Then see which schools drive a country&rsquo;s results, where they
+        cluster in innovation hubs, and which countries stand out relative to their
+        population. Explore what changed from 2025 to 2026 and how places 151-200
+        change the picture.
       </p>
 
       <button id="guide-open" class="chip chip-on-blue banner-guide" type="button" aria-expanded="false">
@@ -2245,23 +2250,23 @@
           <button class="info-button" type="button" data-explain="rankings"
                   aria-label="What the rankings are">i</button>
         </div>
-
-        <!-- The Next 50 sits in a box of its own at the end of the Rankings row: it
-             extends the Global Ranking to 200 places for exploring, but is
-             counted in no score, colour or total on this map. -->
-        <div class="toolbar-group toolbar-group-end next50-box">
-          <button type="button" id="next50-toggle" class="chip tier-button"
-                  aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
-          <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
-          <button class="info-button" type="button" data-explain="next50"
-                  aria-label="What the Next 50 is">i</button>
-        </div>
       </div>
 
       <div class="toolbar-row">
         <div class="toolbar-group">
           <span class="toolbar-label">Filter</span>
           <div id="filters" class="filters"></div>
+        </div>
+
+        <!-- The Next 50 sits in a box of its own beside the filters, on the left: it
+             extends the Global Ranking to 200 places for exploring, but is
+             counted in no score, colour or total on this map. -->
+        <div class="toolbar-group next50-box">
+          <button type="button" id="next50-toggle" class="chip tier-button"
+                  aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
+          <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
+          <button class="info-button" type="button" data-explain="next50"
+                  aria-label="What the Next 50 is">i</button>
         </div>
 
         <div class="toolbar-group toolbar-group-end">
