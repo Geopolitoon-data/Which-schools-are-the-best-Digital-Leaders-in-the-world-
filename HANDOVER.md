@@ -1,4 +1,4 @@
-# Digital Leaders 2026 — World Map · Handover
+# Digital Leaders 2026 World Map · Handover
 
 For the web developer taking this into production.
 
@@ -6,121 +6,126 @@ This is a self-contained static visualisation: D3 v7 + TopoJSON, no framework,
 no build step for the app itself. It runs from any static host and is designed
 to be embedded in the Digital Leaders Webflow site.
 
-**Nothing here has been published.** The repository has not been pushed
-anywhere; the commit history is included so you can push it to the company
-GitHub as-is.
+**It is already live.** The repository is public on GitHub and served by
+GitHub Pages:
+
+- Repository: https://github.com/Geopolitoon-data/Which-schools-are-the-best-Digital-Leaders-in-the-world-
+- Live map: https://geopolitoon-data.github.io/Which-schools-are-the-best-Digital-Leaders-in-the-world-/
+
+What is left is putting that page on the Webflow site (section 3).
 
 ---
 
 ## 1. Quick start
 
 ```bash
-cd viz
+git clone https://github.com/Geopolitoon-data/Which-schools-are-the-best-Digital-Leaders-in-the-world-.git
+cd Which-schools-are-the-best-Digital-Leaders-in-the-world-
 python serve.py          # http://localhost:8000/index.html
 ```
 
-If you would rather not use Python, any static server works — but see
-[§6 Gotchas](#6-gotchas-worth-knowing-before-you-start) first, because the
-default `python -m http.server` causes a caching problem that will waste your
-afternoon.
+If you would rather not use Python, any static server works, but see
+[section 6](#6-gotchas-worth-knowing-before-you-start) first: the default
+`python -m http.server` causes a caching problem that will waste your afternoon.
 
 To see it with no server at all, open `dist/dl-map-offline.html` directly.
 
 ---
 
-## 2. Publishing it
+## 2. Publishing changes
 
-The repository is committed on `main` and has no remote. To publish:
+GitHub Pages deploys from `main`, root, on every push. After any change:
 
 ```bash
-git remote add origin https://github.com/<org>/digital-leaders-map.git
-git push -u origin main
+python bundle.py
+python bundle.py --full-document
+git add -A
+git commit -m "..."
+git push
 ```
 
-The repository must be **public** if you intend to use jsDelivr.
+Always run `bundle.py` before pushing, even for a one-line CSS change. It
+rebuilds the two single-file versions in `dist/`, and it rewrites the `?v=`
+fingerprints on the script and stylesheet URLs in `index.html`. Without a fresh
+fingerprint, visitors can get the new page with an old cached `index.js`.
 
 ### What is and isn't in the repository
 
 `data/dl-data.json` holds every institution's rank in every ranking, for both
-editions. It is public by necessity — a browser-based map must download what
-it displays — and Emerging has confirmed that is fine.
+editions. It is public by necessity (a browser-based map must download what it
+displays) and Emerging has confirmed that is fine.
 
 Two things are deliberately kept out, and should stay out:
 
-- **Per-institution DL Points.** They are `151 − rank`, and the front end
-  computes them at runtime. Publishing them would hand out the
-  module-by-module breakdown that the interface is built to withhold, which is
-  the basis of the commercial offer in the institution card.
+- **Per-institution DL Points as published figures.** They are `151 - rank`,
+  and the front end computes them at runtime. The Excel export leaves them out
+  on purpose; see `buildExportSheets()` in `index.js`.
 - **The master Excel workbook.** It is the source of truth, lives one directory
-  above the repository, and is excluded in `.gitignore`. Do not add it.
+  above the repository, and is excluded by `*.xlsx` in `.gitignore`. Do not add
+  it.
 
 ---
 
 ## 3. Embedding it in Webflow
 
-### Option A — iframe (recommended, works today)
+### Option A: iframe (recommended, works today)
 
-Publish the repository with **GitHub Pages** (Settings → Pages → deploy from
-`main`, root), then in Webflow drop an Embed element:
+In Webflow, drop an Embed element:
 
 ```html
 <div style="position:relative;width:100%;height:80vh;min-height:600px;">
   <iframe
-    src="https://<org>.github.io/digital-leaders-map/index.html"
+    src="https://geopolitoon-data.github.io/Which-schools-are-the-best-Digital-Leaders-in-the-world-/"
     style="position:absolute;inset:0;width:100%;height:100%;border:0;"
-    title="Digital Leaders 2026 — World Map"
+    title="Digital Leaders 2026 World Map"
     loading="lazy"></iframe>
 </div>
 ```
 
-This is the path I would take first: it is exactly what has been tested, it
-cannot collide with Webflow's own CSS, and the map manages its own layout.
+This is the path to take: it is exactly what has been tested, it cannot collide
+with Webflow's own CSS, and the map manages its own layout. The page is built
+for a frame about this size; the banner, controls and map share its height.
 
-Note that jsDelivr is **not** a good iframe target — it serves HTML files with
-headers that stop them rendering as pages. jsDelivr is for the individual
-assets in Option B, not for `index.html`.
+jsDelivr is **not** a good iframe target: it serves HTML files with headers that
+stop them rendering as pages.
 
-### Option B — inline component
+### Option B: inline component (not recommended without real work)
 
-If the map has to share the page's DOM (for SEO, or to interact with other
-Webflow elements), it can be mounted directly:
+Mounting the map directly in the Webflow page's DOM is possible, but it is no
+longer a matter of four script tags. The page is now more than a map: the
+banner, the three-row control band, the key on the map, a popover explainer on
+every control, the user guide, the browse lists behind the key's counts and the
+Excel export are all markup in `index.html`, wired by the inline bootstrap
+script at the bottom of that file.
+
+To inline it you would need to:
+
+1. Copy the `<body>` markup of `index.html`, and its closing bootstrap
+   `<script>`, into the Webflow page.
+2. Extract the `<style>` block of `index.html` into a stylesheet and namespace
+   it: it styles bare `header`, `main` and `button`, which will fight Webflow.
+3. Load the scripts in this order, pinned to a tag:
 
 ```html
-<div id="dl-map" style="width:100%;height:80vh;"></div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
-<script src="https://cdn.jsdelivr.net/gh/<org>/digital-leaders-map@v1.0/scales.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/<org>/digital-leaders-map@v1.0/index.js"></script>
-<script>
-  DigitalLeadersMap.init('#dl-map').then(context => {
-    DigitalLeadersMap.render(context, DigitalLeadersMap.getState(), context.data);
-    DigitalLeadersMap.buildModuleSelector(context);
-    DigitalLeadersMap.buildMetricSelector(context);
-    DigitalLeadersMap.buildFilters(context);
-    DigitalLeadersMap.buildSearch(context);
-  });
-</script>
+<script src="https://cdn.jsdelivr.net/gh/Geopolitoon-data/Which-schools-are-the-best-Digital-Leaders-in-the-world-@v1.0/scales.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Geopolitoon-data/Which-schools-are-the-best-Digital-Leaders-in-the-world-@v1.0/xlsx.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/Geopolitoon-data/Which-schools-are-the-best-Digital-Leaders-in-the-world-@v1.0/index.js"></script>
 ```
 
-Two things need doing first, and they are the reason this is Option B:
+   `xlsx.js` must come before `index.js`, or the Download dataset button fails.
+4. Point `CONFIG.dataUrl` and `CONFIG.boundariesUrl` at the top of `index.js` at
+   absolute URLs, or set `window.DL_EMBEDDED = { data, atlas }` before the
+   scripts run (this is how the single-file build works).
 
-1. **The page CSS lives inside `index.html`'s `<style>` block.** Only the design
-   tokens are in a separate file (`tokens.css`). To mount inline you need to
-   extract that block into an `app.css`, and namespace it — it currently styles
-   bare `header`, `main` and `button`, which will fight Webflow.
-2. **`CONFIG.dataUrl` and `CONFIG.boundariesUrl`** at the top of `index.js` are
-   relative paths. Point them at the jsDelivr URLs, or set
-   `window.DL_EMBEDDED = { data, atlas }` before the script runs and it will use
-   that instead of fetching (this is how the single-file build works).
-
-**Pin a version.** Use `@v1.0`, never `@main` — jsDelivr caches aggressively and
-a `@main` URL can change under a live page without warning. Tag releases:
+**Pin a version.** Use `@v1.0`, never `@main`: jsDelivr caches aggressively
+and a `@main` URL can change under a live page without warning.
 
 ```bash
-git tag v1.0 && git push origin v1.0
+git tag v1.0
+git push origin v1.0
 ```
-
-To force a refresh of a mutable URL: `https://purge.jsdelivr.net/gh/<org>/<repo>@main/index.js`
 
 ---
 
@@ -141,7 +146,7 @@ To force a refresh of a mutable URL: `https://purge.jsdelivr.net/gh/<org>/<repo>
 
 | File | Role |
 |---|---|
-| `data/dl-data.json` | **The only data file the page loads.** 276 institutions, 41 countries, 15 hubs. Generated — never edit by hand. |
+| `data/dl-data.json` | **The only data file the page loads.** 275 universities & schools (264 ranked in at least one Top 150, plus 11 that appear only in the Next 50), 41 countries, 15 hubs. Generated — never edit by hand. |
 | `data/countries-110m.json` | Natural Earth 110m country boundaries, TopoJSON. Static; no reason to touch it. |
 
 ### Assets
