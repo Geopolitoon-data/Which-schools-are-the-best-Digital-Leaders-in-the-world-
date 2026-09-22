@@ -156,8 +156,11 @@ async function init(container) {
     throw new Error('Container element not found');
   }
 
-  // Drop any previous SVG, but leave sibling overlays (the zoom hint) intact.
-  d3.select(containerEl).selectAll('svg').remove();
+  // Drop any previous map SVG, but leave sibling overlays intact. Only the
+  // map's own <svg> (a direct child, class map-container) is removed: a bare
+  // selectAll('svg') also deleted the Digital Leaders logo, which is inline
+  // SVG and now lives in this container.
+  d3.select(containerEl).selectAll(':scope > svg.map-container').remove();
 
   // Measure the container. This can legitimately read 0 if we run before the
   // flex layout has settled, so it is only a starting guess — the
@@ -817,6 +820,22 @@ const MODULE_LABELS = {
 };
 
 /**
+ * The ranking names inside a school's card. The buttons and the key use the
+ * pipeline names above (Power, Create, Transform); a card reads better with
+ * what each ranking is about, so it says "AI & Digital Entrepreneurship"
+ * rather than "Create".
+ */
+const MODULE_CARD_LABELS = {
+  global: 'Global Ranking',
+  AI: 'AI & Data',
+  CS: 'AI & Technology Builders',
+  transform: 'AI & Digital Transformation',
+  create: 'AI & Digital Entrepreneurship'
+};
+
+const cardLabel = (module) => MODULE_CARD_LABELS[module] || MODULE_LABELS[module] || module;
+
+/**
  * What each ranking is, in the website's own words, shown at the top of the
  * explainer a ranking button opens. The description that follows it is the
  * longer, job-level account.
@@ -1211,6 +1230,13 @@ function wireExplainers(root = document) {
       explainControl(button, button.dataset.explain);
     });
   });
+}
+
+/** Which types the Global-position list draws on, as its label says. */
+function globalListScope(type) {
+  if (type === 'University') return 'universities & mixed';
+  if (type === 'Business School') return 'business schools & mixed';
+  return 'excl. Science & Tech';
 }
 
 /** The median of a sorted list of numbers, or null when it is empty. */
@@ -3332,7 +3358,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
     const next50 = institution.tier?.[edition]?.[row.module] === 'next50';
     return `
     <tr${row.module === state.selectedModule ? ' class="is-current"' : ''}>
-      <td><span class="hover-dot" style="background:${MODULE_COLORS[row.module]}"></span>${escapeHtml(MODULE_LABELS[row.module])}</td>
+      <td><span class="hover-dot" style="background:${MODULE_COLORS[row.module]}"></span>${escapeHtml(cardLabel(row.module))}</td>
       <td class="rank">${next50 ? `#${row.rank} <span class="tier-badge">Next 50</span>` : `#${row.rank}`}</td>
     </tr>`;
   }).join('');
@@ -3455,10 +3481,20 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
   const isTechSchool = (subject) => String(subject.type || '').startsWith('Science and Tech');
   const ownIsTech = isTechSchool(institution);
 
+  // The same logic for universities and business schools. A comprehensive
+  // university is not a rival to a pure business school because they sit a
+  // place apart (Pune University, 141st, came out next to HEC Paris, 140th),
+  // and the reverse holds too. A university that includes a business school
+  // is both, so it still meets either: that pairing is what this list is for.
+  const APART = [['University', 'Business School']];
+  const kept = (a, b) => !APART.some(([x, y]) =>
+    (a.type === x && b.type === y) || (a.type === y && b.type === x));
+
   const byGlobalRank = (ownGlobal === null || ownIsTech) ? [] : data.institutions
     .filter(other => {
       if (other.id === institution.id || shownIds.has(other.id)) return false;
       if (isTechSchool(other)) return false;
+      if (!kept(institution, other)) return false;
       const rank = other.ranks?.[edition]?.global;
       if (rank === null || rank === undefined) return false;
       const otherTier = other.tier?.[edition]?.global;
@@ -3503,7 +3539,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
     <h3 class="panel-section">Evolution 2025-2026</h3>
     <p class="panel-note rising">
       <span class="rising-arrow" aria-hidden="true">▲</span>
-      Rising in ${escapeHtml(MODULE_LABELS[module])} since DL25
+      Rising in ${escapeHtml(cardLabel(module))} since DL25
     </p>` : '';
 
   panel.innerHTML = `
@@ -3577,7 +3613,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
 
       ${globalRows ? `
         <p class="competitor-group">By Global Ranking position
-          <span>any region · excl. Science &amp; Tech</span></p>
+          <span>any region · ${escapeHtml(globalListScope(institution.type))}</span></p>
         <ul class="competitor-list">${globalRows}</ul>` : ''}
 
       <p class="commercial-cta">
@@ -3595,7 +3631,7 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         <strong>${escapeHtml(typeLabel(institution.type))}</strong> schools in
         <strong>${escapeHtml(group.label)}</strong> (India, Japan and Israel each
         count as a region of their own), and scores each one on how close it is
-        in ${escapeHtml(module === 'global' ? 'the Global Ranking' : MODULE_LABELS[module])}
+        in ${escapeHtml(module === 'global' ? 'the Global Ranking' : cardLabel(module))}
         and on the map:</p>
 
         <p class="method-formula">
@@ -3613,11 +3649,11 @@ function renderInstitutionPanel(panel, context, state, data, institution, agg) {
         engineering school is a different model from a university, however
         close the two sit in the ranking.</p>` : `
         <p><strong>By Global Ranking position</strong> uses no formula: it is
-        simply the schools placed nearest in the Global Ranking, in any region
-        and of any type except Science &amp; Tech schools, which are compared
-        only with each other. It catches rivals the first list cannot, such as a
-        university with a business school facing one classed only as a
-        university.</p>`}
+        simply the schools placed nearest in the Global Ranking, in any region.
+        Different models are kept apart: Science &amp; Tech schools are compared
+        only with each other, and universities never with pure business
+        schools. It catches rivals the first list cannot, such as a university
+        with a business school facing one classed only as a university.</p>`}
 
         <p><strong>Built with you.</strong> ${ownIsTech ? 'This follows' : 'Both follow'} our methodology. A
         university or school working with us can design its own, or tell us how
