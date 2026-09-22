@@ -22,10 +22,10 @@
   <!-- Lexend — the Digital Leaders wordmark is set in it. The logo SVG holds
        live text, so without the real font the browser substitutes another and
        the hard-coded glyph positions fall apart. -->
-  <link rel="stylesheet" href="./vendor/lexend.css">
+  <link rel="stylesheet" href="./vendor/lexend.css?v=5916d88a5f">
 
   <!-- Design tokens (CSS variables) -->
-  <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./tokens.css?v=ea53a09384">
 
   <style>
     * {
@@ -1924,7 +1924,10 @@
        as a sixth ranking. It extends the Global Ranking to 200 places for
        exploring; the caption says, in place, that it counts toward nothing.
        ================================================================== */
+    /* Right after the rankings, with a clear gap, so it reads as related to
+       the Global Ranking but not as one more ranking button. */
     .next50-box {
+      margin-left: var(--spacing-md);
       padding: 2px 6px 2px 3px;
       border: 1px dashed var(--color-orange-soft);
       border-radius: var(--radius-full);
@@ -2275,7 +2278,7 @@
         <!-- The Next 50 sits in a box of its own at the end of the Rankings row: it
              extends the Global Ranking to 200 places for exploring, but is
              counted in no score, colour or total on this map. -->
-        <div class="toolbar-group toolbar-group-end next50-box">
+        <div class="toolbar-group next50-box">
           <button type="button" id="next50-toggle" class="chip tier-button"
                   aria-pressed="false">Next 50 <span class="chip-rule">|</span> 151&ndash;200</button>
           <span class="next50-caption">Global Ranking only<br>not counted in any score</span>
@@ -2410,9 +2413,9 @@
   </div>
 
   <!-- D3 Visualization Scripts -->
-  <script src="./scales.js"></script>
-  <script src="./xlsx.js"></script>
-  <script src="./index.js"></script>
+  <script src="./scales.js?v=dfab1c8290"></script>
+  <script src="./xlsx.js?v=fd66b1b5ac"></script>
+  <script src="./index.js?v=bf579ef52d"></script>
 
   <!-- Initialize -->
   <script>

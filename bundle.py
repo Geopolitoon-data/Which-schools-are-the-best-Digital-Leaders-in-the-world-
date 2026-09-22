@@ -17,6 +17,7 @@ Usage:
 
 import argparse
 import base64
+import hashlib
 import json
 import os
 import re
@@ -75,6 +76,39 @@ def boot_script(html):
     return scripts[-1] if scripts else ''
 
 
+# The files index.html loads by path, and so the ones a browser can cache.
+STAMPED_ASSETS = ['tokens.css', 'vendor/lexend.css', 'scales.js', 'xlsx.js', 'index.js']
+
+
+def stamp_sources():
+    """
+    Give every script and stylesheet index.html loads a ?v= fingerprint of
+    its own contents, and write the page back.
+
+    GitHub Pages lets browsers cache these files, and a browser that keeps an
+    old index.js while fetching a new index.html shows a half-updated page:
+    that is how the moved logo vanished, because the old script still deleted
+    every SVG in the map container. A fingerprint changes exactly when the
+    file does, so an update always reaches the reader and an unchanged file
+    stays cached. Runs on every build, so there is nothing to remember.
+    """
+    path = os.path.join(HERE, 'index.html')
+    with open(path, encoding='utf-8') as handle:
+        page = handle.read()
+    original = page
+
+    for asset in STAMPED_ASSETS:
+        with open(os.path.join(HERE, *asset.split('/')), 'rb') as handle:
+            digest = hashlib.md5(handle.read()).hexdigest()[:10]
+        pattern = r'((?:src|href)="\./%s)(\?v=[0-9a-f]+)?"' % re.escape(asset)
+        page = re.sub(pattern, r'\1?v=%s"' % digest, page)
+
+    if page != original:
+        with open(path, 'w', encoding='utf-8') as handle:
+            handle.write(page)
+        print('stamped asset versions in index.html')
+
+
 def build(full_document=False):
     index_html = read('index.html')
 
@@ -126,6 +160,7 @@ def main():
     parser.add_argument('--output')
     args = parser.parse_args()
 
+    stamp_sources()
     page = build(full_document=args.full_document)
 
     output = args.output or os.path.join(

@@ -188,7 +188,7 @@ python geocode.py            # only if institutions were added
 python geocode_aliases.py    # only if geocode.py failed on any
 python audit_hubs.py --apply # only if institutions or coordinates changed
 python build_data.py         # always
-python bundle.py             # always
+python bundle.py             # always; also re-stamps ?v= fingerprints in index.html
 ```
 
 Then verify against three figures that should not move unless the data really
@@ -221,6 +221,12 @@ to an `<img>`.
 `<svg>` root carries none, so a document-wide replace removes the first two it
 finds — which belong to the `<clipPath>` rect that masks the swoosh. A rect with
 no dimensions clips to nothing and the swoosh silently disappears.
+
+**Script and stylesheet URLs carry a content fingerprint** (`index.js?v=…`),
+written into `index.html` by `bundle.py` on every build. GitHub Pages lets
+browsers cache those files; without the fingerprint a visitor could get the new
+`index.html` with an old `index.js`, which is exactly how a moved logo once
+vanished. Always run `bundle.py` before pushing, even for a CSS-only change.
 
 **Never use `python -m http.server` for development.** It is single-threaded, so
 one held-open browser connection blocks every other request and the server
